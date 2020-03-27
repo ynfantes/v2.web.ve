@@ -1,0 +1,138 @@
+<div class="inbox-nav-bar no-content-padding">
+	<h1 class="page-title txt-color-blue hidden-tablet"><i class="fa fa-fw fa-inbox"></i> Recibidos &nbsp;
+	</h1>
+        <div class="inbox-checkbox-triggered visible">
+		<div class="btn-group">
+			<a class="deletebutton btn btn-default" data-original-title="Eliminar" data-placement="bottom" title="" rel="tooltip" href="javascript:void(0);"><strong><i class="fa fa-trash-o fa-lg"></i></strong></a>
+		</div>
+	</div>
+	<div class="btn-group hidden-desktop visible-tablet">
+		<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			Recibidos<i class="fa fa-caret-down"></i>
+		</button>
+	</div>
+	<div class="btn-group pull-right inbox-paging">
+		<a href="javascript:void(0);" class="btn btn-default btn-sm back" rel="tooltip" data-placement="bottom" data-original-title="Anterior"><strong><i class="fa fa-chevron-left"></i></strong></a>
+		<a href="javascript:void(0);" class="btn btn-default btn-sm next" rel="tooltip" data-placement="bottom" data-original-title="Siguiente"><strong><i class="fa fa-chevron-right"></i></strong></a>
+	</div>
+	<span class="pull-right"><strong>0-0</strong> de <strong>0</strong></span>
+</div>
+<div id="inbox-content" class="inbox-body no-content-padding">
+
+	<div class="inbox-side-bar">
+            <h6> Carpetas </h6>
+            <ul class="inbox-menu-lg">
+                    <li class="active">
+                        <a class="inbox-load" href="javascript:void(0);"> Recibidos ({{ cantidad }}) </a>
+                    </li>
+		</ul>
+	</div>
+	<div class="table-wrap custom-scroll animated fast fadeInRight">
+		<!-- ajax will fill this area -->
+		Cargando...
+	</div>
+</div>
+<script type="text/javascript">
+	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+	 *
+	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+	 *
+	 * // activate tooltips
+	 * $("[rel=tooltip]").tooltip();
+	 *
+	 * // activate popovers
+	 * $("[rel=popover]").popover();
+	 *
+	 * // activate popovers with hover states
+	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
+	 *
+	 * // activate inline charts
+	 * runAllCharts();
+	 *
+	 * // setup widgets
+	 * setup_widgets_desktop();
+	 *
+	 * // run form elements
+	 * runAllForms();
+	 *
+	 ********************************
+	 *
+	 * pageSetUp() is needed whenever you load a page.
+	 * It initializes and checks for all basic elements of the page
+	 * and makes rendering easier.
+	 *
+	 */
+
+	pageSetUp();
+
+	// PAGE RELATED SCRIPTS
+
+	// pagefunction
+	
+	var pagefunction = function() {
+
+		// fix table height
+		tableHeightSize();
+
+		$(window).resize(function() {
+			tableHeightSize();
+		});
+		function tableHeightSize() {
+
+			if ($('body').hasClass('menu-on-top')) {
+				var menuHeight = 68;
+				// nav height
+
+				var tableHeight = ($(window).height() - 224) - menuHeight;
+				if (tableHeight < (320 - menuHeight)) {
+					$('.table-wrap').css('height', (320 - menuHeight) + 'px');
+				} else {
+					$('.table-wrap').css('height', tableHeight + 'px');
+				}
+
+			} else {
+				var tableHeight = $(window).height() - 224;
+				if (tableHeight < 320) {
+					$('.table-wrap').css('height', 320 + 'px');
+				} else {
+					$('.table-wrap').css('height', tableHeight + 'px');
+				}
+
+			}
+
+		}
+
+		/*
+		 * LOAD INBOX MESSAGES
+		 */
+		loadInbox();
+		function loadInbox() {
+                    loadURL("mensajes/?accion=listar", $('#inbox-content > .table-wrap'));
+		}
+	
+		/*
+		 * Buttons (compose mail and inbox load)
+		 */
+		$(".inbox-load").click(function() {
+			loadInbox();
+		});
+                $(".back").click(function() {
+			loadURL("mensajes/listar/pagina/"+$(this).attr("name"), $('#inbox-content > .table-wrap'));
+		});
+                $(".next").click(function() {
+			loadURL("mensajes/listar/pagina/"+$(this).attr("name"), $('#inbox-content > .table-wrap'));
+		});
+		// compose email
+		$("#compose-mail").click(function() {
+			//loadURL("mensjaes/lista.html.twig", $('#inbox-content > .table-wrap'));
+		});
+		
+	};
+	
+	// end pagefunction
+	
+	// load delete row plugin and run pagefunction
+
+	loadScript("{{ constant('ROOT')}}assets/js/plugin/delete-table-row/delete-table-row.min.js", pagefunction);
+	
+</script>

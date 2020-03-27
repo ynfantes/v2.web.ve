@@ -1,0 +1,40 @@
+{# indice #}
+{% extends 'layout/fluid.html.twig'%}
+{% block titulo 'Administradora de Condominio'%}
+{% block contenido %}
+    {% block sidebar %}
+    {{ parent() }}
+    {% endblock %}
+<!-- contenido -->
+<div role="main" id="main">
+<!-- RIBBON -->
+<div id="ribbon">
+<span class="ribbon-button-alignment"> 
+<span data-reset-msg="" data-html="true" data-original-title="&lt;i class='text-info fa fa-info'&gt;&lt;/i&gt; Atención! Va a refrescar esta página web." data-placement="bottom" rel="tooltip" data-title="refresh" data-action="resetWidgets" class="btn btn-ribbon" id="refresh"><i class="fa fa-refresh"></i></span>
+</span>
+<!-- breadcrumb -->
+<ol class="breadcrumb">
+<!-- This is auto generated -->
+</ol>
+<!-- end breadcrumb -->
+<!-- You can also add more buttons to the
+ribbon for further usability
+Example below:
+<span class="ribbon-button-alignment pull-right" style="margin-right:25px">
+<span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa fa-grid"></i> Change Grid</span>
+<span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa fa-plus"></i> Add</span>
+<span id="search" class="btn btn-ribbon" data-title="search"><i class="fa fa-search"></i> <span class="hidden-mobile">Search</span></span>
+</span> -->
+</div>
+<!-- END RIBBON -->
+<!-- #MAIN CONTENT -->
+<div id="content">
+    
+</div>
+<!-- END #MAIN CONTENT -->
+</div>
+<!-- fin contenido -->
+{% endblock %}
+{% block footer %}
+{{ parent() }}
+{% endblock %}

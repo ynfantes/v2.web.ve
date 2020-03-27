@@ -1,0 +1,190 @@
+{%extends "layout/inicio.html.twig"%}
+{% block contenido %}
+<div id="wrapper">
+<!-- 
+AVAILABLE HEADER CLASSES
+
+Default nav height: 96px
+.header-md 		= 70px nav height
+.header-sm 		= 60px nav height
+
+.b-0 		= remove bottom border (only with transparent use)
+.transparent	= transparent header
+.translucent	= translucent header
+.sticky			= sticky header
+.static			= static header
+.dark			= dark header
+.bottom			= header on bottom
+
+shadow-before-1 = shadow 1 header top
+shadow-after-1 	= shadow 1 header bottom
+shadow-before-2 = shadow 2 header top
+shadow-after-2 	= shadow 2 header bottom
+shadow-before-3 = shadow 3 header top
+shadow-after-3 	= shadow 3 header bottom
+
+.clearfix		= required for mobile menu, do not remove!
+
+Example Usage:  class="clearfix sticky header-sm transparent b-0"
+-->
+<div id="header" class="navbar-toggleable-md sticky transparent clearfix b-0">
+
+<!-- TOP NAV -->
+<header id="topNav">
+<div class="container">
+
+<!-- Logo -->
+<a class="logo float-left" href="{{constant('ROOT')}}">
+    <img src="{{constant('ROOT')}}assets/images/_smarty/logo_dark.png" alt="{{constant('NOMBRE_APLICACION')}}" class="bounceInDown animation-visible animated" />
+</a>
+<!-- 
+Top Nav 
+AVAILABLE CLASSES:
+submenu-dark = dark sub menu
+-->
+<div class="navbar-collapse collapse float-right nav-main-collapse submenu-dark">
+<nav class="nav-main">
+<ul id="topMain" class="nav nav-pills nav-main">
+<li class="nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn">
+<a href="{{constant('ROOT')}}" style="color:#063e95" class="dropdown-toggle noicon"><b>Inicio</b></a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</header>
+<!-- /Top Nav -->
+
+</div>
+<!-- -->
+<section class="fullheight b-0" style="background: rgba(0, 0, 0, 0) url('{{constant('ROOT')}}assets/images/1800x800/logo.jpeg') repeat scroll 0% 0%; height: 913px;">
+<section style="background-color: rgb(0,0,0,0);border: 0">
+<div class="container">
+<div class="row">
+<div class="col-md-6 offset-md-3">
+{% include 'misc/resultado.html.twig' %}
+<!-- ALERT -->
+<div class="alert alert-mini alert-danger mb-30 d-none">
+<strong>Ups!</strong> Debe completar esta información!
+</div>
+<!-- /ALERT -->
+<div class="box-static box-border-top p-30" style="background-color: rgb(255,255,255,0.95);">
+<div class="box-title mb-30">
+<h2 class="fs-20">Ingrese sus credenciales de acceso</h2>
+</div>
+<form id="login-form" class="m-0" method="post" action="#" autocomplete="off">
+<div class="clearfix">
+<div id="correo" class="form-label-group mb-4">
+<input placeholder="Correo Electrónico" id="email" name="email" type="text" value="" class="form-control required email">
+</div>
+<div id='password' class="row" style="display:none">
+<button type="button" class="btn btn-round btn-outline-info btn-sm text-left registro-btn" style="margin: 0 auto 24px;"><i class="glyphicon glyphicon-user"> </i> <span id='span_usuario'></span></button>
+<div class="col-md-12 col-sm-12">
+<input placeholder="Password" id="password" type="password" name="password" class="form-control required" minlength="4" maxlength="10">
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6 col-sm-6 col-6">
+<!-- Inform Tip -->                                        
+<div class="form-tip mt-30">
+<a id='a-registro' class="btn btn-3d btn-link d-none" href="{{constant('ROOT')}}registro.php"><i class="glyphicon glyphicon-heart-empty"> </i>Registrarse</a>
+<a id='forgot-password' class="btn btn-3d btn-link d-none" href="javascript(0);"><i class="glyphicon glyphicon-heart-empty"> </i>Recuperar Password</a>
+</div>
+</div>
+<div class="col-md-6 col-sm-6 col-6 text-right mt-30">
+<button class="btn btn-primary btn-3d rubberBand animation-visible animated" data-loading-text="<i class='fa fa-cog'></i> Procesando...">Siguiente <i class="glyphicon glyphicon-menu-right"></i></button>
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+</section>
+<!-- -->
+</div>
+{% endblock %}
+{% block js %}
+{{ parent() }}
+<script type="text/javascript" src="{{constant('ROOT')}}assets/plugins/form.validate/jquery.form.min.js"></script>
+<script type="text/javascript" src="{{constant('ROOT')}}assets/plugins/form.validate/jquery.validation.min.js"></script>
+<script>
+$('.registro-btn').click(function() {
+$('div#correo').toggle();
+$('div#password').toggle();
+$('a#forgot-password').attr('href','').addClass('d-none');
+});
+if($("#login-form").length>0) {
+$("#login-form").validate({
+submitHandler: function(form) {
+$.ajax({
+type: "POST",
+url: "{{constant('URL_SISTEMA')}}/propietario/login",
+dataType: "json",
+data: {
+"password": $("#login-form input[name='password']").val(),
+"email": $("#login-form input[name='email']").val()
+},
+beforeSend: function() {
+$("button.btn-primary").button("loading").addClass('disabled');
+$("div.alert").addClass("d-none").html('');
+$('.btn-link').addClass('d-none');
+},
+success: function (data) {
+//typeof data.exite !== 'undefined' && 
+if (!data.existe) {
+    $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html('<strong>Ups!</strong> correo electrónico no registrado').removeClass("d-none");
+    $('a#a-registro').attr('href','{{constant('ROOT')}}registro.php?t='+ data.tipo_documento + '&d=' + data.numero_documento).removeClass('d-none');
+}
+if (data.existe) {
+    if (typeof data.login !== 'undefined') {
+        if (data.login) {
+            $('div.alert').removeClass('alert alert-danger').addClass('alert alert-success').html("<strong>Usuario registrado: </strong>Espere unos segundos, lo estamos redireccionando.....").removeClass('d-none');
+            window.location.href ='{{constant('URL_SISTEMA')}}';
+        } else {
+            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html('<strong>Ups!</strong> Password incorrecto').removeClass("d-none"); 
+        }
+    } else {
+        $('a#forgot-password').attr('href','{{constant('URL_SISTEMA')}}/propietario/recuperar-password/'+data.id).removeClass('d-none');
+        $('span#span_usuario').html(data.email);
+        $('div#correo').toggle();
+        $('div#password').toggle();
+    }
+}
+$(".btn").button("reset").removeClass('disabled');
+},
+error: function(error) {
+$('#login-messages').removeClass('alert alert-success').addClass('alert alert-danger').html("Ocurrió un error durante el proceso.<br> Por favor intente más tarde.");
+$(".btn").button("reset").removeClass('disabled');
+}
+});
+},				
+// debug: true,
+errorPlacement: function(error, element) {
+$('div.alert').removeClass('d-none').html('<strong>Ups!</strong> Debe completar esta información!');
+},
+onkeyup: false,
+onclick: false,
+messages: {
+numero_documento: {required: ""},
+tipo_documento: {required: ""}					
+},
+/*errorElement: "span",
+highlight: function (element) {
+jQuery(element).parent().removeClass("has-success").addClass("has-error");
+},
+success: function (element) {
+jQuery(element).parent().removeClass("has-error").addClass("has-success");
+}*/
+});
+};
+</script>
+{% endblock %}
