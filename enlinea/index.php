@@ -4,8 +4,13 @@ include_once '../includes/file.php';
 
 propietario::esPropietarioLogueado();
 $session = $_SESSION;
-$archivo = '../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION;
-$fecha_actualizacion = JFile::read($archivo);
+if (file_exists('../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION)) {
+    $archivo = '../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION;
+    $fecha_actualizacion = JFile::read($archivo);
+} else {
+    $fecha_actualizacion = '';
+}
+
 // <editor-fold defaultstate="collapsed" desc="cantidad recibos pendientes">
 $f = new factura();
 $p = new pago();

@@ -5,7 +5,12 @@
 <span> <!-- User image size is adjusted inside CSS, it should stay as is --> 
 
 <a data-action="toggleShortcut" id="show-shortcut" href="javascript:void(0);">
-<img class="online" alt="me" src="{{ constant('ROOT') }}assets/images/avatars/male.png"> 
+{% if session['picture']%}
+{% set img = session['picture']%}
+{% else %}
+{% set img = constant('ROOT') ~ "assets/images/avatars/male.png" %}
+{%endif%}
+<img class="online" alt="me" src="{{img}}"> 
 <span>
 {{ session.usuario.nombre }}
 </span>

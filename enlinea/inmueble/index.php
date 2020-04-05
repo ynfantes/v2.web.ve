@@ -232,9 +232,11 @@ switch ($accion) {
 
     // <editor-fold defaultstate="collapsed" desc="cartelera">
     case "cartelera":
-        $archivo = '../../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION;
+        $fecha_actualizacion = '';
+        if (file_exists('../../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION)) {
+            $archivo = '../../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION;
         $fecha_actualizacion = JFile::read($archivo);
-        
+        }
         $bitacora->insertar(Array(
             "id_sesion"     =>  $session['id_sesion'],
             "id_accion"     => 11,

@@ -59,7 +59,9 @@ class propietario extends db implements crud  {
                 } 
                 // registramos la sesion del usuario
                 $sesion = $this->generarIdInicioSesion($result['data'][0]['cod_admin'],$result['data'][0]['cedula']);
-                session_start();
+                if(session_status()  == PHP_SESSION_NONE) {
+                    session_start();
+                }
                 if ($sesion['suceed']) {
                     $_SESSION['id_sesion'] = $sesion['insert_id'];
                 }

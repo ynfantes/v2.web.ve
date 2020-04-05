@@ -9,7 +9,7 @@ $sistema = "/v2.web.ve/";
 $email_error = false;
 $mostrar_error = true;
 $programa_correo = mailPHP;
-$protcolo = 'http';
+$protocolo = 'http';
 if ($_SERVER['SERVER_NAME'] == "www.v2.web.ve" | $_SERVER['SERVER_NAME'] == "www.va2.com.ve" | $_SERVER['SERVER_NAME'] == "www.v2.co.ve" | $_SERVER['SERVER_NAME'] == "v2.web.ve" | $_SERVER['SERVER_NAME'] == "va2.com.ve" | $_SERVER['SERVER_NAME'] == "v2.co.ve") {
     $user = "v2";
     $password = "valoriza25231";

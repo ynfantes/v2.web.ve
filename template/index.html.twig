@@ -64,8 +64,16 @@ submenu-dark = dark sub menu
 <div class="col-md-6 offset-md-3">
 {% include 'misc/resultado.html.twig' %}
 <!-- ALERT -->
-<div class="alert alert-mini alert-danger mb-30 d-none">
-<strong>Ups!</strong> Debe completar esta información!
+<div id="mensaje" class="alert alert-mini alert-danger mb-30 {%if not mensaje %}d-none{%endif%}">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+<strong>Ups!</strong> 
+{%if mensaje %}
+{{mensaje}}
+{% else %}
+Debe completar esta información!
+{% endif %}
 </div>
 <!-- /ALERT -->
 <div class="box-static box-border-top p-30" style="background-color: rgb(255,255,255,0.95);">
@@ -97,7 +105,20 @@ submenu-dark = dark sub menu
 </div>
 
 </div>
-
+<hr>
+<div class="row">
+<div class="col-12 text-center">– o inciar sesión con –</div>
+<div class="col-12 col-md-6">
+<a href="https://www.facebook.com/v6.0/dialog/oauth?client_id=814631822351325&redirect_uri={{url}}&state={{state}}&scope=email,public_profile" class="btn btn-block btn-social btn-facebook mt-10">
+    <i class="fa fa-facebook"></i> Facebook
+</a>
+</div>
+<div class="col-md-6">
+<a href="{{loginUrl}}" class="btn btn-block btn-social btn-google mt-10">
+    <i class="fa fa-google"></i> Gmail
+</a>
+</div>
+</div>
 </form>
 
 </div>
@@ -107,7 +128,6 @@ submenu-dark = dark sub menu
 
 </div>
 </section>
-
 </section>
 <!-- -->
 </div>
