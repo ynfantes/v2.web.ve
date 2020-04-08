@@ -5,19 +5,34 @@ header ('Content-type: text/html; charset=utf-8');
 
 include_once 'includes/db.php';
 include_once 'includes/file.php';
-include_once 'includes/inmueble.php';
+/*include_once 'includes/inmueble.php';
 include_once 'includes/junta_condominio.php';
 include_once 'includes/propietario.php';
 include_once 'includes/propiedades.php';
 include_once 'includes/factura.php';
+ */
 
 $db = new db();
+$administradoras = new administradora();
+
+if (isset($_GET['cod_admin'])) {
+    $r = $administradoras->verPorCodigo($_GET['cod_admin']);
+    if ($r['suceed'] && count($r['data'])>0) {
+        $administradora = $r['data'][0];
+    }
+//    echo '<pre>';
+//    print_r($administradora);
+//    echo '</pre>';
+//    die();
+} else {
+    die('Ups! v2.web.ve: Faltan parámetros en el llamado de actualización');
+}
 
 $tablas = array("factura_detalle", "facturas", "propiedades",
     "junta_condominio", "inmueble", "inmueble_deuda_confidencial","movimiento_caja",
     "fondos","fondos_movimiento","historico_avisos_cobro");
 
-if (isset($_GET['codinm'])&&isset($_GET['cod_admin'])) {
+if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $codinm = $_GET['codinm'];
     $cod_admin = $_GET['cod_admin'];
     $db->exec_query("delete from factura_detalle where id_factura in (select numero_factura from facturas wher id_inmueble='$codinm') and cod_admin='$cod_admin'");
@@ -36,7 +51,7 @@ if (isset($_GET['codinm'])&&isset($_GET['cod_admin'])) {
 } else {
     if (isset($_GET['cod_admin'])) {
         $cod_admin = $_GET['cod_admin'];    
-        $mensaje = "Proceso de Actualización Ejecutado<br />";
+        $mensaje = "Iniciando Proceso de Actualización <strong>".$administradora['nombre']."</strong><br />";
         
         foreach ($tablas as $tabla) {
             $r = $db->exec_query("delete from $tabla where cod_admin='$cod_admin'");
@@ -585,8 +600,14 @@ foreach ($lineas as $linea) {
 }// </editor-fold>
 
 $fecha = JFILE::read(ACTUALIZ.$cod_admin."_ACTUALIZACION.txt");
+$f_act = trim($fecha," \t\n\r\0\x0B");
+$f_act = date_create($f_act);
+$f_act = date_format($f_act, 'Y-m-d H:i:s');
+//$administradoras->actualizar($administradora['id'], array('fecha_actualizacion'=>"'".$fecha."'"));
+$s = $db->update("administradoras", array('fecha_actualizacion'=>$f_act), array('id'=>$administradora['id']));
 echo "****FIN DEL PROCESO DE ACTUALIZACION****<br />";
 echo "Información actualizada al: ".$fecha."<br/>";
+
 $mail = new mailto(SMTP);
 
 $mensaje = '<div style="background-color:rgb(227,242,253);padding:50px 0 50px;">'
@@ -602,7 +623,8 @@ $mensaje.= '</div><div style="display: block;width: 60px;height: 2px;margin:10px
 $r = $mail->enviar_email(
         "Sincronización ".$_SERVER['SERVER_NAME']." ".$fecha,
         $mensaje, " [Valoriza2]", 
-        'ynfantes@gmail.com',"");
+        $administradora['email'],"",
+        'ynfantes@gmail.com');
         
 if ($r=="") {
     echo "Email de confirmación enviado con éxito<br />";
