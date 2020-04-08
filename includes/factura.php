@@ -73,7 +73,8 @@ class factura extends db implements crud {
     public function avisoExisteEnBaseDeDatos($aviso) {
         $aviso = str_replace(".pdf","",$aviso);
         $cod_admin = substr($aviso,-3);
-        $aviso = substr($aviso,0,10);
+        $aviso = substr($aviso,0, strlen($aviso)-3);
+        //echo('<br>'.$aviso.'<br>');
         $query = "select numero_factura from facturas where numero_factura='$aviso' and cod_admin='$cod_admin'";
         $r=0;
         $result = $this->dame_query($query);
