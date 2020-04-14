@@ -37,7 +37,7 @@ if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $cod_admin = $_GET['cod_admin'];
     $db->exec_query("delete from factura_detalle where id_factura in (select numero_factura from facturas wher id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from facturas where id_inmueble='$codinm' and cod_admin='$cod_admin'");
-    $db->exec_query("update propietarios set baja=1 where cedula in (select cedula from propiedades where id_inmueble='$codinm') and cod_admin='$cod_admin'");
+    //$db->exec_query("update propietarios set baja=1 where cedula in (select cedula from propiedades where id_inmueble='$codinm') and cod_admin='$cod_admin'");
     //$db->exec_query("delete from propietarios where cedula in (select cedula from propiedades where id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from junta_condominio where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from propiedades where id_inmueble='$codinm' and cod_admin='$cod_admin' and cod_admin='$cod_admin'");
@@ -58,7 +58,7 @@ if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
             //$r = $db->exec_query("truncate table $tabla");
             echo "limpiar tabla: $tabla<br />";
         }
-        $r = $db->exec_query("update propietarios set baja=1 where cod_admin='$cod_admin'");
+        //$r = $db->exec_query("update propietarios set baja=1 where cod_admin='$cod_admin'");
     } else {
         die('Ups! v2.web.ve: Faltan parámetros en el llamado de actualización');
     }
@@ -601,8 +601,9 @@ foreach ($lineas as $linea) {
 
 $fecha = JFILE::read(ACTUALIZ.$cod_admin."_ACTUALIZACION.txt");
 $f_act = trim($fecha," \t\n\r\0\x0B");
-$f_act = date_create($f_act);
-$f_act = date_format($f_act, 'Y-m-d H:i:s');
+echo $f_act.'<br>';
+$f_act = Date('Y-m-d h:i:s', strtotime(str_replace('/', '-', $f_act)));
+//$f_act = date_format($f_act, 'Y-m-d h:i:s');
 //$administradoras->actualizar($administradora['id'], array('fecha_actualizacion'=>"'".$fecha."'"));
 $s = $db->update("administradoras", array('fecha_actualizacion'=>$f_act), array('id'=>$administradora['id']));
 echo "****FIN DEL PROCESO DE ACTUALIZACION****<br />";
@@ -623,7 +624,7 @@ $mensaje.= '</div><div style="display: block;width: 60px;height: 2px;margin:10px
 $r = $mail->enviar_email(
         "Sincronización ".$_SERVER['SERVER_NAME']." ".$fecha,
         $mensaje, " [Valoriza2]", 
-        $administradora['email'],"",
+        $administradora['email'],"",null,
         'ynfantes@gmail.com');
         
 if ($r=="") {
@@ -631,4 +632,4 @@ if ($r=="") {
 } else {
     echo "Falló el envio del emailo de ejecución del proceso<br />";
 }
-echo "Cierre esta ventana para finalizar.";
+echo "Cierre esta ventana para finalizar.";   

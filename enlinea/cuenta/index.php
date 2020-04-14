@@ -82,7 +82,7 @@ switch ($accion) {
         $propiedades = $propiedad->propiedadesPropietario(
                 $session['usuario']['cedula'],
                 $session['usuario']['cod_admin']);
-
+        //var_dump($propiedades);
         $cuenta = Array();
 
         if ($propiedades['suceed'] == true) {
@@ -143,7 +143,6 @@ switch ($accion) {
         $propiedades = $propiedad->propiedadesPropietario(
                 $session['usuario']['cedula'],
                 $cod_admin);
-        
         if ($propiedades['suceed'] == true) {
             foreach ($propiedades['data'] as $propiedad) {
                 
@@ -154,12 +153,11 @@ switch ($accion) {
                 $inmueble = $inmueble['data'][0];
                 $ano_actual = date('Y');
                 $ano_anterior = date('Y', strtotime('-1 year'));
-                
                 $r = $avisos->obtenerAñosHistorico(
                         $inmueble['id'],
                         $propiedad['apto'],
                         $cod_admin);
-        
+                
                 if ($r['suceed'] && count($r['data'])>0) {
                     $ano_actual = $r['data'][0]['ano'];
                     if (count($r['data'])>1) {

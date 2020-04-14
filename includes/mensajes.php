@@ -60,5 +60,3 @@ class mensajes extends db implements crud {
     }
 
 }
-
-?>

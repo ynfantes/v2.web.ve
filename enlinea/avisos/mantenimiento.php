@@ -42,6 +42,6 @@ while ($elemento = readdir($dir)){
     }
 }
 echo "\n";
-echo "$n archivos NO están en la base de datos.\n";
+echo "$n archivos NO están en la base de datos.<br>";
 echo "$e archivos SI están en la base de datos";
 //ob_end_flush();

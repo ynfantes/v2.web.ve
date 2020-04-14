@@ -440,7 +440,8 @@ recibirá respuesta de confirmación</h4>
                             required : true
                         },
                         numero_documento : {
-                            required : true
+                            required : true,
+                            digits: true
                         },
                         numero_cuenta : {
                             required : true
@@ -483,7 +484,10 @@ recibirá respuesta de confirmación</h4>
                         banco_origen : {
                         required: 'Ingrese el nombre del banco desde donde hizo la transferencia'
                         },
-                        numero_documento : "Ingrese un número de referencia",
+                        numero_documento : {
+                          required:  "Ingrese un número de referencia",
+                          digits: "Ingrese solo números"
+                        },
                         numero_cuenta: "Ingrese el número de cuenta",
                         fecha_documento: "Ingrese la fecha del depósito|transferencia",
                         banco_destino: "Ingrese el nombre del banco donde hizo el(la) "+ $('#tipo_pago').val(),

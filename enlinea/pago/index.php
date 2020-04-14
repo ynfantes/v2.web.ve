@@ -418,10 +418,10 @@ switch ($accion) {
             echo "id_pago,id_inmueble,id_apto,monto,id_factura<br>";
             foreach ($pago_detalle['data'] as $value) {
                 echo $value['id_pago'] . ",";
-                echo $value['id_inmueble'] . ",";
+                echo "\"".$value['id_inmueble']."\",";
                 echo $value['id_apto'] . ",";
                 echo $value['monto'] * 100 . ",";
-                echo $value['id_factura'];
+                echo "\"".$value['id_factura']."\"";
                 echo "<br>";
             }
         }
@@ -440,7 +440,7 @@ switch ($accion) {
                 echo $pago['id'] . ",";
                 echo Misc::date_format($pago['fecha']) . ",";
                 echo strtoupper($pago['tipo_pago']) . ","; 
-               echo $pago["numero_documento"] . ",";
+                echo "\"".$pago["numero_documento"]."\",";
                 echo Misc::date_format($pago["fecha_documento"]) . ",";
                 echo $pago["monto"] * 100 . ",";
                 echo $pago["banco_origen"] . ",";
