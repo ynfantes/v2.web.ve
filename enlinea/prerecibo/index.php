@@ -148,9 +148,10 @@ switch ($accion) {
         $prerecibos = new prerecibo();
 
 
-        $data = Array("id_inmueble" => $_GET['id_inmueble'],
-            "documento" => $_GET['documento'],
-            "periodo" => Misc::format_mysql_date($_GET['periodo']));
+        $data = Array(
+            "id_inmueble"   => $_GET['id_inmueble'],
+            "documento"     => $_GET['documento'],
+            "periodo"       => Misc::format_mysql_date($_GET['periodo']));
 
 
         //if ($prerecibos->prereciboYaRegistrado($_GET['id_inmueble'], $_GET['periodo'])) {

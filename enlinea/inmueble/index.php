@@ -34,10 +34,11 @@ $direccion_cobranza = "right";
 $propiedades = $propiedad->propiedadesPropietario(
         $_SESSION['usuario']['cedula'],
         $_SESSION['usuario']['cod_admin']);
+
 if ($propiedades['suceed']) {
     
     $facturacion = $inmuebles->movimientoFacturacionMensual(
-            $propiedades['data'][0]['id_inmueble'],
+            $propiedades['data'][0]['id_inmueble'], 
             $_SESSION['usuario']['cod_admin']);
     
     $cobranza = $inmuebles->movimientoCobranzaMensual(
