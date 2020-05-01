@@ -613,12 +613,12 @@ $mail = new mailto(SMTP);
 
 $mensaje = '<div style="background-color:rgb(227,242,253);padding:50px 0 50px;">'
         . '<div style="background-color:#fff; min-width:516px; max-width:516px;margin:0 auto; padding:40px 30px 50px 30px;">'
-        . '<div style="width:216px; margin:0 auto 20px;">'
+        . '<div style="background: linear-gradient(145deg,#0d47a1,#42a5f5);padding-left:10px">'
         . '<img alt="Tu Condominio en línea" src="'.ROOT.'assets/images/_smarty/logo_dark.png" id="logo" width="240" height="96"></div>'
         . '<hr style="border: 0;border-top: 1px solid #eee;margin-bottom:20px;">'
         . '<div style="color:rgb(0,0,0);font-family:Helvetica;font-size:15px!important;font-weight:400;line-height:22px!important;color:#000000">'.$mensaje;
-$mensaje.= '</div><div style="display: block;width: 60px;height: 2px;margin:10px 0;background-color:rgb(76,175,80);position: relative;float:left"></div>'
-        .'<div style="display: block;width: 60px;height: 2px;margin:10px 0;background-color:#1EB4B8;position: relative;float:left"></div></div></div>';
+$mensaje.= '</div><div style="display: block;width: 60px;height: 2px;margin:10px 0;background-color:#2A72D4;position: relative;float:left"></div>'
+        .'<div style="display: block;width: 60px;height: 2px;margin:10px 0;background-color:#1F41A3;position: relative;float:left"></div></div></div>';
 
 
 $r = $mail->enviar_email(

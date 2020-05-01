@@ -82,7 +82,8 @@ class factura extends db implements crud {
             if (count($result['data'])>0) {
                 $r=1;
             }
-        } else {
+        } 
+        if ($r==0) {
             $query = "select numero_factura from historico_avisos_cobro where numero_factura='$aviso' and cod_admin='$cod_admin'";
             $result = $this->dame_query($query);
             if ($result['suceed']==true) {
