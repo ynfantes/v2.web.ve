@@ -328,50 +328,53 @@ class pago extends db implements crud {
             return false;
         }
         $r = $this->actualizar($id, array("estatus"=>$estatus));
+        if ($r['suceed']) {
+            return "Ok";
+        }
         // verificamos si es un pago en linea para no enviar el email de confirmacion
 //        $r = $this->detallePagoEnLinea($id);
 //        if ($r['suceed'] == true && count($r['data'])>0) {
 //            return "Ok";
 //        } else {
-        $r = $this->ver($id);
+        //$r = $this->ver($id);
         // <editor-fold defaultstate="collapsed" desc="enviar correo de confirmarion">
-        if ($r['suceed'] == true) {
-
-            if (count($r['data']) > 0) {
-
-                // <editor-fold defaultstate="collapsed" desc="tipo de pago">
-                switch (strtoupper($r['data'][0]['tipo_pago'])) {
-                    case 'D':
-                        $tipo_pago = 'DEPOSITO';
-                        break;
-                    case 'TDD':
-                        $tipo_pago = 'T.DEBITO';
-                        break;
-                    case 'TDC':
-                        $tipo_pago = 'T.CREDITO';
-                        break;
-
-                    default:
-                        $tipo_pago = 'TRANSFERENCIA';
-                        break;
-                }
-                // </editor-fold>
-
-                $data = Array(
-                    "administradora" => TITULO,
-                    "forma_pago" => $tipo_pago,
-                    "numero_documento" => $r['data'][0]['numero_documento'],
-                    "banco" => $r['data'][0]['banco_destino'],
-                    "cuenta" => $r['data'][0]['numero_cuenta'],
-                    "monto" => $r['data'][0]['monto'],
-                    "fecha" => $r['data'][0]['fecha'],
-                    "email" => $r['data'][0]['email'],
-                    "recibo" => $recibo
-                );
-                return $this->enviarEmailPagoProcesado($id, $estatus, $data);
-            }
-
-        }
+//        if ($r['suceed'] == true) {
+//
+//            if (count($r['data']) > 0) {
+//
+//                // <editor-fold defaultstate="collapsed" desc="tipo de pago">
+//                switch (strtoupper($r['data'][0]['tipo_pago'])) {
+//                    case 'D':
+//                        $tipo_pago = 'DEPOSITO';
+//                        break;
+//                    case 'TDD':
+//                        $tipo_pago = 'T.DEBITO';
+//                        break;
+//                    case 'TDC':
+//                        $tipo_pago = 'T.CREDITO';
+//                        break;
+//
+//                    default:
+//                        $tipo_pago = 'TRANSFERENCIA';
+//                        break;
+//                }
+//                // </editor-fold>
+//
+//                $data = Array(
+//                    "administradora" => TITULO,
+//                    "forma_pago" => $tipo_pago,
+//                    "numero_documento" => $r['data'][0]['numero_documento'],
+//                    "banco" => $r['data'][0]['banco_destino'],
+//                    "cuenta" => $r['data'][0]['numero_cuenta'],
+//                    "monto" => $r['data'][0]['monto'],
+//                    "fecha" => $r['data'][0]['fecha'],
+//                    "email" => $r['data'][0]['email'],
+//                    "recibo" => $recibo
+//                );
+//                return $this->enviarEmailPagoProcesado($id, $estatus, $data);
+//            }
+//
+//        }
         //</editor-fold>
         return "Falló";
 //        }
@@ -428,6 +431,7 @@ class pago extends db implements crud {
         if ($datos_inmueble['suceed'] && count($datos_inmueble['data']) > 0) {
             $nombre_inmueble = $datos_inmueble['data'][0]['nombre_inmueble'];
             $rif = $datos_inmueble['data'][0]['RIF'];
+            $moneda = $datos_inmueble['data'][0]['moneda'];
         }
         ob_start();
         ?>
@@ -455,7 +459,7 @@ class pago extends db implements crud {
                             <p style="line-height: 6mm">
                             Hemos recibido de <b><?php echo $propietario ?></b>, propietario del inmueble
                             <b><?php echo $codigo_apto ?></b> en <b><?php echo $nombre_inmueble . ", RIF.: " . $rif ?></b>, la cantidad de 
-                            <b><?php echo Misc::number_format($data['monto']) ?></b>,
+                            <b><?php echo $moneda.Misc::number_format($data['monto']) ?></b>,
                             correspondientes al siguiente detalle:<br><br>
                             </p>
                             <table style="width: 500px">
@@ -469,7 +473,7 @@ class pago extends db implements crud {
                                 <td style="width: 75%">
                                     <?php echo $descripcion.' ('.Misc::date_periodo_format($pago_detalle['periodo'][$j]).')' ?>
                                 </td>
-                                <td style="width:25%; text-align: right"><?php echo Misc::number_format($pago_detalle['monto'][$j]) ?></td>
+                                <td style="width:25%; text-align: right"><?php echo $moneda.Misc::number_format($pago_detalle['monto'][$j]) ?></td>
                             </tr>
         <?php } ?>
                             <!--tr>
@@ -478,7 +482,7 @@ class pago extends db implements crud {
                             </tr-->
                             <tr>
                                 <td style="text-align: right"><b>Total:</b></td>
-                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo Misc::number_format($total) ?></b></td>
+                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo $moneda.Misc::number_format($total) ?></b></td>
                             </tr>
                             </table>
                         </div>
@@ -488,7 +492,10 @@ class pago extends db implements crud {
                 </div>
                 <div style="position: absolute;top: 378; font-weight: normal; font-size: 3mm; left:70px">
                 <b>Forma de Pago:</b><br><br>
-        <?php echo $forma_pago." Referencia: ".$data['numero_documento']."  Fecha: ".Misc::date_format($data['fecha_documento'])." ".$data['banco_destino']." Monto: " . Misc::number_format($data['monto']); ?>
+                <?php echo $forma_pago." Referencia: ".$data['numero_documento']
+                        ."  Fecha: ".Misc::date_format($data['fecha_documento'])." "
+                        .$data['banco_destino']
+                        ." Monto: ".$moneda.Misc::number_format($data['monto']); ?>
                 </div>
                 </page>
         <?php
@@ -549,6 +556,7 @@ class pago extends db implements crud {
                     if ($datos_inmueble['suceed'] && count($datos_inmueble['data'])>0) {
                         $nombre_inmueble = $datos_inmueble['data'][0]['nombre_inmueble'];
                         $rif = $datos_inmueble['data'][0]['RIF'];
+                        $moneda = $datos_inmueble['data'][0]['moneda'];
                     }
                 } else {
                     die('No se pudo generar el comprobante. No se encuentra el detalle del pago');
@@ -598,7 +606,7 @@ class pago extends db implements crud {
                         <p style="line-height: 6mm">
                         Hemos recibido de <b><?php echo $propietario ?></b>, propietario del inmueble
                         <b><?php echo $codigo_apto ?></b> en <b><?php echo $nombre_inmueble . ", RIF.: " . $rif ?></b>, la cantidad de 
-                        <b><?php echo Misc::number_format($monto) ?></b>,
+                        <b><?php echo $moneda.Misc::number_format($monto) ?></b>,
                         correspondientes al siguiente detalle:<br><br>
                         </p>
                         <?php if ($pago_detalle['suceed'] && count($pago_detalle['data'])>0) { ?>
@@ -609,12 +617,12 @@ class pago extends db implements crud {
                                 <td style="width: 75%">
                                     <?php echo $descripcion.' ('.Misc::date_periodo_format($detalle['periodo']).')' ?>
                                 </td>
-                                <td style="width:25%; text-align: right"><?php echo Misc::number_format($detalle['monto']) ?></td>
+                                <td style="width:25%; text-align: right"><?php echo $moneda.Misc::number_format($detalle['monto']) ?></td>
                             </tr>
                             <?php } ?>
                             <tr>
                                 <td style="text-align: right"><b>Total:</b></td>
-                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo Misc::number_format($total) ?></b></td>
+                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo $moneda.Misc::number_format($total) ?></b></td>
                             </tr>
                         </table>
                         <?php } ?>
@@ -625,7 +633,10 @@ class pago extends db implements crud {
             </div>
             <div style="position: absolute;top: 378; font-weight: normal; font-size: 3mm; left:70px">
             <b>Forma de Pago:</b><br><br>
-            <?php echo $forma_pago." Referencia: ".$pago['data'][0]['numero_documento']."  Fecha: ".Misc::date_format($data['data'][0]['fecha_documento'])." ".$data['data'][0]['banco_destino']." Monto: ".Misc::number_format($data['data'][0]['monto']); ?>
+            <?php echo $forma_pago." Referencia: ".$pago['data'][0]['numero_documento']
+                    ."  Fecha: ".Misc::date_format($data['data'][0]['fecha_documento'])." "
+                    .$data['data'][0]['banco_destino']
+                    ." Monto: ".$moneda.Misc::number_format($data['data'][0]['monto']); ?>
             </div>
             </page>
             <?php

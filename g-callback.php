@@ -22,7 +22,7 @@ $propietarios = new propietario();
 $r = $propietarios->emailRegistrado($email);
 if ($r['suceed'] && count($r['data'])>0) {
     $password = $r['data'][0]['clave'];
-    $mensaje = $r['error'];
+    //$mensaje = $r['error'];
 } else {
     $mensaje = 'El correo electrónico asociado a su cuenta de Gmail no '
             . 'coincide con el correo principal de su cuenta de condominio.';

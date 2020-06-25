@@ -150,7 +150,8 @@ no tiene recibos pendiente por cancelar.
 {{ format_number(factura.facturado - factura.abonado) }}
 </span>
 </td>
-<td>{% if factura.pagado == 0 %} 
+<td>
+    {% if factura.pagado == 0 %} 
     <span class="label label-sm label-success">Pendiente</span> 
     {% else %}
     <a href="javascript:void(0);" data-html="true" data-original-title="{{factura.pagado_detalle}}" data-placement="top" rel="tooltip" class="label label-sm label-warning">Pendiente por procesar</a> 
@@ -190,7 +191,9 @@ no tiene recibos pendiente por cancelar.
 <div class="input-group">
 <span class="input-group-addon"><i class="fa fa-credit-card fa-lg fa-fw"></i></span>
 <select class="form-control input-lg" name="tipo_pago">
+{% if session.usuario.cod_admin!='004' %}
 <option selected value="D">Depósito</option>
+{% endif%}
 <option value="T">Transferencia</option>
 </select>
 </div>
@@ -250,7 +253,11 @@ no tiene recibos pendiente por cancelar.
 <label>Banco origen de la transferencia: </label>
 <div class="input-group">
 <span class="input-group-addon"><i class="fa fa-university fa-lg fa-fw"></i></i></span>
-<select class="form-control input-lg" id="banco_origen" name="banco_origen" class="form-control input-lg" disabled="disabled">
+<select class="form-control input-lg" 
+        id="banco_origen" 
+        name="banco_origen" 
+        class="form-control input-lg" 
+        disabled="disabled">
 <option value="">SELECCIONE UN BANCO DE LA LISTA</option>
 {% for banco in bancos %}
 <option value="{{banco.nombre}}" data-bind="{{banco.nombre}}">{{banco.nombre}}</option>
@@ -387,6 +394,7 @@ recibirá respuesta de confirmación</h4>
             //monto = monto / 100;
             $("#monto").val(monto.formatCurrency());
         });
+        
         $("select[name|='tipo_pago']").change(function() {
             
             if ($(this).val() == "T") {
@@ -398,6 +406,9 @@ recibirá respuesta de confirmación</h4>
                 $('#numero').html("Número Depósito:");
             }
         });
+        {% if session.usuario.cod_admin == '004' %}
+            $("select[name|='tipo_pago']").change();
+        {%endif%}
         $("select[name='banco_destino']").change(function() {
             $("select[name='numero_cuenta']").val($("select[name='banco_destino'] option:selected").attr('data-bind'));
         });

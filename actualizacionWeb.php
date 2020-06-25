@@ -77,19 +77,27 @@ foreach ($lineas as $linea) {
     
     $registro = explode("\t", $linea);
     if ($registro[0] != "") {
-        $registro = Array(
-            "id"    => $registro[0],
-            "nombre_inmueble" => $registro[1],
-            "deuda" => $registro[2],
-            "fondo_reserva" => $registro[3],
-            "beneficiario"  => $registro[4],
-            "banco"         => '',
-            "numero_cuenta" => '',
-            "supervision"   => '0',
-            "RIF"           => $registro[5],
-            "cod_admin"     => $cod_admin);
+        //echo '<code>';
+        //print_r($registro);
+        //echo '</code>';
+        $n = count($registro);
+        //die();
+        $item = Array(
+            "id"                => $registro[0],
+            "nombre_inmueble"   => $registro[1],
+            "deuda"             => $registro[2],
+            "fondo_reserva"     => $registro[3],
+            "beneficiario"      => $registro[4],
+            "banco"             => '',
+            "numero_cuenta"     => '',
+            "supervision"       => '0',
+            "RIF"               => $registro[5],
+            "cod_admin"         => $cod_admin);
         
-        $r = $inmueble->insertar($registro);
+        if ($n==7) {
+            $item["moneda"] = $registro[6];
+        }
+        $r = $inmueble->insertar($item);
         
         if($r["suceed"]==FALSE){
             echo ARCHIVO_INMUEBLE."<br/>".$r['stats']['error']." ".'<br/>'.$r['query'].'<br/>';
@@ -606,8 +614,8 @@ $f_act = Date('Y-m-d h:i:s', strtotime(str_replace('/', '-', $f_act)));
 //$f_act = date_format($f_act, 'Y-m-d h:i:s');
 //$administradoras->actualizar($administradora['id'], array('fecha_actualizacion'=>"'".$fecha."'"));
 $s = $db->update("administradoras", array('fecha_actualizacion'=>$f_act), array('id'=>$administradora['id']));
-echo "****FIN DEL PROCESO DE ACTUALIZACION****<br />";
-echo "Información actualizada al: ".$fecha."<br/>";
+echo "****FIN DEL PROCESO DE ACTUALIZACION****\n";
+echo "Información actualizada al: ".$fecha."\n";
 
 $mail = new mailto(SMTP);
 

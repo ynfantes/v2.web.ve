@@ -515,43 +515,42 @@ switch ($accion) {
             $pagos_maestro = $pagos->listarPagosPendientes_enlinea();
         }
         
-        if ($pagos_maestro['suceed'] && count($pagos_maestro['data']) > 0) {
-
-            foreach ($pagos_maestro['data'] as $pago) {
-
-                $pago_detalle = $pagos->detallePagoPendiente($pago['id']);
-
-
-                if ($pago_detalle['suceed'] && count($pago_detalle['data'] > 0)) {
-                    $enviado = $pago["enviado"] == 0 ? "False" : "True";
-                    echo "|" . $pago['id'] . "|";
-                    echo Misc::date_format($pago['fecha']) . "|";
-                    echo strtoupper($pago['tipo_pago']) . "|";
-                    echo $pago["numero_documento"] . "|";
-                    echo Misc::date_format($pago["fecha_documento"]) . "|";
-                    echo Misc::number_format($pago["monto"]) . "|";
-                    echo $pago["banco_origen"] . "|";
-                    echo $pago["banco_destino"] . "|";
-                    echo $pago["numero_cuenta"] . "|";
-                    echo strtoupper($pago["estatus"]) . "|";
-                    echo $pago["email"] . "|";
-                    echo $enviado . "|";
-                    echo $pago["telefono"] . "|";
-                    echo $pago["usuario_intranet"] . "|";
-                    // --
-                    foreach ($pago_detalle['data'] as $value) {
-                        echo $value['id_inmueble'] . "|";
-                        echo $value['id_apto'] . "|";
-                        echo Misc::number_format($value['monto']) . "|";
-                        echo $value['id_factura'] . "|";
-                        echo $value['periodo'] . "|";
-                    }
-                    echo "<br>";
-                
-                }
+        if ($pagos_maestro['suceed']) {
             
+            if (count($pagos_maestro['data']) > 0) {
+                foreach ($pagos_maestro['data'] as $pago) {
+                    $pago_detalle = $pagos->detallePagoPendiente($pago['id']);
+                    if ($pago_detalle['suceed'] && count($pago_detalle['data'] > 0)) {
+                        $enviado = $pago["enviado"] == 0 ? "False" : "True";
+                        echo "|" . $pago['id'] . "|";
+                        echo Misc::date_format($pago['fecha']) . "|";
+                        echo strtoupper($pago['tipo_pago']) . "|";
+                        echo $pago["numero_documento"] . "|";
+                        echo Misc::date_format($pago["fecha_documento"]) . "|";
+                        echo Misc::number_format($pago["monto"]) . "|";
+                        echo $pago["banco_origen"] . "|";
+                        echo $pago["banco_destino"] . "|";
+                        echo $pago["numero_cuenta"] . "|";
+                        echo strtoupper($pago["estatus"]) . "|";
+                        echo $pago["email"] . "|";
+                        echo $enviado . "|";
+                        echo $pago["telefono"] . "|";
+                        echo $pago["usuario_intranet"] . "|";
+                        // --
+                        foreach ($pago_detalle['data'] as $value) {
+                            echo $value['id_inmueble'] . "|";
+                            echo $value['id_apto'] . "|";
+                            echo Misc::number_format($value['monto']) . "|";
+                            echo $value['id_factura'] . "|";
+                            echo $value['periodo'] . "|";
+                        }
+                        echo "<br>";
+
+                    }
+                }
+            } else {
+                echo "0";
             }
-        
 
         } else {
             echo var_dump($pagos_maestro);
@@ -777,15 +776,9 @@ switch ($accion) {
         
     // <editor-fold defaultstate="collapsed" desc="actualizar factura">
     case "actualizar_factura":
-
-
         if (isset($_GET['inmueble']) && isset($_GET['apto']) && isset($_GET['id']) && isset($_GET['monto'])) {
-
-
             $pagos = new pago();
             $r = $pagos->actualizarFactura($_GET['inmueble'], $_GET['apto'], $_GET['id'], $_GET['monto']);
-
-
             if (!$r['stats']['error'] == '') {
                 echo $r['stats']['error'];
             }

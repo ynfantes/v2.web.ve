@@ -153,7 +153,9 @@ switch ($accion) {
             "documento"     => $_GET['documento'],
             "periodo"       => Misc::format_mysql_date($_GET['periodo']));
 
-
+        if (isset($_GET['cod_admin']) && !$_GET['cod_admin']=='') {
+            $data['cod_admin'] = $_GET['cod_admin'];
+        }
         //if ($prerecibos->prereciboYaRegistrado($_GET['id_inmueble'], $_GET['periodo'])) {
         
         //} else {
