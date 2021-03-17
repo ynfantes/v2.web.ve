@@ -383,12 +383,12 @@ class pago extends db implements crud {
     // <editor-fold defaultstate="collapsed" desc="enviar email pago registrado">
     public function enviarEmailPagoRegistrado($data, $pago_detalle, $id_pago) {
         $ini = parse_ini_file('emails.ini');
-        $inmueble = new inmueble();
-        $codigo_apto = $pago_detalle['apto'][0];
-        $descripcion = $data['cod_admin']=='004'? 'Cuota Mensual':'Pago de Condominio';
+        $inmueble       = new inmueble();
+        $codigo_apto    = $pago_detalle['apto'][0];
+        $descripcion    = $data['cod_admin']=='004'? 'Cuota Mensual':'Pago de Condominio';
         if (isset($_SESSION['usuario']['directorio'])) {
             $prop = new propietario();
-            $datos_propietario = $prop->obtenerPropietario($pago_detalle['id_inmueble'][0], $codigo_apto);
+            $datos_propietario = $prop->ver($session['usuario']['id']);
             $propietario = $datos_propietario[0]['nombre'];
         } else {
             $propietario = $_SESSION['usuario']['nombre'];
@@ -409,12 +409,28 @@ class pago extends db implements crud {
                 break;
         }
 
+        // datos del inmueble
+        $datos_inmueble = $inmueble->verDatosInmueble(
+                            $pago_detalle['id_inmueble'][0],
+                            $_SESSION['usuario']['cod_admin']);
+        
+        $nombre_inmueble    = '';
+        $rif                = '';
+        $moneda            = 'Bs';
+        if ($datos_inmueble['suceed'] && count($datos_inmueble['data']) > 0) {
+            
+            $nombre_inmueble    = $datos_inmueble['data'][0]['nombre_inmueble'];
+            $rif                = $datos_inmueble['data'][0]['RIF'];
+            $moneda             = $datos_inmueble['data'][0]['moneda'];
+        }
+        
         $mensaje = sprintf($ini['CUERPO_MENSAJE_PAGO_RECEPCION_CONFIRMACION'], 
                 $propietario,
                 $forma_pago,
                 $data['numero_documento'],
                 $data['banco_destino'],
                 $data['numero_cuenta'],
+                $moneda,
                 Misc::number_format($data['monto']),
                 Misc::date_format($data['fecha_documento']),
                 $data['email'], $data['telefono'],
@@ -423,16 +439,6 @@ class pago extends db implements crud {
                 date("d/m/Y")
         );
         $mensaje .= $ini['PIE_MENSAJE_PAGO'];
-
-
-        $datos_inmueble = $inmueble->ver($pago_detalle['id_inmueble'][0]);
-        $nombre_inmueble = "";
-        $rif = "";
-        if ($datos_inmueble['suceed'] && count($datos_inmueble['data']) > 0) {
-            $nombre_inmueble = $datos_inmueble['data'][0]['nombre_inmueble'];
-            $rif = $datos_inmueble['data'][0]['RIF'];
-            $moneda = $datos_inmueble['data'][0]['moneda'];
-        }
         ob_start();
         ?>
                 <page format="135x215" orientation="L">
@@ -445,7 +451,6 @@ class pago extends db implements crud {
                     <td style="width: 100%;">
                         <div class="zone" style="height: 26mm;position: relative;font-size: 5mm;">
                             <img src="../../assets/images/_smarty/logo_app.png" alt="logo" style="">
-                            <div style="position: absolute; top: 15mm; left: 3mm; text-align: left; font-size: 2mm; color: #333">RIF.: J-30557001-9</div>
                             <div style="position: absolute; top: 16mm; right:3mm; text-align: right; font-size: 2.5mm;">
                                 Fecha de Impresión: <?php echo date('d/m/Y H:i:s'); ?><br>
                                 <span style="font-size: 4mm;margin-top: 8px"><b>Comprobante Nº <span style="color: RGB(255, 0, 0)"><?php echo sprintf('%08d', $id_pago); ?></span></b></span>
@@ -534,35 +539,33 @@ class pago extends db implements crud {
                 $propietario = '';                
             }
             $total      = 0;
-            $pago = $this->ver($id);
             
-            if ($pago['suceed'] && count($pago['data'])>0) {
-                $monto = $pago['data'][0]['monto'];
-                $pago_detalle = $this->detallePagoPendiente($id);
+            $monto = $data['data'][0]['monto'];
+            $pago_detalle = $this->detallePagoPendiente($id);
 
-                if ($pago_detalle['suceed'] && count($pago_detalle['data'])>0) {
-                    $inmueble = new inmueble();
-                    $codigo_apto = $pago_detalle['data'][0]['id_apto'];
-                    $codigo_inmueble = $pago_detalle['data'][0]['id_inmueble'];
-                    $datos_inmueble = $inmueble->ver($codigo_inmueble);
-                    
-                    $nombre_inmueble = "";
-                    if ($propietario=='') {
-                        $prop = new propietario();
-                        $datos_propietario = $prop->obtenerPropietario($codigo_inmueble, $codigo_apto);
-                        
-                        $propietario = $datos_propietario[0]['nombre'];
-                    }
-                    if ($datos_inmueble['suceed'] && count($datos_inmueble['data'])>0) {
-                        $nombre_inmueble = $datos_inmueble['data'][0]['nombre_inmueble'];
-                        $rif = $datos_inmueble['data'][0]['RIF'];
-                        $moneda = $datos_inmueble['data'][0]['moneda'];
-                    }
-                } else {
-                    die('No se pudo generar el comprobante. No se encuentra el detalle del pago');
+            if ($pago_detalle['suceed'] && count($pago_detalle['data'])>0) {
+                $inmueble = new inmueble();
+                $codigo_apto = $pago_detalle['data'][0]['id_apto'];
+                $codigo_inmueble = $pago_detalle['data'][0]['id_inmueble'];
+                $datos_inmueble = $inmueble->verDatosInmueble($codigo_inmueble,
+                                            $data['data'][0]['cod_admin']);
+
+                $nombre_inmueble    = '';
+                $rif                = '';
+                $moneda             = 'Bs';
+                if ($propietario=='') {
+                    $prop = new propietario();
+                    $datos_propietario = $prop->obtenerPropietario($codigo_inmueble, $codigo_apto);
+
+                    $propietario = $datos_propietario[0]['nombre'];
+                }
+                if ($datos_inmueble['suceed'] && count($datos_inmueble['data'])>0) {
+                    $nombre_inmueble = $datos_inmueble['data'][0]['nombre_inmueble'];
+                    $rif = $datos_inmueble['data'][0]['RIF'];
+                    $moneda = $datos_inmueble['data'][0]['moneda'];
                 }
             } else {
-                die('No se pudo generar el comprobante. No se encuenta la inforamci&oacute;n del pago');
+                die('No se pudo generar el comprobante. No se encuentra el detalle del pago');
             }
             
             switch (strtoupper($data['data'][0]['tipo_pago'])) {
@@ -575,7 +578,6 @@ class pago extends db implements crud {
                 case 'TDC':
                     $forma_pago ='T.CREDITO';
                     break;
-                
                 default:
                     $forma_pago = 'TRANSFERENCIA';
                     break;
@@ -592,7 +594,6 @@ class pago extends db implements crud {
                 <td style="width: 100%;">
                     <div class="zone" style="height: 26mm;position: relative;font-size: 5mm;">
                     <img src="../../assets/images/_smarty/logo_app.png" alt="logo" style="">
-                    <div style="position: absolute; top: 15mm; left: 3mm; text-align: left; font-size: 2mm; color: #333">RIF.: J-30557001-9</div>
                     <div style="position: absolute; top: 16mm; right:3mm; text-align: right; font-size: 2.5mm;">
                         Fecha de Impresión: <?php echo date('d/m/Y H:i:s'); ?><br>
                         <span style="font-size: 4mm;margin-top: 8px"><b>Comprobante Nº <span style="color: RGB(255, 0, 0)"><?php echo sprintf('%08d', $id); ?></span></b></span>
@@ -633,7 +634,7 @@ class pago extends db implements crud {
             </div>
             <div style="position: absolute;top: 378; font-weight: normal; font-size: 3mm; left:70px">
             <b>Forma de Pago:</b><br><br>
-            <?php echo $forma_pago." Referencia: ".$pago['data'][0]['numero_documento']
+            <?php echo $forma_pago." Referencia: ".$data['data'][0]['numero_documento']
                     ."  Fecha: ".Misc::date_format($data['data'][0]['fecha_documento'])." "
                     .$data['data'][0]['banco_destino']
                     ." Monto: ".$moneda.Misc::number_format($data['data'][0]['monto']); ?>
@@ -648,13 +649,13 @@ class pago extends db implements crud {
                     $data['data'][0]['numero_documento'],
                     $data['data'][0]['banco_destino'],
                     $data['data'][0]['numero_cuenta'],
+                    $moneda,
                     Misc::number_format($data['data'][0]['monto']),
                     Misc::date_format($data['data'][0]['fecha_documento']),
                     $data['data'][0]['email'],$data['data'][0]['telefono'],
                     $propietario,
                     $id,
-                    date("d/m/Y"));
-            
+                    Misc::date_format($data['data'][0]['fecha']));
                     $mensaje.=$ini['PIE_MENSAJE_PAGO'];
                    
             // convert to PDF
@@ -710,12 +711,12 @@ class pago extends db implements crud {
             if ($pago['suceed'] && count($pago['data'])>0) {
                 $monto = $pago['data'][0]['monto'];
                 $pago_detalle = $this->detallePagoPendiente($id);
-
-                if ($pago_detalle['suceed'] && count($pago_detalle['data'])>0) {
+                
+                if ($pago_detalle['suceed'] && count($pago_detalle['data']) > 0) {
                     $inmueble = new inmueble();
                     $codigo_apto = $pago_detalle['data'][0]['id_apto'];
                     $codigo_inmueble = $pago_detalle['data'][0]['id_inmueble'];
-                    $datos_inmueble = $inmueble->ver($codigo_inmueble);
+                    $datos_inmueble = $inmueble->verDatosInmueble($codigo_inmueble, $cod_admin);
                     $nombre_inmueble = "";
                     if ($propietario=='') {
                         $prop = new propietario();

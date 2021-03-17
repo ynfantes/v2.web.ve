@@ -51,3 +51,9 @@ Number.prototype.formatCurrencyVEF = function() {
     }
     return splitLef + splitRig;
 };
+
+let hash = window.location.hash;
+
+if (hash.includes('gmail')) {
+    $('div#mensaje').append('El correo electrónico asociado a su cuenta de Gmail no coincide con el correo principal de su cuenta de condominio.').removeClass('d-none');
+}

@@ -45,9 +45,9 @@ class propiedades extends db implements crud {
         return db::delete(self::tabla);
     }
 
-    public function propiedadesPropietario($cedula,$cod_admin) {
-        
-        $result = db::query("select * from propiedades where cedula=$cedula and cod_admin='$cod_admin'");
+    public function propiedadesPropietario($cedula,$cod_admin,$order = null) {
+        $sql = "select * from propiedades where cedula=$cedula and cod_admin='$cod_admin' order by id_inmueble";
+        $result = db::query($sql);
         return $result;
     }
     

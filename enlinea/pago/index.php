@@ -575,7 +575,7 @@ switch ($accion) {
     // <editor-fold defaultstate="collapsed" desc="reenviar email registro pago">
     case "reenviarEmailRegistroPago":
         $pago = new pago();
-        $id = $_GET['id'];
+       $id = $_GET['id'];
         $pago->reenviarEmailPagoRegistrado($id);
         break; 
     // </editor-fold>

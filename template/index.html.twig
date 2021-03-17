@@ -70,15 +70,13 @@ submenu-dark = dark sub menu
 Condominio en línea<span class="badge badge-danger float-right fs-11">V2</span></h1>
 {% include 'misc/resultado.html.twig' %}
 <!-- ALERT -->
-<div id="mensaje" class="alert alert-mini alert-danger mb-30 {%if not mensaje %}d-none{%endif%}">
+{{mensaje}}
+<div id="mensaje" class="alert alert-mini alert-danger mb-30 d-none">
 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
-<strong>Ups!</strong> 
-{%if mensaje %}
-{{mensaje}}
-{% else %}
-Debe completar esta información!
+{% if mensaje %}
+{{mensaje|raw}}
 {% endif %}
 </div>
 <!-- /ALERT -->
@@ -114,16 +112,16 @@ Debe completar esta información!
 <hr>
 <div class="row">
 <div class="col-12 text-center">– o inciar sesión con –</div>
-<div class="col-12 col-md-6">
-<a href="https://www.facebook.com/v6.0/dialog/oauth?client_id=814631822351325&redirect_uri={{url}}&state={{state}}&scope=email,public_profile" class="btn btn-block btn-social btn-facebook mt-10">
-    <i class="fa fa-facebook"></i> Facebook
-</a>
-</div>
-<div class="col-md-6">
+<div class="col-md-12">
 <a href="{{loginUrl}}" class="btn btn-block btn-social btn-google mt-10">
     <i class="fa fa-google"></i> Gmail
 </a>
 </div>
+<!--div class="col-12 col-md-6">
+<a href="https://www.facebook.com/v6.0/dialog/oauth?client_id=814631822351325&redirect_uri={#{url}#}&state={#{state}#}&scope=email,public_profile" class="btn btn-block btn-social btn-facebook mt-10">
+    <i class="fa fa-facebook"></i> Facebook
+</a>
+</div-->
 </div>
 </form>
 
@@ -139,13 +137,16 @@ Debe completar esta información!
 {% endblock %}
 {% block js %}
 {{ parent() }}
-<script type="text/javascript" src="{{constant('ROOT')}}assets/plugins/form.validate/jquery.form.min.js"></script>
+<!--script type="text/javascript" src="{#{constant('ROOT')}#}assets/plugins/form.validate/jquery.form.min.js"></script-->
 <script type="text/javascript" src="{{constant('ROOT')}}assets/plugins/form.validate/jquery.validation.min.js"></script>
 <script>
+$('#header').removeClass('fixed');
 $('.registro-btn').click(function() {
-$('div#correo').toggle();
-$('div#password').toggle();
-$('a#forgot-password').attr('href','').addClass('d-none');
+    $('div#password').hide();
+    $('div#correo').fadeIn();
+    $('div.alert').addClass('d-none');
+    $('input[type="password"]').val('');
+    $('a#forgot-password').attr('href','').addClass('d-none');
 });
 if($("#login-form").length>0) {
 $("#login-form").validate({
@@ -163,26 +164,28 @@ $("button.btn-primary").button("loading").addClass('disabled');
 $("div.alert").addClass("d-none").html('');
 $('.btn-link').addClass('d-none');
 },
-success: function (data) {
-//typeof data.exite !== 'undefined' && 
-if (!data.existe) {
-    $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html('<strong>Ups!</strong> correo electrónico no registrado').removeClass("d-none");
-    $('a#a-registro').attr('href','{{constant('ROOT')}}registro.php?t='+ data.tipo_documento + '&d=' + data.numero_documento).removeClass('d-none');
-}
-if (data.existe) {
-    if (typeof data.login !== 'undefined') {
-        if (data.login) {
+success: function (login) {
+
+if (login.existe) {
+    
+    if (login.suceed) {
+        if(login.inactivo>0) {
+            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
+        } else {
             $('div.alert').removeClass('alert alert-danger').addClass('alert alert-success').html("<strong>Usuario registrado: </strong>Espere unos segundos, lo estamos redireccionando.....").removeClass('d-none');
             window.location.href ='{{constant('URL_SISTEMA')}}';
-        } else {
-            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html('<strong>Ups!</strong> Password incorrecto').removeClass("d-none"); 
         }
     } else {
-        $('a#forgot-password').attr('href','{{constant('URL_SISTEMA')}}/propietario/recuperar-password/'+data.id).removeClass('d-none');
-        $('span#span_usuario').html(data.email);
-        $('div#correo').toggle();
-        $('div#password').toggle();
+        $('a#forgot-password').attr('href','{{constant('URL_SISTEMA')}}/propietario/recuperar-password/'+login.id).removeClass('d-none');
+        $('span#span_usuario').html(login.email);
+        $('div#correo').hide();
+        $('div#password').fadeIn();
+        if (login.error) {
+            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
+        }
     }
+} else {
+    $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.mensaje).removeClass("d-none");
 }
 $(".btn").button("reset").removeClass('disabled');
 },

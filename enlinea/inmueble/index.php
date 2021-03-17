@@ -35,7 +35,7 @@ $propiedades = $propiedad->propiedadesPropietario(
         $_SESSION['usuario']['cedula'],
         $_SESSION['usuario']['cod_admin']);
 
-if ($propiedades['suceed']) {
+if ($propiedades['suceed'] && count($propiedades['data'])>0) {
     
     $facturacion = $inmuebles->movimientoFacturacionMensual(
             $propiedades['data'][0]['id_inmueble'], 
@@ -234,9 +234,12 @@ switch ($accion) {
     // <editor-fold defaultstate="collapsed" desc="cartelera">
     case "cartelera":
         $fecha_actualizacion = '';
+        $admin = new administradora();
+        $email = $admin->obtenerEmailAdministradora($cod_admin);
+        
         if (file_exists('../../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION)) {
             $archivo = '../../'.ACTUALIZ.$session['usuario']['cod_admin'].'_'.ARCHIVO_ACTUALIZACION;
-        $fecha_actualizacion = JFile::read($archivo);
+            $fecha_actualizacion = JFile::read($archivo);
         }
         $bitacora->insertar(Array(
             "id_sesion"     =>  $session['id_sesion'],
@@ -245,16 +248,17 @@ switch ($accion) {
         ));
         
         echo $twig->render('enlinea/inmueble/cartelera.html.twig', array(
-            "session" => $session,
-            "propiedades" => $propiedades['data'],
-            "fecha_actualizacion" => $fecha_actualizacion,
+            "session"               => $session,
+            "propiedades"           => $propiedades['data'],
+            "fecha_actualizacion"   => $fecha_actualizacion,
             "movimiento_facturacion" => $factura,
-            "promedio_facturacion" => $promedio_facturacion,
+            "promedio_facturacion"  => $promedio_facturacion,
             "direccion_facturacion" => $direccion_facturacion,
-            "movimiento_cobranza" => $cobro,
-            "promedio_cobranza" => $promedio_cobranza,
-            "direccion_cobranza" => $direccion_cobranza,
-            "inmuebles" => $propiedades['data']
+            "movimiento_cobranza"   => $cobro,
+            "promedio_cobranza"     => $promedio_cobranza,
+            "direccion_cobranza"    => $direccion_cobranza,
+            "inmuebles"             => $propiedades['data'],
+            "correo_soporte"        => $email
         ));
         break; 
     // </editor-fold>

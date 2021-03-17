@@ -42,7 +42,7 @@ define("TITULO", "Condominio en Línea v2");
 /**
  * para las urls
  */
-define("ROOT", $protocolo.'://'.$_SERVER['SERVER_NAME'].SISTEMA);
+define("ROOT", $protocolo.'://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].SISTEMA);
 define("URL_SISTEMA", ROOT . "enlinea");
 define("URL_INTRANET", ROOT . "intranet");
 /**

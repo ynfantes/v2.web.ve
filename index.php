@@ -12,13 +12,12 @@ if ($accion=='test') {
 if(session_status()  == PHP_SESSION_NONE) {
     session_start();
 }
-$mensaje = isset($_SESSION['mensaje'])?$_SESSION['mensaje']:'';
+
 $_SESSION['state'] = md5(uniqid(rand(), TRUE));
 $url = urlencode(ROOT.'faceauth.php');
 require_once './g-config.php';
 $loginUrl = $gClient->createAuthUrl();
 echo $twig->render('index.html.twig',array(
-        'mensaje'   => $mensaje,
         'url'       => $url,
         'state'     => $_SESSION['state'],
         'loginUrl'  => $loginUrl)

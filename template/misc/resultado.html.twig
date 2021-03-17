@@ -8,7 +8,7 @@
 <strong>{{resultado.suceed == true? 'Muy Bien!':'Ups! Atención:' }}</strong> {{ resultado.mensaje|capitalize|nl2br }}.
 {% if constant('DEBUG')%}
 <pre>
-    {{ dump(resultado)}}
+    {{dump(resultado)}}
 </pre>
 {%endif %}
 </div>

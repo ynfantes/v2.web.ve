@@ -6,56 +6,78 @@
 </div>
 </div>
 <section id="widget-grid" class="">
-
 <div class="row">    
 {% include 'misc/resultado.html.twig' %}
 <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-Listado de Pre-recibos publicados
-</a>
-</div>
-<div id="collapseOne" class="accordion-body collapse in">
-<div class="accordion-inner">
-<table  class="table table-bordered table-striped responsive-utilities">
-    <thead>
-        <tr>
-            <th style="text-align: center">Período<small>Facturación</small></th>
-            <th style="text-align: center">Soportes<small>De</small></th>
-            <th style="text-align: center">Funciones<small>Especiales</small></th>
-            <th class="hidden">id</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if prerecibos is empty %}
-            <tr><td colspan="5"><div class="alert alert-error">
-                    <strong>Atención!</strong> No se puede cargar esta información.</div></td></tr>
-        {% else %}
-            {% for detalle in prerecibos.data %}
-                <tr>
-                    <td>{{ detalle.periodo | date("m-Y") }}</td>
-                    <td>{{ detalle.documento }}</td>
-                    <td>
-                        <div class="btn-toolbar">
-                            <div class="btn-group">
-                                {% if detalle.publicado %}
-                                    <a class="btn btn-xs btn-primary" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver soporte"><i class="icon-eye-open"></i></a>
-                                {% else %}
-                                    <a class="btn btn-xs btn-primary disabled" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver"><i class="icon-eye-open"></i></a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </td>
-                    <td class="hidden">{{ detalle.id }}</td>
-                </tr>
-            {% endfor %}
-        {% endif %}
-    </tbody>
-</table>
-</div>
-</div>
-</div>
+<div class="widget-body">
+<div id="accordion-2" class="panel-group smart-accordion-default">
+{% set n = 1 %}
+{% for prerecibo in prerecibos %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse-{{n}}" 
+                   data-parent="#accordion-2" 
+                   data-toggle="collapse" 
+                   class="{{ n >1? 'collapsed': '' }}"> 
+                    <i class="fa fa-fw fa-plus-circle txt-color-green"></i> 
+                    <i class="fa fa-fw fa-minus-circle txt-color-red"></i>
+                    {{prerecibo.inmueble.nombre_inmueble}}
+                </a>
+            </h4>
+        </div>
+        <div class="panel-collapse collapse {{ n==1? 'in': '' }}" id="collapse-{{n}}" style="">
+        <div class="panel-body">
+        <div class="table-responsive">
+    <table  class="table table-bordered table-striped responsive-utilities">
+        <thead>
+            <tr>
+                <th style="text-align: center">Período</th>
+                <th style="text-align: center">Prerecibo</th>
+                <th style="text-align: center">Funciones Especiales</th>
+                <th class="hidden">id</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if prerecibo.prerecibos is empty %}
+                <tr><td colspan="5"><div class="alert alert-error">
+                        <strong>Atención!</strong> No se puede cargar esta información.</div></td></tr>
+            {% else %}
+                {% for detalle in prerecibo.prerecibos.data %}
+                    <tr>
+                        <td>{{detalle.periodo | date("m-Y")}}</td>
+                        <td>
+                            {% if detalle.soporte %}
+                            <a href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver" target="_blank">{{detalle.documento}}</a>
+                            {%else%}
+                            {{detalle.documento}}
+                            {%endif%}
+                        </td>
+                        <td>
+                            {% if detalle.soporte %}
+                                <a class="btn btn-xs btn-primary" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver soporte" target="_blank"><i class="icon-folder-open"></i></a> 
+                            {% else %}
+                                <a class="btn btn-xs btn-primary disabled" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver"><i class="icon-folder-open"></i></a> 
+                            {% endif %}
+                            {% if detalle.publicado %}
+                                <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver precibo" target="_blank"><i class="icon-eye-open"></i></a>
+                            {% else %}
+                                <a class="btn btn-primary disabled btn-circle" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver"><i class="icon-eye-open"></i></a>
+                            {% endif %}
+                        </td>
+                        <td class="hidden">{{ detalle.id }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+        </div>
+        </div>
+        </div>
+    </div>
+{% set n = n + 1 %}
+{% endfor %}
+</div></div>
 </article>
 </div>
 </section>

@@ -47,9 +47,21 @@ class propietario extends db implements crud  {
         if ($email!="" && $password!="") {
             
             $result = db::select("*",self::tabla,Array("clave"=>$password,"email"=>$email,"baja"=>0));
+            
             if ($result['suceed'] == 'true' && count($result['data']) > 0) {
                 
+                $administradoras = new administradora;
+                $inactivo = 0 ;
+                $administradora = $administradoras->verPorCodigo($result['data'][0]['cod_admin']);
+                
+                if ($administradora['suceed'] && count($administradora['data'])>0) {
+                    $inactivo = $administradora['data'][0]['inactivo'];
+                    $result['error'] = '<strong>¡Servicio Inactivo!</strong> Póngase en contacto al correo: '.
+                            $administradora['data'][0]['email'];
+                }
+                
                 $consulta = "select * from propiedades where cedula in (SELECT cedula FROM `propietarios` where clave='$password' )";
+                
                 $propiedades = db::query($consulta);
 
                 $res = db::select("*","junta_condominio",Array("cedula"=>$result['data'][0]['cedula']));
@@ -65,20 +77,31 @@ class propietario extends db implements crud  {
                 if ($sesion['suceed']) {
                     $_SESSION['id_sesion'] = $sesion['insert_id'];
                 }
+                
                 $_SESSION['usuario']    = $result['data'][0];
                 $_SESSION['junta']      = $junta_condominio;
                 $_SESSION['status']     = 'logueado';
-                return TRUE;;
+                $result['suceed']       = true;
+                $result['inactivo']     = $inactivo;
+                
             } else {
+                
+                if(session_status()  == PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $result['id']       = $_SESSION['id'];
                 $result['suceed']   = false;
-                $result['error']    = "Ha ingresado un password incorrecto";
-                return FALSE;
+                $result['error']    = "<strong>Ups! </strong> Ha ingresado un password incorrecto";
             }
+            unset($result['query'],$result['data'],$result['stats']);
+            
         } else {
             $result['suceed']   = false;
-            $result['error']    = "Datos insuficientes";
-            return FALSE;
+            $result['error']    = '<strong>Ups! </strong> Datos insuficientes';
         }
+        
+        return $result;
+        
     }
     
     public function generarIdInicioSesion($cod_admin,$cedula) {
@@ -186,7 +209,7 @@ class propietario extends db implements crud  {
                 . "p join propiedades pro on p.cedula = pro.cedula "
                 . "where p.email !='' and baja=0";
         if($id != null) {
-            $query.= " and pro.id_inmueble='".$id."'";
+            $query.= " and pro.cod_admin='".$id."'";
         }
         $query.=" order by pro.apto";
         //$query.= " limit 300,150";
@@ -217,13 +240,10 @@ class propietario extends db implements crud  {
                 $resultado='';
                 $n=1;
                 $e=1;
-                $usuario = 'no-reply-2@v2.web.ve';
-                $mail = new mailto(SMTP , $usuario);
+                //$usuario = 'no-responder@v2.web.ve';
+                $mail = new mailto(SMTP);
                 foreach ($propieatarios['data'] as $propietario) {
                     
-                    //$usuario = $e < 250 ? 'no-reply-2@grupoveneto.com':'no-reply-1@grupoveneto.com';
-                    //$usuario = 'infoveneto@grupoveneto.info';
-                    //$clave = 'Inf.gv.098!';
                     $contenido = $contenido_original;
                     // hacemos la personalizacion del contenido
                     foreach ($propietario as $key => $value) {

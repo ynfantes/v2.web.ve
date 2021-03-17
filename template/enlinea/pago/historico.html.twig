@@ -46,7 +46,7 @@ data-widget-custombutton="false" >
 <thead class="thin-border-bottom">
 <tr>
 <th style="text-align: center">Fecha</th>
-<th style="text-align: center">Recibo</th>
+<th class="hidden-xs" style="text-align: center">Recibo</th>
 <th style="text-align: center">Monto</th>
 <th style="text-align: center">Forma Pago</th>
 <th style="text-align: center">Cuenta</th>
@@ -55,15 +55,15 @@ data-widget-custombutton="false" >
 <tbody>
 {% for pago in historico.pagos %}
 <tr>
-<td style="text-align: center">{{ pago.fecha_movimiento | date("d-m-Y")}}</td>
-<td>
+<td style="text-align: center">{{ pago.fecha_movimiento | date("d-m-y")}}</td>
+<td class="hidden-xs" >
     {% if pago.recibo %}
         <a href="{{ constant('URL_SISTEMA')}}/pago/cancelacion/{{pago.numero_recibo}}" target="_blank">{{pago.numero_recibo}}</a>
     {% else %}
         {{pago.numero_recibo}}
     {%endif%}
 </td>
-<td><span class="pull-right">{{ format_number(pago.monto) }}</span></td>
+<td><span class="pull-right">{{format_number(pago.monto)}}</span></td>
 <td>{{ pago.forma_pago}}</td>
 <td>{{ pago.cuenta }}</td>
 <td>{{ pago.descripcion }}</td>

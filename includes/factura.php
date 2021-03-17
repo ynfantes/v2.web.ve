@@ -55,7 +55,10 @@ class factura extends db implements crud {
                 facturas.id_inmueble = propiedades.id_inmueble 
                 where facturas.numero_factura='$factura' and facturas.cod_admin='$cod_admin'";
         $result = $this->dame_query($query);
-        if ($result['suceed']==true) {
+        
+        $pertenece = false;
+        
+        if ($result['suceed']==true && count($result['data'])>0) {
             $pertenece = $result['data'][0]['cedula']==$cedula;
         }
         if (!$pertenece) {

@@ -52,6 +52,12 @@ DEMO ONLY [remove on production]
 html, body {
     height:100%;
     direction: ltr;
+	
+    overscroll-behavior-y: contain;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+
 }
 body {
     color:#666;
@@ -680,7 +686,7 @@ body.grain-yellow section.page-header {
 
     @media only screen and (max-width: 768px) {
     #slidetop {
-    display:none !important;
+    	display:none !important;
     }
 }
 /** Parallax Social Icons
@@ -9640,4 +9646,7 @@ section.dark-2 div.category-grid .card {
     section {
         padding-top: 40px;
     }
+}
+@media only screen and (min-width:320px) and (max-width:479px){ 
+    .btn-link{font-size: 12px}
 }

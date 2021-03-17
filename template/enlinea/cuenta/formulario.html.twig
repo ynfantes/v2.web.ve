@@ -53,17 +53,20 @@ data-widget-custombutton="false" >
 <!--caption style="text-align: left;"><h4>{#{ cuenta.inmueble.nombre_inmueble }#}</h4></caption-->
 <thead>
 <tr>
-<th style="text-align: center">Apto/Casa/Local</th>
+<th style="text-align: center">{{cuenta.inmueble.unidad}}</th>
 <th style="text-align: center" class="hidden">Deuda<small>Inmueble</small></th>
 <th style="text-align: center" class="hidden">Fondo<small>de Reserva</small></th>
-<th style="text-align: center">Deuda Total</th>
+<th style="text-align: center">DEUDA GENERAL {{cuenta.inmueble.moneda}}</th>
+{% if cuenta.inmueble.facturacion_usd %}
+<th style="text-align: center">DEUDA GENERAL $</th>
+{%endif%}
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: center">{{ cuenta.propiedades.apto }}</td>
-<td class="hidden"><span class="pull-right">{{ format_number(cuenta.inmueble.deuda) }}</span></td>
-<td class="hidden"><span class="pull-right">{{ format_number(cuenta.inmueble.fondo_reserva) }}</span></td>
+<td class="hidden"><span class="pull-right">{{format_number(cuenta.inmueble.deuda)}}</span></td>
+<td class="hidden"><span class="pull-right">{{format_number(cuenta.inmueble.fondo_reserva)}}</span></td>
 <td><span class="pull-right">
 {% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
 Dpto. Legal
@@ -71,6 +74,15 @@ Dpto. Legal
 {{ format_number(cuenta.propiedades.deuda_total) }}
 {% endif %}
 </span></td>
+{% if cuenta.inmueble.facturacion_usd %}
+<td><span class="pull-right">
+{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+Dpto. Legal
+{% else %}
+{{ format_number(cuenta.propiedades.deuda_usd) }}
+{% endif %}
+</span></td>
+{%endif%}
 </tr>
 </tbody>
 </table>
@@ -91,12 +103,15 @@ no tiene recibos pendiente de pago.
 {% else %}
 <div class="table-responsive">
 <table class="table table-striped table-bordered table-hover">
-<thead class="thin-border-bottom"><tr><th style="text-align: center">Nº Factura</th>
-<th style="text-align: center">Período</th>
-<th style="text-align: center" class="hidden-phone">Facturado</th>
-<th style="text-align: center" class="hidden-phone">Abonado</th>
-<th style="text-align: center">Saldo</th>
-<th style="text-align: center" class="hidden-xs">Aviso de Cobro</th>
+<thead class="thin-border-bottom"><tr><th style="text-align: center">Nº FACTURA</th>
+<th style="text-align: center">PERIODO</th>
+<th style="text-align: center" class="hidden-xs">FACTURADO {{cuenta.inmueble.moneda}}</th>
+<th style="text-align: center" class="hidden-xs">ABONADO {{cuenta.inmueble.moneda}}</th>
+<th style="text-align: center">SALDO {{cuenta.inmueble.moneda}}</th>
+{% if cuenta.inmueble.facturacion_usd %}
+<th style="text-align: center">SALDO $</th>
+{%endif%}
+<th style="text-align: center" class="hidden-xs">AVISO DE COBRO</th>
 </thead>
 <tbody>
 {% for factura in cuenta.cuentas %}
@@ -109,9 +124,12 @@ no tiene recibos pendiente de pago.
 {%endif %}
 </td>
 <td style="text-align: center">{{ factura.periodo | date("m-Y") | upper}}</td>
-<td class="hidden-phone"><span class="pull-right">{{ format_number(factura.facturado) }}</span></td>
-<td class="hidden-phone"><span class="pull-right">{{ format_number(factura.abonado) }}</span></td>
-<td><span class="pull-right">{{ format_number(factura.facturado - factura.abonado) }}</span></td>
+<td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
+<td class="hidden-xs"><span class="pull-right">{{format_number(factura.abonado)}}</span></td>
+<td><span class="pull-right">{{format_number(factura.facturado - factura.abonado)}}</span></td>
+{% if cuenta.inmueble.facturacion_usd %}
+<td><span class="pull-right">{{format_number(factura.facturado_usd)}}</span></td>
+{%endif%}
 <td class="hidden-xs">{% if factura.aviso %}
 <a class="label label-success arrowed" href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">Disponible</a>
 {% else %}

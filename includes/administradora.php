@@ -40,4 +40,13 @@ class administradora extends db implements crud {
     public function verPorCodigo($codigo) {
         return db::select("*",self::tabla,Array("codigo"=>$codigo));
     }
+    
+    public function obtenerEmailAdministradora($codigo) {
+        $email = '';
+        $r = db::select("email",self::tabla,Array("codigo"=>$codigo));
+        if ($r['suceed'] && count($r['data'])>0) {
+            $email = $r['data'][0]['email'];
+        }
+        return $email;
+    }
 }

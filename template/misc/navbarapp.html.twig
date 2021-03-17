@@ -6,15 +6,15 @@
 <img alt="{{constant('NOMBRE_APLICACION')}}" src="{{ constant('ROOT') }}assets/images/_smarty/logo_app.png"> 
 </span>
 <!-- END LOGO PLACEHOLDER -->
-
-<!-- #TOGGLE LAYOUT BUTTONS -->
-<div class="pull-left" id="logo-group">
-    <!-- Note: The activity badge color changes when clicked and resets the number to 0
+<!-- Note: The activity badge color changes when clicked and resets the number to 0
 Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
 <span class="activity-dropdown" id="activity">
     <i class="fa fa-user"></i>
     <b class="badge {% if mensajes > 0 %}bg-color-red{% endif %} bounceIn animated"> {{ mensajes }} </b> 
 </span>
+
+<!-- #TOGGLE LAYOUT BUTTONS -->
+<div class="pull-left" id="logo-group">
 <!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
 <div class="ajax-dropdown">
 
@@ -42,7 +42,7 @@ Esta página en blanco ayuda a proteger su privacidad.
 <!-- end notification content -->
 
 <!-- footer: refresh area -->
-<span> Última actualización: {{ fecha_actualizacion }} </span>
+<span> Última actualización: {{fecha_actualizacion}}</span>
 <!-- end footer -->
 
 </div>

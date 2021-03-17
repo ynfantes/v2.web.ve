@@ -47,7 +47,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
             <h4 class="panel-title">
-                <a href="#collapse-{{ n }}" data-parent="#accordion-2" data-toggle="collapse" class="">
+                <a href="#collapse-{{ n }}" 
+                   data-parent="#accordion-2" 
+                   data-toggle="collapse" 
+                   class="{{ n >1? 'collapsed': '' }}">
                     <i class="fa fa-fw fa-plus-circle txt-color-green"></i>
                     <i class="fa fa-fw fa-minus-circle txt-color-red"></i>
                     {{cuenta.inmueble.nombre_inmueble}} - {{cuenta.propiedades.apto}} 

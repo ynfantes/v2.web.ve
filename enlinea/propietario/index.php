@@ -137,31 +137,44 @@ switch ($accion) {
         
         if (!is_numeric($id))
             $id = null;
+            
         
         $propietario->envioMasivoEmail('Nuevo servicio web', '../plantillas/clave-servicio.html', $id);
         break; // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="login">
     case 'login':
-        $data = array();
+        $result = array();
         if (isset($_POST['email'])) {
             $data = $_POST;
+            
             if ($data['password'] != '') {
-                $data['existe'] = TRUE;
-                $data['login'] = $propietario->login($data['email'], $data['password']);
+                
+                $result  = $propietario->login($data['email'], $data['password']);
+                $result['existe']   = TRUE;
+            
+                
             } else {
+                
                 $r = $propietario->emailRegistrado($data['email']);
+                
                 if ($r['suceed'] && count($r['data'])>0) {
-                    $data['existe'] = TRUE;
-                    $data['id'] = base64_encode($r['data'][0]['id']);
+                    $result['existe']   = TRUE;
+                    $result['id']       = base64_encode($r['data'][0]['id']);
+                    if(session_status()  == PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $_SESSION['id']     = $result['id'];
+                    $result['email']    = $data['email'];
                 } else {
-                    $data['existe'] = FALSE;
+                    $result['existe'] = FALSE;
+                    $result['mensaje'] = '<strong>Ups!</strong> Correo electrónico no registrado.';
                 }
             }
         } else {
-            $data['existe'] = FALSE;
+            $result['existe'] = FALSE;
         }
-        echo json_encode($data);
+        echo json_encode($result);
         break;
     // </editor-fold>
     

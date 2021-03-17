@@ -7,13 +7,13 @@
 <li class="sparks-info">
 <h5> Prom. Facturacion <span class="txt-color-{% if direccion_facturacion == "up" %}blue{% else %}red{% endif %}"><i class="fa fa-arrow-circle-{{ direccion_facturacion }}" data-rel="bootstrap-tooltip" title="Increased"></i>&nbsp;{{ promedio_facturacion }}</span></h5>
 <div class="sparkline txt-color-blue hidden-mobile hidden-md hidden-sm">
-{{ movimiento_facturacion }}
+{{movimiento_facturacion}}
 </div>
 </li>
 <li class="sparks-info">
 <h5> Prom. Cobranza <span class="txt-color-{% if direccion_facturacion == "up" %}blue{% else %}red{% endif %}"><i class="fa fa-arrow-circle-{{ direccion_cobranza }}"></i>&nbsp;{{ promedio_cobranza }}</span></h5>
 <div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
-{{ movimiento_cobranza }}
+{{movimiento_cobranza}}
 </div>
 </li>
 </ul>
@@ -117,7 +117,7 @@ data-widget-sortable="false">
 <div class="alert alert-success alert-block">
 <a href="#" data-dismiss="alert" class="close">×</a>
 <h4 class="alert-heading">Soporte</h4>
-Escríbanos a <strong>soporte@v2.web.ve</strong> si tiene algún inconveniente con esta página. Ayúdemos a brindarle el servicio que usted se merece. 
+Escríbanos a <strong>{{correo_soporte}}</strong> si tiene algún inconveniente con esta página. Ayúdemos a brindarle el servicio que usted se merece. 
 </div>
 
 </div>
@@ -252,19 +252,19 @@ defaultTheme : false
 colors : [$chrt_main,$chrt_second,$chrt_third]
 
 };
-// display graph
+
 {% set id = '' %}
 {% for inm in inmuebles %}
 {% if id != inm.id_inmueble %}
 {% set id = inm.id_inmueble %}
 $.ajax({
-url: "{{ constant("URL_SISTEMA")}}/inmueble/cobranzaflot/{{ inm.id_inmueble}}",
-dataType:"json",
+dataType: "json",
+url: "{{constant("URL_SISTEMA")}}/inmueble/cobranzaflot/{{inm.id_inmueble}}",
 cache: true,
 success: function(data) {
-dataset.push(data);
-$.plot($("#cobranza-graf"), dataset, options);
-}
+    dataset.push(data);
+    $.plot($("#cobranza-graf"), dataset, options);
+    }
 });
 {% endif %}
 {% endfor %}
@@ -332,13 +332,13 @@ colors : [$chrt_fourth,$chrt_main,$chrt_second]
 {% if id != inm.id_inmueble %}
 {% set id = inm.id_inmueble %}
 $.ajax({
-url: "{{ constant("URL_SISTEMA")}}/inmueble/facturacionflot/{{ inm.id_inmueble}}",
+url: "{{constant("URL_SISTEMA")}}/inmueble/facturacionflot/{{ inm.id_inmueble}}",
 dataType:"json",
 cache: true,
 success: function(data1) {
-dataset1.push(data1);
-$.plot($("#facturacion-graf"), dataset1, options1);
-}
+    dataset1.push(data1);
+    $.plot($("#facturacion-graf"), dataset1, options1);
+    }
 });
 {% endif %}
 {% endfor %}
@@ -346,12 +346,12 @@ $.plot($("#facturacion-graf"), dataset1, options1);
 };
 //$("#aviso").modal();
 // load all flot plugins
-loadScript("{{ constant('ROOT') }}assets/js/plugin/flot/jquery.flot.min.js", function(){
-loadScript("{{ constant('ROOT') }}assets/js/plugin/flot/jquery.flot.resize.min.js", function(){
-loadScript("{{ constant('ROOT') }}assets/js/plugin/flot/jquery.flot.fillbetween.min.js", function(){
-loadScript("{{ constant('ROOT') }}assets/js/plugin/flot/jquery.flot.categories.js", function(){
-loadScript("{{ constant('ROOT') }}assets/js/plugin/flot/jquery.flot.axislabels.js", function(){
-loadScript("{{ constant('ROOT') }}assets/js/plugin/flot/jquery.flot.tooltip.js", pagefunction);
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.min.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.resize.min.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.fillbetween.min.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.categories.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.axislabels.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.tooltip.js", pagefunction);
 });
 });
 });

@@ -8,79 +8,96 @@
 <section id="widget-grid" class="">
 <div class="row">
 {% include 'misc/resultado.html.twig' %}
-    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-        <div class="accordion-group">
-        <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                Listado de Pre-recibos publicados
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+
+<div class="widget-body">
+<div id="accordion-2" class="panel-group smart-accordion-default">
+{% set n = 1 %}
+{% for prerecibo in prerecibos %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse-{{n}}" 
+                   data-parent="#accordion-2" 
+                   data-toggle="collapse" 
+                   class="{{ n >1? 'collapsed': '' }}"> 
+                    <i class="fa fa-fw fa-plus-circle txt-color-green"></i> 
+                    <i class="fa fa-fw fa-minus-circle txt-color-red"></i>
+                    {{prerecibo.inmueble.nombre_inmueble}}
                 </a>
-            </div>
-         <div id="collapseOne" class="accordion-body collapse in">
-            <div class="accordion-inner">
-                <table  class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th style="text-align: center">Período Facturación</th>
-                            <th style="text-align: center">Documento Nombre</th>
-                            <th style="text-align: center">Autorizado Por</th>
-                            <th style="text-align: center">Fecha Autorización</th>
-                            <th style="text-align: center">Funciones Especiales</th>
-                            <th class="hidden">id</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if prerecibos is empty %}
-                            <tr><td colspan="5"><div class="alert alert-error">
-                                    <strong>Atención!</strong> No se puede cargar esta información.</div></td></tr>
+            </h4>
+        </div>
+        <div class="panel-collapse collapse {{ n==1? 'in': '' }}" id="collapse-{{n}}" style="">
+        <div class="panel-body">
+        <div class="table-responsive">
+<table  class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th style="text-align: center">Período Facturación</th>
+            <th style="text-align: center">Documento Nombre</th>
+            <th style="text-align: center">Autorizado Por</th>
+            <th style="text-align: center">Fecha Autorización</th>
+            <th style="text-align: center">Funciones Especiales</th>
+            <th class="hidden">id</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if prerecibo.prerecibos is empty %}
+            <tr><td colspan="5"><div class="alert alert-error">
+                    <strong>Atención!</strong> No se puede cargar esta información.</div></td></tr>
+        {% else %}
+            {% for detalle in prerecibo.prerecibos.data %}
+                <tr>
+                    <td>{{detalle.periodo | date("m-Y")}}</td>
+                    <td>{{detalle.documento}}</td>
+                    <td>{{detalle.aprobado_por}}</td>
+                    <td>{{detalle.fecha_aprobado | date("d/m/Y")}}</td>
+                    <td>
+                        {% if detalle.aprobado==0 %}
+                            <a id="{{ detalle.id }}" class="btn btn-xs btn-primary autorizar" data-target="#myModal" data-toggle="modal" href="#"><i class="icon-ok" title="autorizar prerecibo"></i></a>
                         {% else %}
-                            {% for detalle in prerecibos.data %}
-                                <tr>
-                                    <td>{{ detalle.periodo | date("m-Y") }}</td>
-                                    <td>{{ detalle.documento }}</td>
-                                    <td>{{ detalle.aprobado_por }}</td>
-                                    <td>{{ detalle.fecha_aprobado | date("d/m/Y") }}</td>
-                                    <td>
-                                        {% if detalle.aprobado==0 %}
-                                            <a id="{{ detalle.id }}" class="btn btn-xs btn-primary autorizar" data-target="#myModal" data-toggle="modal" href="#"><i class="icon-ok" title="autorizar prerecibo"></i></a>
-                                        {% else %}
-                                            <a class="btn btn-xs btn-primary disabled" href="#" title="Pre-recibo ya autorizado"><i class="icon-ok"></i></a>
-                                        {% endif %}
-                                        {% if detalle.soporte!="" %}
-                                            <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver soportes" data-toggle="modal"><i class="icon-folder-open"></i></a>
-                                        {% else %}
-                                            <a class="btn btn-primary disabled btn-xs" href="#" title="Soportes" data-toggle="modal"><i class="icon-folder-open"></i></a>    
-                                        {% endif %}
-                                        {% if detalle.publicado %}
-                                            <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.documento }}" title="ver precibo"><i class="icon-eye-open"></i></a>
-                                        {% else %}
-                                            <a class="btn btn-primary disabled btn-circle" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.documento }}" title="ver"><i class="icon-eye-open"></i></a>
-                                        {% endif %}
-                                    </td>
-                                    <td class="hidden">{{ detalle.id }}</td>
-                                </tr>
-                            {% endfor %}
+                            <a class="btn btn-xs btn-primary disabled" href="#" title="Pre-recibo ya autorizado"><i class="icon-ok"></i></a>
                         {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                        {% if detalle.soporte!="" %}
+                            <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.soporte}}" title="ver soportes"  target="_blank"><i class="icon-folder-open"></i></a>
+                        {% else %}
+                            <a class="btn btn-primary disabled btn-xs" href="#" title="Soportes" data-toggle="modal"><i class="icon-folder-open"></i></a>    
+                        {% endif %}
+                        {% if detalle.publicado %}
+                            <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver precibo" target="_blank"><i class="icon-eye-open"></i></a>
+                        {% else %}
+                            <a class="btn btn-primary disabled btn-circle" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver"><i class="icon-eye-open"></i></a>
+                        {% endif %}
+                    </td>
+                    <td class="hidden">{{ detalle.id }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
         </div>
         </div>
-    </article>
-    <div id="myModal" class="modal fade">
-    <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 class="modal-title"><i class="fa fa-asterisk"></i> Confirmar autorización</h3>
+        </div>
     </div>
-    <div class="modal-body"></div>
-    <div class="modal-footer">
-    <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</a>
-    <a href="#" class="btn btn-success"><i class="fa fa-check"></i> Autorizar</a>
-    </div>
-    </div>
-    </div>
-    </div>
+{% set n = n + 1 %}
+{% endfor %}
+</div></div>
+</article>
+<div id="myModal" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h3 class="modal-title"><i class="fa fa-asterisk"></i> Confirmar autorización</h3>
+</div>
+<div class="modal-body"></div>
+<div class="modal-footer">
+<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</a>
+<a href="#" class="btn btn-success"><i class="fa fa-check"></i> Autorizar</a>
+</div>
+</div>
+</div>
+</div>
 </div>
 </section>
 

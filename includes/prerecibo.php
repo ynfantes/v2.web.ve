@@ -28,7 +28,13 @@ class prerecibo extends db implements crud {
     }
     
     public function listarPorInmueble($id_inmueble,$cod_admin, $cant_reg=0) {
-        return db::select("*",self::tabla,array("id_inmueble"=>$id_inmueble,"cod_admin"=>$cod_admin),"",array("periodo"=>"DESC"),"",$cant_reg);
+        return db::select("*",self::tabla,array(
+                            "id_inmueble"   =>  $id_inmueble,
+                             "cod_admin"    =>  $cod_admin
+                            ),"",
+                             array("periodo"=>"DESC"),
+                            "",
+                            $cant_reg);
     }
     
     public function prereciboYaRegistrado($id_inmueble, $periodo) {

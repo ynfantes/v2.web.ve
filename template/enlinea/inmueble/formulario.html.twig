@@ -92,17 +92,18 @@ data-widget-sortable="false">
 
                     {% if not condominio.miembros is empty %}
                         {% set cedula = 0 %}
-
                         {% for miembro in condominio.miembros %}
 
                             {% if condominio.inmueble.id == miembro.id_inmueble %}
-                                {% set cedula = miembro.cedula %}
+                                {% if cedula != miembro.cedula %}
                                 <tr>    
                                 <td>{{ miembro.apto }}</td>
                                 <td>{{ miembro.nombre }}</td>
                                 <td>{{ miembro.descripcion }}</td>
                                 <td>{{ miembro.telefono1 }}</td>
                                 <td>{{ miembro.email }}</td></tr>
+                                {% set cedula = miembro.cedula %}
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     {% else %}

@@ -255,7 +255,6 @@ Class db {
                 $query.= ")";
             }
             
-            $r = array();
             $resultado = $this->mysqli->query($query);
             if ($this->mysqli->errno == 0) {
                 $r['suceed'] = $resultado;

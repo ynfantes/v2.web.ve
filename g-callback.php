@@ -15,39 +15,37 @@ if (isset($_SESSION['access_token'])) {
 //    exit(0);
 //}
 $oAuth = new Google_Service_Oauth2($gClient);
-$userData = $oAuth->userinfo_v2_me->get();
-$email = $userData['email'];
-$id    = $userData['id'];
+$userData   = $oAuth->userinfo_v2_me->get();
+$email      = $userData['email'];
+$id         = $userData['id'];
+$hash       = '';
 $propietarios = new propietario();
 $r = $propietarios->emailRegistrado($email);
-if ($r['suceed'] && count($r['data'])>0) {
-    $password = $r['data'][0]['clave'];
-    //$mensaje = $r['error'];
-} else {
-    $mensaje = 'El correo electrónico asociado a su cuenta de Gmail no '
-            . 'coincide con el correo principal de su cuenta de condominio.';
-}
-$r = $propietarios->login($email, $password);
 
-if($r) {
-    if ($_SESSION['usuario']['id_google']==NULL || $_SESSION['usuario']['id_google']=='') {
-        $propietarios->actualizar($_SESSION['usuario']['id'], array('id_google'=>$id));
-        $_SESSION['usuario']['id_google'] = $id;
-    }
-    $_SESSION['picture'] = $userData['picture'];
-    header("location:".URL_SISTEMA.'#inmueble/?accion=cartelera');
-    exit(0);
-} else {
+if ($r['suceed'] && count($r['data'])>0) {
+    
+    $password = $r['data'][0]['clave'];
+    $result['existe']   = TRUE;
+    $result['id']       = base64_encode($r['data'][0]['id']);
     if(session_status()  == PHP_SESSION_NONE) {
         session_start();
     }
-    $_SESSION['mensaje'] = $mensaje;
-    header('Location:'.ROOT);
-//    $_SESSION['state'] = md5(uniqid(rand(), TRUE));
-//    $url = urlencode(ROOT.'faceauth.php');
-//    echo $twig->render('index.html.twig',Array(
-//        'mensaje'   => $mensaje,
-//        'url'       => $url,
-//        'state'     => $_SESSION['state']));
-}
+    $_SESSION['id']     = $result['id'];
+    $r = $propietarios->login($email, $password);
+
+    if($r['suceed'] && $hash=='') {
+        if ($_SESSION['usuario']['id_google']==NULL || $_SESSION['usuario']['id_google']=='') {
+            $propietarios->actualizar($_SESSION['usuario']['id'], array('id_google'=>$id));
+            $_SESSION['usuario']['id_google'] = $id;
+        }
+        $_SESSION['picture'] = $userData['picture'];
+        header("location:".URL_SISTEMA.'#inmueble/?accion=cartelera');
+        exit(0);
+    }
     
+} else {
+    
+    $hash = '#alert_gmail';
+    header('Location:'.ROOT.$hash);
+    
+}
