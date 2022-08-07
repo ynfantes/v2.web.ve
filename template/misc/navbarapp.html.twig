@@ -1,0 +1,99 @@
+<header id="header">
+<div id="logo-group">
+
+<!-- PLACE YOUR LOGO HERE -->
+<span id="logo"> <img alt="{{constant('NOMBRE_APLICACION')}}" src="{{ constant('ROOT') }}assets/images/_smarty/logo_app.png"> </span>
+<!-- END LOGO PLACEHOLDER -->
+
+<!-- Note: The activity badge color changes when clicked and resets the number to 0
+Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
+<span class="activity-dropdown" id="activity"><i class="fa fa-user"></i><b class="badge {% if mensajes > 0 %}bg-color-red{% endif %} bounceIn animated"> {{ mensajes }} </b> </span>
+
+<!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
+<div class="ajax-dropdown">
+
+<!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
+<div data-toggle="buttons" class="btn-group btn-group-justified">
+<label class="btn btn-default">
+<input type="radio" id="mensajes/notificaciones" name="activity">
+Msgs ({{ mensajes }}) </label>
+<label class="btn btn-default">
+<input type="radio" id="mensajes/avisos" name="activity">
+Notificaciones (0) </label>
+</div>
+
+<!-- notification content -->
+<div class="ajax-notifications custom-scroll">
+
+<div class="alert alert-transparent">
+<h4>Haga click en cualquiera de los botones superiores para mostrar la información</h4>
+Esta página en blanco ayuda a proteger su privacidad.
+</div>
+
+<i class="fa fa-lock fa-4x fa-border"></i>
+
+</div>
+<!-- end notification content -->
+
+<!-- footer: refresh area -->
+<span> Última actualización: {{fecha_actualizacion}}</span>
+<!-- end footer -->
+
+</div>
+<!-- END AJAX-DROPDOWN -->
+</div>
+
+<!-- #TOGGLE LAYOUT BUTTONS -->
+<!-- pulled right: nav area -->
+<div class="pull-right">
+
+<!-- collapse menu button -->
+<div class="btn-header pull-right" id="hide-menu">
+<span> <a title="Collapse Menu" data-action="toggleMenu" href="javascript:void(0);"><i class="fa fa-reorder"></i></a> </span>
+</div>
+<!-- end collapse menu -->
+
+<!-- #MOBILE -->
+<!-- Top menu profile link : this shows only when top menu is active -->
+<ul class="header-dropdown-list hidden-xs padding-5" id="mobile-profile-img">
+<li class="">
+<a data-toggle="dropdown" class="dropdown-toggle no-margin userdropdown" href="#"> 
+<img class="online" alt="{{session.usuario.nombre}}" src="{{constant('ROOT')}}assets/images/avatars/sunny.png">  
+</a>
+<ul class="dropdown-menu pull-right">
+<li>
+<a class="padding-10 padding-top-0 padding-bottom-0" href="#ajax/profile.html"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
+</li>
+<li class="divider"></li>
+<li>
+<a class="padding-10 padding-top-0 padding-bottom-0" href="javascript:void(0);"><i class="fa fa-cog"></i> Setting</a>
+</li>
+<li class="divider"></li>
+<li>
+<a data-action="toggleShortcut" class="padding-10 padding-top-0 padding-bottom-0" href="javascript:void(0);"><i class="fa fa-arrow-down"></i> <u>S</u>hortcut</a>
+</li>
+<li class="divider"></li>
+<li>
+<a data-action="launchFullscreen" class="padding-10 padding-top-0 padding-bottom-0" href="javascript:void(0);"><i class="fa fa-arrows-alt"></i> Full <u>S</u>creen</a>
+</li>
+<li class="divider"></li>
+<li>
+    <a data-action="userLogout" class="padding-10 padding-top-5 padding-bottom-5" href="{{constant("URL_SISTEMA")}}/propietario?logout=true"><i class="fa fa-sign-out fa-lg"></i> <strong><u>L</u>ogout</strong></a>
+</li>
+</ul>
+</li>
+</ul>
+
+<!-- logout button -->
+<div class="btn-header pull-right" id="logout">
+    <span> <a data-logout-msg="" data-action="userLogout" title="Cerrar Sesión" href="{{constant("URL_SISTEMA")}}/propietario?logout=true"><i class="fa fa-sign-out"></i></a> </span>
+</div>
+<!-- end logout button -->
+<!-- fullscreen button -->
+<div class="btn-header pull-right" id="fullscreen">
+<span> <a title="Full Screen" data-action="launchFullscreen" href="javascript:void(0);"><i class="fa fa-arrows-alt"></i></a> </span>
+</div>
+<!-- end fullscreen button -->
+</div>
+<!-- end pulled right: nav area -->
+</header>

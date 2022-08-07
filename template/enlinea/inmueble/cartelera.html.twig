@@ -1,0 +1,358 @@
+<div class="row">
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+<h1 class="page-title txt-color-blue"><i class="fa fa-rss fa-fw "></i> Cartelera</h1>
+</div>
+<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+<ul id="sparks" class="">
+<li class="sparks-info">
+<h5> Prom. Facturacion <span class="txt-color-{% if direccion_facturacion == "up" %}blue{% else %}red{% endif %}"><i class="fa fa-arrow-circle-{{ direccion_facturacion }}" data-rel="bootstrap-tooltip" title="Increased"></i>&nbsp;{{ promedio_facturacion }}</span></h5>
+<div class="sparkline txt-color-blue hidden-mobile hidden-md hidden-sm">
+{{movimiento_facturacion}}
+</div>
+</li>
+<li class="sparks-info">
+<h5> Prom. Cobranza <span class="txt-color-{% if direccion_facturacion == "up" %}blue{% else %}red{% endif %}"><i class="fa fa-arrow-circle-{{ direccion_cobranza }}"></i>&nbsp;{{ promedio_cobranza }}</span></h5>
+<div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
+{{movimiento_cobranza}}
+</div>
+</li>
+</ul>
+</div>
+</div>
+<section id="widget-grid" class="">
+<!-- row -->
+<div class="row">
+{% for propiedad in propiedades %}
+{% if propiedad.meses_pendiente > constant('MESES_COBRANZA') %}
+<div class="col-sm-12">
+{% include 'misc/legal.html.twig' %}
+</div>
+{% endif %}
+{% endfor %}
+<div class="col-sm-12">
+<div class="alert alert-danger alert-block">
+<a href="#" data-dismiss="alert" class="close">×</a>
+<h4 class="alert-heading">Actualice sus datos!</h4>
+Recuerde mantener actualizados su dirección de <strong>correo electrónico</strong> y <strong>número de teléfono celular.</strong>. 
+</div>
+</div>
+<div class="col-sm-12">
+<div class="alert alert-info alert-block">
+<a href="#" data-dismiss="alert" class="close">×</a>
+<h4 class="alert-heading">Importante!</h4>
+La información que encuentra en este sitio web,{{ f }} fue actualizada el <strong>{{fecha_actualizacion}}</strong>. 
+</div>
+</div>
+<!-- NEW WIDGET START -->
+<article class="col-sm-12 col-sm-6 col-md-6 col-lg-6">
+
+<!-- Widget ID (each widget will need unique ID)-->
+<div class="jarviswidget" id="wid-id-2" data-widget-editbutton="false" data-widget-colorbutton="false"	
+data-widget-editbutton="false"
+data-widget-togglebutton="false"
+data-widget-deletebutton="false"
+data-widget-fullscreenbutton="false"
+data-widget-custombutton="false"
+data-widget-sortable="false">
+
+<header>
+<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+<h3 class="font-sm">Facturarión Mensual </h3>
+</header>
+<!-- widget div-->
+<div>
+<!-- widget edit box -->
+<div class="jarviswidget-editbox">
+<!-- This area used as dropdown edit box -->
+</div>
+<!-- end widget edit box -->
+<!-- widget content -->
+<div class="widget-body no-padding">
+<div id="facturacion-graf" class="chart"></div>
+</div>
+<!-- end widget content -->
+</div>
+<!-- end widget div -->
+</div>
+<!-- end widget -->
+</article>
+<!-- WIDGET END -->
+<!-- NEW WIDGET START -->
+<article class="col-sm-12 col-sm-6 col-md-6 col-lg-6">
+<!-- Widget ID (each widget will need unique ID)-->
+<div class="jarviswidget" id="wid-id-3" data-widget-editbutton="false" data-widget-colorbutton="false"	
+data-widget-editbutton="false"
+data-widget-togglebutton="false"
+data-widget-deletebutton="false"
+data-widget-fullscreenbutton="false"
+data-widget-custombutton="false"
+data-widget-sortable="false">
+<header>
+<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+<h3 class="font-sm">Cobranza Mensual</h3>
+</header>
+<!-- widget div-->
+<div>
+<!-- widget edit box -->
+<div class="jarviswidget-editbox">
+<!-- This area used as dropdown edit box -->
+</div>
+<!-- end widget edit box -->
+<!-- widget content -->
+<div class="widget-body no-padding">
+<div id="cobranza-graf" class="chart"></div>
+</div>
+<!-- end widget content -->
+
+</div>
+<!-- end widget div -->
+
+</div>
+<!-- end widget -->
+
+</article>
+<!-- WIDGET END -->
+<div class="col-sm-12">
+<div class="alert alert-success alert-block">
+<a href="#" data-dismiss="alert" class="close">×</a>
+<h4 class="alert-heading">{{session['administra']['nombre']|title}}</h4>
+Escríbanos a <strong>{{session['administra']['email']}}</strong> si tiene algún inconveniente con esta página.<br>Ayúdemos a brindarle el servicio que usted se merece. 
+</div>
+</div>
+</div>
+<div class="modal falde" id="aviso" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<div class="modal-body">
+<div class="alert alert-info alert-block">
+<h4 class="alert-heading">Importante!</h4>
+<br>
+Gracias por utilizar nuestra plataforma web, le informamos que a partir del 12/09/2016
+usted debe adjuntar <strong>obligatoriamente</strong> el soporte de su transferencia
+o depósito, esto con fines de auditar y soportar la operación.<br>
+Gracias.<br><br>
+<small>Síguenos en nuestras redes sociales <strong>@grupoveneto #somospartedetuvida #amomicondomino</strong></small>
+<br>.
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" data-dismiss="modal">
+Aceptar <i class="fa fa-check fa-f"></i>
+</button>
+</div>
+</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div>
+<!-- end row -->
+</section>
+<!-- end widget grid -->
+<script type="text/javascript">
+
+/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+*
+* pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+*
+* // activate tooltips
+* $("[rel=tooltip]").tooltip();
+*
+* // activate popovers
+* $("[rel=popover]").popover();
+*
+* // activate popovers with hover states
+* $("[rel=popover-hover]").popover({ trigger: "hover" });
+*
+* // activate inline charts
+* runAllCharts();
+*
+* // setup widgets
+* setup_widgets_desktop();
+*
+* // run form elements
+* runAllForms();
+*
+********************************
+*
+* pageSetUp() is needed whenever you load a page.
+* It initializes and checks for all basic elements of the page
+* and makes rendering easier.
+*
+*/
+
+pageSetUp();
+
+// PAGE RELATED SCRIPTS
+
+var pagefunction = function() {
+
+/* chart colors default */
+var $chrt_border_color = "#efefef";
+/*var $chrt_grid_color = "#DDD";*/
+var $chrt_main = "#E24913";		/* red       */
+var $chrt_second = "#6595b4";		/* blue      */
+var $chrt_third = "#FF9F01";		/* orange    */
+var $chrt_fourth = "#7e9d3a";		/* green     */
+/*var $chrt_fifth = "#BD362F";*/	/* dark red  */
+/*var $chrt_mono = "#000";*/
+
+/* bar-chart-h */
+if ($("#cobranza-graf").length) {
+var dataset = [];
+var options = {
+xaxis : {
+mode : "categories",
+tickLength : 5,
+tickFormatter: function(val, axis) {
+return val.toLocaleString();
+}
+},
+series : {
+lines : {
+show : true,
+lineWidth : 1,
+fill : true,
+barWidth: 0.5,
+fillColor : {
+colors : [{
+    opacity : 0.1
+}, {
+    opacity : 0.15
+}]
+}
+},
+points: { show: true },
+shadowSize : 0
+},
+selection : {
+mode : "x"
+},
+legend : {
+show : false
+},
+grid : {
+hoverable : true,
+clickable : true,
+tickColor : $chrt_border_color,
+borderWidth : 0,
+borderColor : $chrt_border_color
+},
+yaxis:{
+tickFormatter: function(val, axis) {
+return val.toLocaleString()+"MM";
+}
+},
+tooltip : true,
+tooltipOpts : {
+content : "%s<br/><b>%x</b> <span>Bs.%y.1MM</span>",
+//dateFormat : "%y-%0m-%0d",
+defaultTheme : false
+},
+colors : [$chrt_main,$chrt_second,$chrt_third]
+
+};
+
+{% set id = '' %}
+{% for inm in inmuebles %}
+{% if id != inm.id_inmueble %}
+{% set id = inm.id_inmueble %}
+$.ajax({
+dataType: "json",
+url: "{{constant("URL_SISTEMA")}}/inmueble/cobranzaflot/{{inm.id_inmueble}}",
+cache: true,
+success: function(data) {
+    dataset.push(data);
+    $.plot($("#cobranza-graf"), dataset, options);
+    }
+});
+{% endif %}
+{% endfor %}
+
+} 
+
+/* end bar-chart-h
+
+/* updating chart */
+
+if ($("#facturacion-graf").length) {
+var dataset1 = [];
+var options1 = {
+xaxis : {
+mode : "categories",
+tickLength : 5,
+tickFormatter: function(val, axis) {
+return val.toLocaleString();
+}
+},
+series : {
+lines : {
+show : true,
+lineWidth : 1,
+fill : true,
+fillColor : {
+colors : [{
+    opacity : 0.1
+}, {
+    opacity : 0.15
+}]
+}
+},
+points: { show: true },
+shadowSize : 0
+},
+selection : {
+mode : "x"
+},
+legend : {
+    show : false
+},
+grid : {
+hoverable : true,
+clickable : true,
+tickColor : $chrt_border_color,
+borderWidth : 0,
+borderColor : $chrt_border_color
+},
+yaxis:{
+tickFormatter: function(val, axis) {
+return val.toLocaleString()+"MM";
+}
+},
+tooltip : true,
+tooltipOpts : {
+content : "%s<br><b>%x</b> <span>Bs.%y.1MM</span>",
+//dateFormat : "%y-%0m-%0d",
+defaultTheme : false
+},
+colors : [$chrt_fourth,$chrt_main,$chrt_second]
+};
+{% set id = '' %}
+{% for inm in inmuebles %}
+{% if id != inm.id_inmueble %}
+{% set id = inm.id_inmueble %}
+$.ajax({
+url: "{{constant("URL_SISTEMA")}}/inmueble/facturacionflot/{{inm.id_inmueble}}",
+dataType:"json",
+cache: true,
+success: function(data1) {
+    dataset1.push(data1);
+    $.plot($("#facturacion-graf"), dataset1, options1);
+    }
+});
+{% endif %}
+{% endfor %}
+};
+};
+//$("#aviso").modal();
+// load all flot plugins
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.min.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.resize.min.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.fillbetween.min.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.categories.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.axislabels.js", function(){
+loadScript("{{constant('ROOT')}}assets/js/plugin/flot/jquery.flot.tooltip.js", pagefunction);
+});
+});
+});
+});
+});
+</script>

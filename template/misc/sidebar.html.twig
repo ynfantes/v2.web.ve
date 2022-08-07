@@ -1,0 +1,119 @@
+<aside id="left-panel">
+
+<!-- User info -->
+<div class="login-info">
+<span> <!-- User image size is adjusted inside CSS, it should stay as is --> 
+
+<a data-action="toggleShortcut" id="show-shortcut" href="javascript:void(0);">
+{% if session['picture']%}
+{% set img = session['picture']%}
+{% else %}
+{% set img = constant('ROOT') ~ "assets/images/avatars/male.png" %}
+{% endif %}
+<img class="online" alt="me" src="{{img}}"> 
+<span>
+{{session.usuario.nombre}}
+</span>
+<i class="fa fa-angle-down"></i>
+</a> 
+
+</span>
+</div>
+<!-- end user info -->
+
+<!-- NAVIGATION : This navigation is also responsive
+
+To make this navigation dynamic please make sure to link the node
+(the reference to the nav > ul) after page load. Or the navigation
+will not initialize.
+-->
+<nav>
+<!-- 
+NOTE: Notice the gaps after each icon usage <i></i>..
+Please note that these links work a bit different than
+traditional href="" links. See documentation for details.
+-->
+
+<ul style="">
+<li class="active">
+<a title="Cartelera" href="inmueble/?accion=cartelera">
+<i class="et-clipboard"></i><span class="menu-item-parent">Cartelera</span></a>
+</li>
+<li>
+<a href="#"><i class="et-profile-male"></i> <span class="menu-item-parent">Propietario</span></a>
+<ul>
+<li><a href="propietario/?accion=actualizar">Datos Personales</a>
+</li>
+<li><a href="propietario/?accion=actualizar&id=clave">Clave de Acceso</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#"><i class="et-strategy"></i> <span class="menu-item-parent">Junta de Condominio</span></a>
+<ul>
+<li>
+    <a href="inmueble/?accion=junta-condominio">Integrantes</a>
+</li>
+<li>
+    <a href="inmueble/?accion=cuenta">Edo. Cta. General</a>
+</li>
+</ul>
+</li>
+{% if session.junta != '' %}
+<li>
+    <a href="prerecibo/?accion=listar">
+        <i class="et-ribbon"><em class="bg-color-red flash animated">!</em></i>
+        <span class="menu-item-parent">Autorizar Prerecibo</span>
+        <!--span class="badge bg-color-red pull-right inbox-badge">Nuevo</span-->
+    </a>
+</li>
+{% else %}
+<li>
+    <a href="prerecibo/?accion=soportes">
+        <i class="et-documents"></i>
+        <span class="menu-item-parent">Soportes Facturación</span>
+    </a>
+</li>
+{% endif %}
+<li>
+<li>
+    <a href="cuenta/?accion=listar">
+        <i class="et-browser"></i> 
+        <span class="menu-item-parent">Recibos por pagar</span>
+        <span class="badge bg-color-{% if recibos > 0 %}red{% else %}blue{% endif %} pull-right inbox-badge">{{recibos}}</span>
+    </a>
+</li>
+<li>
+    <a href="cuenta/?accion=avisos">
+        <i class="et-documents"></i>
+        <span class="menu-item-parent">Avisos de Cobro</span>
+    </a>
+</li>
+<li>
+<a id="reportar-pago" href="pago/?accion=registrar"><i class="et-wallet"></i> <span class="menu-item-parent">Reportar Pago</span></a>
+</li>
+{#% if session.usuario.cedula == 2525 %#}
+<!--li>
+<a href="pago/?accion=pago-tdc"><i class="fa fa-credit-card"></i> <span class="menu-item-parent">Pago en Línea</span><span class="badge bg-color-red bounceIn animated pull-right hidden-mobile">Nuevo</span></a>
+</li-->
+{#% endif %#}
+<li>
+<a href="pago/?accion=historico"><i class="et-pricetags"></i> <span class="menu-item-parent">Histórico Pagos</span></a>
+</li>
+<!--li>
+<a href="pago/?accion=ver"><i class="et-layers"></i> <span class="menu-item-parent">Recibos Cancelados</span></a>
+</li-->
+<li>
+<a href="mensajes/?accion=bandeja-entrada"><i class="et-envelope"></i> <span class="menu-item-parent">Mensajes</span>{% if mensajes > 0 %}<span class="badge bg-color-orange pull-right inbox-badge">{{ mensajes }}</span>{% endif %}</a>
+</li>
+<li>
+<a href="inmueble/?accion=listarCuentasDeFondo"><i class="et-ribbon"></i> <span class="menu-item-parent">Cuentas de Fondo</span></a>
+</li>
+<li>
+    <a target="parent" href="propietario?logout=true" title="Cerrar Sesión" data-action="userLogout" data-logout-msg="">
+        <i class="et-streetsign"></i> <span class="menu-item-parent">Cerrar Sesión</span></a>
+</li>
+</ul>
+</nav>
+<span data-action="minifyMenu" class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>
+</aside>

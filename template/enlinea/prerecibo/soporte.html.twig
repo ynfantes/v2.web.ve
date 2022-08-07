@@ -1,0 +1,94 @@
+<div class="row">
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+<h1 class="page-title txt-color-blue"><i class="fa fa-folder-open-o fa-fw "></i> Soporte facturación</h1>
+</div>
+<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+</div>
+</div>
+<section id="widget-grid" class="">
+<div class="row">    
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+{% include 'misc/resultado.html.twig' %}
+<div class="widget-body">
+<div id="accordion-2" class="panel-group smart-accordion-default">
+{% set n = 1 %}
+{% for prerecibo in prerecibos %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse-{{n}}" 
+                   data-parent="#accordion-2" 
+                   data-toggle="collapse" 
+                   class="{{ n >1? 'collapsed': '' }}"> 
+                    <i class="fa fa-fw fa-plus-circle txt-color-green"></i> 
+                    <i class="fa fa-fw fa-minus-circle txt-color-red"></i>
+                    {{prerecibo.inmueble.nombre_inmueble}}
+                </a>
+            </h4>
+        </div>
+        <div class="panel-collapse collapse {{ n==1? 'in': '' }}" id="collapse-{{n}}" style="">
+        <div class="panel-body">
+        
+            {% if prerecibo.prerecibos.data is empty %}
+                <small class="text-danger slideInRight fast animated"><strong>  No existen pre-recibos publicados</strong></small>
+                <div>Aquí puede consultar la relación de gastos comunes del mes (Pre-recibo)</div>
+            {% else %}
+                <div class="table-responsive">
+                <table  class="table table-bordered table-striped responsive-utilities">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center">Período</th>
+                            <th style="text-align: center">Prerecibo</th>
+                            <th style="text-align: center">Funciones Especiales</th>
+                            <th class="hidden">id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                {% for detalle in prerecibo.prerecibos.data %}
+                    <tr>
+                        <td>{{detalle.periodo | date("m-Y")}}</td>
+                        <td>
+                            {% if detalle.soporte %}
+                            <a href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver" target="_blank">{{detalle.documento}}</a>
+                            {%else%}
+                            {{detalle.documento}}
+                            {%endif%}
+                        </td>
+                        <td>
+                            {% if detalle.soporte %}
+                                <a class="btn btn-xs btn-primary" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver soporte" target="_blank"><i class="icon-folder-open"></i></a> 
+                            {% else %}
+                                <a class="btn btn-xs btn-primary disabled" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{ detalle.soporte }}" title="ver"><i class="icon-folder-open"></i></a> 
+                            {% endif %}
+                            {% if detalle.publicado %}
+                                <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver precibo" target="_blank"><i class="icon-eye-open"></i></a>
+                            {% else %}
+                                <a class="btn btn-primary disabled btn-circle" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver"><i class="icon-eye-open"></i></a>
+                            {% endif %}
+                        </td>
+                        <td class="hidden">{{ detalle.id }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                </div>
+            {% endif %}
+        
+        </div>
+        </div>
+    </div>
+{% set n = n + 1 %}
+{% endfor %}
+</div></div>
+</article>
+</div>
+</section>
+<script type="text/javascript">
+$(document).ready(function() {
+$(".autorizar").on('click',function() {
+$(".label-info").html($(this).closest("tr").find("td:first").text());
+$("a.btn-primary").attr("href",$("a.btn-primary").attr("href") + $(this).closest("tr").find("td:last").text());
+$("#myModal").modal('toggle');
+});
+});
+</script>

@@ -1,0 +1,5 @@
+/.vscode/
+/cancelacion.gatos/*.pdf
+/enlinea/avisos/*.pdf
+/data/*.txt
+#includes/configuracion.php

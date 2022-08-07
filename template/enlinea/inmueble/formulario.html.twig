@@ -1,0 +1,226 @@
+<!-- row -->
+<div class="row">
+<!-- col -->
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-5">
+<h1 class="page-title txt-color-blue">
+
+<!-- PAGE HEADER -->
+<i class="fa-fw fa fa-building-o"></i> 
+Junta de Condominio 
+<span>>  
+Integrantes
+</span>
+</h1>
+</div>
+<!-- end col -->
+<!-- right side of the page with the sparkline graphs -->
+<!-- col -->
+<div class="col-xs-12 col-sm-5 col-md-5 col-lg-7">
+<!-- sparks -->
+<ul id="sparks">
+<li class="sparks-info">
+<h5> Prom. Facturacion <span class="txt-color-{% if direccion_facturacion == "up" %}blue{% else %}red{% endif %}"><i class="fa fa-arrow-circle-{{ direccion_facturacion }}" data-rel="bootstrap-tooltip" title="Increased"></i>&nbsp;{{ promedio_facturacion }}</span></h5>
+<div class="sparkline txt-color-blue hidden-mobile hidden-md hidden-sm">
+{{ movimiento_facturacion }}
+</div>
+</li>
+<li class="sparks-info">
+<h5> Prom. Cobranza <span class="txt-color-{% if direccion_facturacion == "up" %}blue{% else %}red{% endif %}"><i class="fa fa-arrow-circle-{{ direccion_cobranza }}"></i>&nbsp;{{ promedio_cobranza }}</span></h5>
+<div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
+{{ movimiento_cobranza }}
+</div>
+</li>
+</ul>
+<!-- end sparks -->
+</div>
+<!-- end col -->	
+</div>
+<!-- end row -->
+<!--
+The ID "widget-grid" will start to initialize all widgets below 
+You do not need to use widgets if you dont want to. Simply remove 
+the <section></section> and you can use wells or panels instead 
+-->
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+<!-- row -->
+<div class="row">
+
+<!-- NEW WIDGET START -->
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+{%if junta %}
+{% for condominio in junta %}
+
+<!-- Widget ID (each widget will need unique ID)-->
+<div class="jarviswidget jarviswidget-color-red" id="wid-id-0" data-widget-colorbutton="false"	
+data-widget-editbutton="false"
+data-widget-togglebutton="false"
+data-widget-deletebutton="false"
+data-widget-fullscreenbutton="false"
+data-widget-custombutton="false"
+data-widget-sortable="false">
+
+<header>
+    <span class="widget-icon"> <i class="fa fa-building-o"></i> </span>
+    <h3 class="font-md">{{ condominio.inmueble.nombre_inmueble }}</h3>
+
+</header>
+<!-- widget div-->
+<div>
+        <!-- widget edit box -->
+        <div class="jarviswidget-editbox">
+                <!-- This area used as dropdown edit box -->
+                <input class="form-control" type="text">	
+        </div>
+        <!-- end widget edit box -->
+        <!-- widget content -->
+        <div class="widget-body">
+            <div class="table-responsive">
+                <table  class="table table-bordered table-striped responsive-utilities">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> Apartamento</th>
+                            <th style="text-align: center"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Nombre(s) Apellidos(s)</th>
+                            <th style="text-align: center"><i class="fa fa-fw fa-institution text-muted hidden-md hidden-sm hidden-xs"></i> Cargo Junta</th>
+                            <th style="text-align: center"><i class="fa fa-fw fa-phone text-muted hidden-md hidden-sm hidden-xs"></i> Teléfono Celular</th>
+                            <th style="text-align: center"><i class="fa fa-fw fa-envelope text-muted hidden-md hidden-sm hidden-xs"></i> Correo Electrónico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    {% if not condominio.miembros is empty %}
+                        {% set cedula = 0 %}
+                        {% for miembro in condominio.miembros %}
+
+                            {% if condominio.inmueble.id == miembro.id_inmueble %}
+                                {% if cedula != miembro.cedula %}
+                                <tr>    
+                                <td>{{ miembro.apto }}</td>
+                                <td>{{ miembro.nombre }}</td>
+                                <td>{{ miembro.descripcion }}</td>
+                                <td>{{ miembro.telefono1 }}</td>
+                                <td>{{ miembro.email }}</td></tr>
+                                {% set cedula = miembro.cedula %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5"><div class="alert alert-error">
+                            <strong>Atención!</strong> Miembros de la Junta no registrados</div></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5"><div style="height: 40px"></div></td></tr>
+                        </tr>
+                    {% endif %}
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+        <!-- end widget content -->
+</div>
+<!-- end widget div -->
+</div>
+<!-- end widget -->
+{% endfor %}
+{% else %}
+<div class="alert alert-block alert-warning">
+<a href="#" data-dismiss="alert" class="close">×</a>
+<h4 class="alert-heading">Ups! Lo sentimos</h4>
+Por ahora NO tenemos registrada la información de los integrantes de la junta de este condominio.
+</div>
+{% endif %}
+</article>
+<!-- WIDGET END -->
+
+</div>
+
+<!-- end row -->
+
+<!-- row -->
+
+<div class="row">
+
+<!-- a blank row to get started -->
+<div class="col-sm-12">
+<!-- your contents here -->
+</div>
+
+</div>
+
+<!-- end row -->
+
+</section>
+<!-- end widget grid -->
+
+<script type="text/javascript">
+	
+	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+	 *
+	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+	 *
+	 * // activate tooltips
+	 * $("[rel=tooltip]").tooltip();
+	 *
+	 * // activate popovers
+	 * $("[rel=popover]").popover();
+	 *
+	 * // activate popovers with hover states
+	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
+	 *
+	 * // activate inline charts
+	 * runAllCharts();
+	 *
+	 * // setup widgets
+	 * setup_widgets_desktop();
+	 *
+	 * // run form elements
+	 * runAllForms();
+	 *
+	 ********************************
+	 *
+	 * pageSetUp() is needed whenever you load a page.
+	 * It initializes and checks for all basic elements of the page
+	 * and makes rendering easier.
+	 *
+	 */
+
+	pageSetUp();
+	
+	/*
+	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+	 * eg alert("my home function");
+	 * 
+	 * var pagefunction = function() {
+	 *   ...
+	 * }
+	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+	 * 
+	 * TO LOAD A SCRIPT:
+	 * var pagefunction = function (){ 
+	 *  loadScript(".../plugin.js", run_after_loaded);	
+	 * }
+	 * 
+	 * OR you can load chain scripts by doing
+	 * 
+	 * loadScript(".../plugin.js", function(){
+	 * 	 loadScript("../plugin.js", function(){
+	 * 	   ...
+	 *   })
+	 * });
+	 */
+	
+	// pagefunction
+	
+	var pagefunction = function() {
+		// clears the variable if left blank
+	};
+	
+	// end pagefunction
+	
+	// run pagefunction
+	pagefunction();
+	
+</script>

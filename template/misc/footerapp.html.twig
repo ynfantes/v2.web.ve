@@ -1,0 +1,86 @@
+{# empty Twig template #}
+<div class="page-footer">
+<div class="row">
+<div class="col-xs-12 col-sm-6">
+    <span class="txt-color-white">{{ constant('NOMBRE_APLICACION') }} &copy; 2020</span>
+</div>
+
+<div class="col-xs-6 col-sm-6 text-right hidden-xs">
+<div class="txt-color-white inline-block">
+{% if historico %}
+        <i class="txt-color-white hidden-mobile">Su última conexión fue el {{ historico[0].inicio|date('d/m/y') }} <i class="fa fa-clock-o"></i> Duración <strong>{{ historico[0].duracion }} &nbsp;</strong> </i>
+{% endif %}
+<div class="btn-group dropup">
+<button data-toggle="dropdown" class="btn btn-xs dropdown-toggle bg-color-blue txt-color-white">
+<i class="fa fa-link"></i> <span class="caret"></span>
+</button>
+<ul class="dropdown-menu pull-right text-left" style="min-width: 300px;">
+<li>
+<div class="padding-5">
+<p class="txt-color-darken font-sm no-margin"><i class="fa fa-clock-o"></i> <strong>Histórico Conexiones</strong></p>
+</div>
+</li>
+<li class="divider"></li>
+{% if historico %}
+{% for sesion in historico %}
+<li>
+<div class="padding-5">
+    <p class="txt-color-darken font-sm no-margin">{{ sesion.inicio|date('d/m/Y \\a \\l\\a\\s h:ia') }} 
+        {%if sesion.inicio == sesion.fin %}
+            <span class="label label-danger">Sesión no cerrada</span>
+        {% else %}
+            <span class="label label-success">Duración: {{ sesion.duracion|date('i\\m') }}</span>
+        {% endif %}
+    </p>
+</div>
+</li>
+{% endfor %}
+{% else %}
+<li>
+<div class="padding-5">
+<p class="txt-color-darken font-sm no-margin">Esta es su primera conexión</p>
+</div>
+</li>
+{% endif %}
+<!--li>
+<div class="padding-5">
+<p class="txt-color-darken font-sm no-margin">Download Progress</p>
+<div class="progress progress-micro no-margin">
+<div style="width: 50%;" class="progress-bar progress-bar-success"></div>
+</div>
+</div>
+</li>
+<li class="divider"></li>
+<li>
+<div class="padding-5">
+<p class="txt-color-darken font-sm no-margin">Server Load</p>
+<div class="progress progress-micro no-margin">
+<div style="width: 20%;" class="progress-bar progress-bar-success"></div>
+</div>
+</div>
+</li>
+<li class="divider"></li>
+<li>
+<div class="padding-5">
+<p class="txt-color-darken font-sm no-margin">Memory Load <span class="text-danger">*critical*</span></p>
+<div class="progress progress-micro no-margin">
+<div style="width: 70%;" class="progress-bar progress-bar-danger"></div>
+</div>
+</div>
+</li>
+<li class="divider"></li>
+<li>
+<div class="padding-5">
+<button class="btn btn-block btn-default">refresh</button>
+</div>
+</li-->
+</ul>
+</div>
+<!-- end btn-group-->
+</div>
+<!-- end div-->
+</div>
+<!-- end col -->
+</div>
+<!-- end row -->
+</div>

@@ -1,0 +1,244 @@
+<div class="row">
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+<h1 class="page-title txt-color-blue"><i class="fa fa-leaf fa-fw "></i> Estado de Cuenta</h1>
+</div>
+<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+<ul id="sparks">
+<li class="sparks-info">
+    <h5> Prom. Facturacion <span class="txt-color-blue"><i class="fa fa-arrow-circle-{{direccion_facturacion}}" data-rel="bootstrap-tooltip" title="Increased"></i>&nbsp;{{ promedio_facturacion }}</span></h5>
+    <div class="sparkline txt-color-blue hidden-mobile hidden-md hidden-sm">
+        {{ movimiento_facturacion }}
+        </div>
+    </li>
+    <li class="sparks-info">
+        <h5> Prom. Cobranza <span class="txt-color-greenDark"><i class="fa fa-arrow-circle-{{direccion_cobranza}}"></i>&nbsp;{{ promedio_cobranza }}</span></h5>
+        <div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
+            {{ movimiento_cobranza }}
+        </div>
+    </li>
+</ul>
+</div>
+</div>
+<section id="widget-grid" class="">
+<div class="row">
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+{% set n = 0 %}
+{% for cuenta in cuentas %}
+
+<div id="wid-id-{{ n }}" class="jarviswidget jarviswidget-color-blueLight" data-widget-editbutton="false" data-widget-colorbutton="false" 
+data-widget-togglebutton="false" 
+data-widget-deletebutton="false" 
+data-widget-fullscreenbutton="false" 
+data-widget-custombutton="false" >
+<header role="heading">
+<span class="widget-icon"> <i class="fa fa-building-o"></i> </span>
+<h3 class="font-md">{{cuenta.inmueble.nombre_inmueble}} - {{cuenta.propiedades.apto}}</h3>
+</header>
+<div role="content">
+<!-- widget edit box -->
+<div class="jarviswidget-editbox">
+    <!-- This area used as dropdown edit box -->
+</div>
+<!-- end widget edit box -->
+<!-- widget content -->
+<div class="widget-body">
+{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+<div class="">
+    {% include 'misc/legal.html.twig' %}
+</div>
+{% else %}
+<div class="row">
+
+<div class="col-md-6 col-sm-6 col-lg-4">
+
+<div class="well well-md  bg-color-blue txt-color-white no-border font-md">
+<!-- propietario -->
+<span class="text">
+{{cuenta.inmueble.unidad}}
+<span class="pull-right">
+{{cuenta.propiedades.apto}}
+</span>
+</span>
+<!-- fin propietario -->
+<br/>
+<!-- deuda en Bs-->
+<span class="text">
+{{'TOTAL DEUDA ' ~ cuenta.inmueble.moneda}}
+<span class="pull-right">
+{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+Dpto. Legal
+{% else %}
+{{format_number(cuenta.propiedades.deuda_total)}}
+{% endif %}
+</span>
+</span>
+<!-- fin deuda en Bs. -->
+<!-- deuda en dólares -->
+{% if cuenta.inmueble.facturacion_usd %}
+<span class="text">
+<br>
+TOTAL DEUDA $
+<span class="pull-right">
+{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+Dpto. Legal
+{% else %}
+{{ format_number(cuenta.propiedades.deuda_usd) }}
+{% endif %}
+</span>
+</span>
+{% endif %}
+<!-- fin deuda en dólares -->
+</div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-lg-8">
+<!-- inicio well 2 -->
+<div class="well well-lg no-padding">
+{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+{% else %}
+{% if cuenta.cuentas is empty %}
+<div class="alert alert-danger">
+	<strong>
+		<i class="ace-icon fa fa-times"></i>
+		Atención:
+	</strong>
+	Estimado propietario(a) usted 
+	no tiene recibos pendiente de pago.
+</div>
+{% else %}
+<div class="table-responsive">
+	<table class="table table-hover">
+		<thead class="thin-border-bottom">
+			<tr class="text-primary">
+				<th style="text-align: center">Nº FACTURA</th>
+				<th style="text-align: center">PERIODO</th>
+				<th style="text-align: center" class="hidden-xs">FACTURADO&nbsp{{cuenta.inmueble.moneda}}</th>
+				<th style="text-align: center" class="hidden-xs">ABONADO&nbsp{{cuenta.inmueble.moneda}}</th>
+				<th style="text-align: center">SALDO&nbsp{{cuenta.inmueble.moneda}}</th>
+				{% if cuenta.inmueble.facturacion_usd %}
+					<th style="text-align: center">SALDO $</th>
+					{%endif%}
+					<th style="text-align: center" class="hidden-xs">AVISO DE COBRO</th>
+				</thead>
+			</tr>
+		</thead>
+		<tbody>
+			{% for factura in cuenta.cuentas %}
+				<tr>
+					<td style="text-align: center">
+						{% if factura.aviso %}
+							<a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{factura.numero_factura}}" target="_blank">{{factura.numero_factura}}</a>
+						{% else %}
+							<abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
+						{%endif %}
+					</td>
+					<td style="text-align: center">{{ factura.periodo | date("m-Y") | upper}}</td>
+					<td class="hidden-xs">
+						<span class="pull-right">{{format_number(factura.facturado)}}</span>
+					</td>
+					<td class="hidden-xs">
+						<span class="pull-right">{{format_number(factura.abonado)}}</span>
+					</td>
+					<td>
+						<span class="pull-right">{{format_number(factura.facturado - factura.abonado)}}</span>
+					</td>
+					{% if cuenta.inmueble.facturacion_usd %}
+						<td>
+							<span class="pull-right">{{format_number(factura.facturado_usd)}}</span>
+						</td>
+					{% endif %}
+					<td class="hidden-xs">
+						{% if factura.aviso %}
+							<a class="label label-success arrowed" href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">Disponible</a>
+						{% else %}
+							<span class="label label-danger arrowed">No Disponible</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endif %}
+{% endif %}
+</div>
+</div>
+<!-- fin well 2 --> 
+</div>
+{% endif %}
+</div>
+<!-- end widget content -->
+
+</div>
+</div>
+{% set n = n + 1 %}
+{% endfor %}
+</article>
+</div>
+</section>
+<script type="text/javascript">
+	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+	 *
+	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+	 *
+	 * // activate tooltips
+	 * $("[rel=tooltip]").tooltip();
+	 *
+	 * // activate popovers
+	 * $("[rel=popover]").popover();
+	 *
+	 * // activate popovers with hover states
+	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
+	 *
+	 * // activate inline charts
+	 * runAllCharts();
+	 *
+	 * // setup widgets
+	 * setup_widgets_desktop();
+	 *
+	 * // run form elements
+	 * runAllForms();
+	 *
+	 ********************************
+	 *
+	 * pageSetUp() is needed whenever you load a page.
+	 * It initializes and checks for all basic elements of the page
+	 * and makes rendering easier.
+	 *
+	 */
+
+	pageSetUp();
+	
+	/*
+	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+	 * eg alert("my home function");
+	 * 
+	 * var pagefunction = function() {
+	 *   ...
+	 * }
+	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+	 * 
+	 * TO LOAD A SCRIPT:
+	 * var pagefunction = function (){ 
+	 *  loadScript(".../plugin.js", run_after_loaded);	
+	 * }
+	 * 
+	 * OR
+	 * 
+	 * loadScript(".../plugin.js", run_after_loaded);
+	 */
+
+	// PAGE RELATED SCRIPTS
+
+	// pagefunction
+	
+	var pagefunction = function() {
+		
+	};
+	
+	// end pagefunction
+	
+	// run pagefunction on load
+
+	pagefunction();
+</script>

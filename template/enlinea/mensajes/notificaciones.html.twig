@@ -1,0 +1,23 @@
+{% if lista %}
+<ul class="notification-body">
+    {% for mensaje in lista %}
+    <li>
+        <span class="{% if not mensaje.leido %}unread{% endif %}">
+            <a href="javascript:void(0);" class="msg">
+                <img src="{{ constant('ROOT')}}assets/images/avatars/female.png" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
+                    <span class="from">Admin <i class="icon-paperclip"></i></span>
+                    <time>2 minutes ago</time>
+                    <span class="subject">{{ mensaje.asunto}}</span>
+                    <span class="msg-body">{{ mensaje.msg }}....</span>
+            </a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<div class="alert alert-transparent">
+<h4>Estimado(a) {{ session.usuario.nombre }} usted no ha recibido mensajes aún.</h4>
+La bandeja de entrada esta vacía.
+</div>
+<i class="fa fa-warning fa-4x fa-border "></i>
+{% endif %}

@@ -1,0 +1,222 @@
+{%extends "layout/inicio.html.twig"%}
+{% block contenido %}
+<div class="background-sky">
+    <svg width="100%" height="300px" class="d-block" fill="#fbfbfb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none" style="position: absolute;bottom: 0;">
+        <path style="opacity:0.15" d="M 1000 299 l 2 -279 c -155 -36 -310 135 -415 164 c -102.64 28.35 -149 -32 -232 -31 c -80 1 -142 53 -229 80 c -65.54 20.34 -101 15 -126 11.61 v 54.39 z"></path>
+        <path style="opacity:0.3" d="M 1000 286 l 2 -252 c -157 -43 -302 144 -405 178 c -101.11 33.38 -159 -47 -242 -46 c -80 1 -145.09 54.07 -229 87 c -65.21 25.59 -104.07 16.72 -126 10.61 v 22.39 z"></path>
+        <path style="opacity:1" d="M 1000 300 l 1 -230.29 c -217 -12.71 -300.47 129.15 -404 156.29 c -103 27 -174 -30 -257 -29 c -80 1 -130.09 37.07 -214 70 c -61.23 24 -108 15.61 -126 10.61 v 22.39 z"></path>
+</svg>
+</div>
+<!-- 
+AVAILABLE HEADER CLASSES
+
+Default nav height: 96px
+.header-md 		= 70px nav height
+.header-sm 		= 60px nav height
+
+.b-0 		= remove bottom border (only with transparent use)
+.transparent	= transparent header
+.translucent	= translucent header
+.sticky			= sticky header
+.static			= static header
+.dark			= dark header
+.bottom			= header on bottom
+
+shadow-before-1 = shadow 1 header top
+shadow-after-1 	= shadow 1 header bottom
+shadow-before-2 = shadow 2 header top
+shadow-after-2 	= shadow 2 header bottom
+shadow-before-3 = shadow 3 header top
+shadow-after-3 	= shadow 3 header bottom
+
+.clearfix		= required for mobile menu, do not remove!
+
+Example Usage:  class="clearfix sticky header-sm transparent b-0"
+-->
+<div id="header" class="navbar-toggleable-md sticky transparent clearfix b-0">
+<!-- TOP NAV -->
+<header id="topNav">
+<div class="container">
+<!-- Logo -->
+<a class="logo float-left" href="{{constant('ROOT')}}">
+    <img src="{{constant('ROOT')}}assets/images/_smarty/logo_dark.png" alt="{{constant('NOMBRE_APLICACION')}}" class="bounceInDown animation-visible animated" />
+</a>
+<!-- 
+Top Nav 
+AVAILABLE CLASSES:
+submenu-dark = dark sub menu
+-->
+<div class="navbar-collapse collapse float-right nav-main-collapse submenu-dark">
+<nav class="nav-main">
+<ul id="topMain" class="nav nav-pills nav-main">
+<li class="nav-animate-fadeIn nav-hover-animate hover-animate-bounceIn">
+<a href="{{constant('ROOT')}}" style="color:#063e95" class="dropdown-toggle noicon"><b>Inicio</b></a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</header>
+<!-- /Top Nav -->
+
+</div>
+<!-- -->
+<section class="fullheight b-0">
+<section>
+<div class="container">
+<div class="row">
+<div class="col-md-6 offset-md-3">
+<h1 class="fs-30 text-white mb-0 text-center mb-10" style="font-family:'Open Sans',Arial,Helvetica,sans-serif">
+Condominio en línea<span class="badge badge-danger float-right fs-11">V2</span></h1>
+{% include 'misc/resultado.html.twig' %}
+<!-- ALERT -->
+{{mensaje}}
+<div id="mensaje" class="alert alert-mini alert-danger mb-30 d-none">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+{% if mensaje %}
+{{mensaje|raw}}
+{% endif %}
+</div>
+<!-- /ALERT -->
+<div class="box-static box-border-top p-30" style="background-color: rgb(255,255,255,0.95);">
+<div class="box-title mb-30">
+<h2 class="fs-20">Ingrese sus credenciales de acceso</h2>
+</div>
+<form id="login-form" class="m-0" method="post" action="#" autocomplete="off">
+<div class="clearfix">
+<div id="correo" class="form-label-group mb-4">
+<input placeholder="Correo Electrónico" id="email" name="email" type="text" value="" class="form-control required email">
+</div>
+<div id='password' class="row" style="display:none">
+<button type="button" class="btn btn-round btn-outline-info btn-sm text-left registro-btn" style="margin: 0 auto 24px;"><i class="glyphicon glyphicon-user"> </i> <span id='span_usuario'></span></button>
+<div class="col-md-12 col-sm-12">
+<input placeholder="Password" type="password" name="password" class="form-control required" minlength="4" maxlength="10">
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6 col-sm-6 col-6">
+<!-- Inform Tip -->                                        
+<div class="form-tip mt-30">
+<a id='a-registro' class="btn btn-3d btn-link d-none" href="{{constant('ROOT')}}registro.php"><i class="glyphicon glyphicon-heart-empty"> </i>Registrarse</a>
+<a id='forgot-password' class="btn btn-3d btn-link d-none" href="javascript(0);"><i class="glyphicon glyphicon-heart-empty"> </i>Recuperar Password</a>
+</div>
+</div>
+<div class="col-md-6 col-sm-6 col-6 text-right mt-30">
+<button class="btn btn-primary btn-3d rubberBand animation-visible animated" data-loading-text="<i class='fa fa-cog'></i> Procesando...">Siguiente <i class="glyphicon glyphicon-menu-right"></i></button>
+</div>
+
+</div>
+<hr>
+<div class="row">
+<div class="col-12 text-center">– o inciar sesión con –</div>
+<div class="col-md-12">
+<a href="{{loginUrl}}" class="btn btn-block btn-social btn-google mt-10">
+    <i class="fa fa-google"></i> Gmail
+</a>
+</div>
+<!--div class="col-12 col-md-6">
+<a href="https://www.facebook.com/v6.0/dialog/oauth?client_id=814631822351325&redirect_uri={#{url}#}&state={#{state}#}&scope=email,public_profile" class="btn btn-block btn-social btn-facebook mt-10">
+    <i class="fa fa-facebook"></i> Facebook
+</a>
+</div-->
+</div>
+</form>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+</section>
+<!-- -->
+{% endblock %}
+{% block js %}
+{{ parent() }}
+<!--script type="text/javascript" src="{#{constant('ROOT')}#}assets/plugins/form.validate/jquery.form.min.js"></script-->
+<script type="text/javascript" src="{{constant('ROOT')}}assets/plugins/form.validate/jquery.validation.min.js"></script>
+<script>
+$('#header').removeClass('fixed');
+$('.registro-btn').click(function() {
+    $('div#password').hide();
+    $('div#correo').fadeIn();
+    $('div.alert').addClass('d-none');
+    $('input[type="password"]').val('');
+    $('a#forgot-password').attr('href','').addClass('d-none');
+});
+if($("#login-form").length>0) {
+$("#login-form").validate({
+submitHandler: function(form) {
+$.ajax({
+type: "POST",
+url: "{{constant('URL_SISTEMA')}}/propietario/login",
+dataType: "json",
+data: {
+"password": $("#login-form input[name='password']").val(),
+"email": $("#login-form input[name='email']").val()
+},
+beforeSend: function() {
+$("button.btn-primary").button("loading").addClass('disabled');
+$("div.alert").addClass("d-none").html('');
+$('.btn-link').addClass('d-none');
+},
+success: function (login) {
+
+if (login.existe) {
+    
+    if (login.suceed) {
+        if(login.inactivo>0) {
+            
+            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
+        
+        } else {
+            $('div.alert').removeClass('alert alert-danger').addClass('alert alert-success').html("<strong>Usuario registrado: </strong>Espere unos segundos, lo estamos redireccionando.....").removeClass('d-none');
+            registroLogin(login,'{{constant('URL_SISTEMA')}}');
+            
+        }
+    } else {
+        $('a#forgot-password').attr('href','{{constant('URL_SISTEMA')}}/propietario/recuperar-password/'+login.id).removeClass('d-none');
+        $('span#span_usuario').html(login.email);
+        $('div#correo').hide();
+        $('div#password').fadeIn();
+        $("input[name='password']").focus();
+        if (login.error) {
+            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
+        }
+    }
+} else {
+    $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.mensaje).removeClass("d-none");
+}
+$(".btn").button("reset").removeClass('disabled');
+},
+error: function(error) {
+$('#login-messages').removeClass('alert alert-success').addClass('alert alert-danger').html("Ocurrió un error durante el proceso.<br> Por favor intente más tarde.");
+$(".btn").button("reset").removeClass('disabled');
+}
+});
+},				
+// debug: true,
+errorPlacement: function(error, element) {
+$('div.alert').removeClass('d-none').html('<strong>Ups!</strong> Debe completar esta información!');
+},
+onkeyup: false,
+onclick: false,
+messages: {
+numero_documento: {required: ""},
+tipo_documento: {required: ""}					
+},
+/*errorElement: "span",
+highlight: function (element) {
+jQuery(element).parent().removeClass("has-success").addClass("has-error");
+},
+success: function (element) {
+jQuery(element).parent().removeClass("has-error").addClass("has-success");
+}*/
+});
+};
+</script>
+{% endblock %}

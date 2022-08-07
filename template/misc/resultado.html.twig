@@ -1,0 +1,15 @@
+{# Pantilla para mostrar resultados de operaciones #}
+{%if resultado %}
+<div class="alert alert-{{resultado.suceed == true? 'success':'danger' }}">
+<button data-dismiss="alert" class="close">
+    ×
+</button>
+<i class="fa-fw fa fa-{{resultado.suceed == true? 'check':'danger' }}"></i>
+<strong>{{resultado.suceed == true? 'Muy Bien!':'Ups! ' }}</strong> {{ resultado.mensaje|capitalize|nl2br }}
+{% if constant('DEBUG')%}
+<pre>
+    {{dump(resultado)}}
+</pre>
+{%endif %}
+</div>
+{%endif%}

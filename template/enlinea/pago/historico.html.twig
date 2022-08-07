@@ -1,0 +1,146 @@
+<div class="row">
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+<h1 class="page-title txt-color-blue"><i class="fa fa-history fa-fw "></i> Histórico de pagos</h1>
+</div>
+</div>
+<section id="widget-grid" class="">
+<div class="row">
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+{% set n = 0 %}
+{% for historico in historicos %}
+
+<div id="wid-id-{{ n }}" class="jarviswidget jarviswidget-color-blueLight" data-widget-editbutton="false" data-widget-colorbutton="false" 
+data-widget-togglebutton="false" 
+data-widget-deletebutton="false" 
+data-widget-fullscreenbutton="false" 
+data-widget-custombutton="false" >
+<header role="heading">
+<span class="widget-icon"> <i class="fa fa-building-o"></i> </span>
+<h3 class="font-md">{{historico.inmueble.nombre_inmueble}} - {{historico.propiedad.apto}}</h3>
+</header>
+<div role="content">
+<!-- widget content -->
+<div class="widget-body">
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+{% if historico.pagos is empty %}
+<small class="text-danger slideInRight fast animated"><strong>  No tenemos registrada la información del histórico de sus pagos.</strong></small>
+<div>Aquí puede consultar el listado de los últimos pagos registrados en su cuenta de condominio.</div>
+{% else %}
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="table-responsive">
+<table class="table table-striped table-bordered table-hover">
+<thead class="thin-border-bottom">
+<tr>
+<th style="text-align: center">Fecha</th>
+<th class="hidden-xs" style="text-align: center">Recibo</th>
+<th style="text-align: center">Monto</th>
+<th style="text-align: center">Forma Pago</th>
+<th style="text-align: center">Cuenta</th>
+<th style="text-align: center">Descripción</th>
+</thead>
+<tbody>
+{% for pago in historico.pagos %}
+<tr>
+<td style="text-align: center">{{pago.fecha_movimiento | date("d-m-y")}}</td>
+<td class="hidden-xs" >
+    {% if pago.recibo %}
+        <a href="{{constant('URL_SISTEMA')}}/pago/cancelacion/{{pago.numero_recibo}}" target="_blank">{{pago.numero_recibo}}</a>
+    {% else %}
+        {{pago.numero_recibo}}
+    {%endif%}
+</td>
+<td><span class="pull-right">{{format_number(pago.monto)}}</span></td>
+<td>{{pago.forma_pago}}</td>
+<td>{{pago.cuenta}}</td>
+<td>{{pago.descripcion}}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% endif %}
+</div>
+</div>
+<!-- end widget content -->
+</div>
+</div>
+{% set n = n + 1 %}
+{% endfor %}
+</article>
+<div class="col-sm-12">
+<div class="alert alert-success alert-block">
+<a href="#" data-dismiss="alert" class="close">×</a>
+<h4 class="alert-heading">{{session['administra']['nombre']|title}}</h4>
+Si requiere información adicional escríbanos a <strong>{{session['administra']['email']}}</strong>. 
+</div>
+</div>
+</div>
+</section>
+<script type="text/javascript">
+/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+ *
+ * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+ *
+ * // activate tooltips
+ * $("[rel=tooltip]").tooltip();
+ *
+ * // activate popovers
+ * $("[rel=popover]").popover();
+ *
+ * // activate popovers with hover states
+ * $("[rel=popover-hover]").popover({ trigger: "hover" });
+ *
+ * // activate inline charts
+ * runAllCharts();
+ *
+ * // setup widgets
+ * setup_widgets_desktop();
+ *
+ * // run form elements
+ * runAllForms();
+ *
+ ********************************
+ *
+ * pageSetUp() is needed whenever you load a page.
+ * It initializes and checks for all basic elements of the page
+ * and makes rendering easier.
+ *
+ */
+
+pageSetUp();
+
+/*
+ * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+ * eg alert("my home function");
+ * 
+ * var pagefunction = function() {
+ *   ...
+ * }
+ * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+ * 
+ * TO LOAD A SCRIPT:
+ * var pagefunction = function (){ 
+ *  loadScript(".../plugin.js", run_after_loaded);	
+ * }
+ * 
+ * OR
+ * 
+ * loadScript(".../plugin.js", run_after_loaded);
+ */
+
+// PAGE RELATED SCRIPTS
+
+// pagefunction
+
+var pagefunction = function() {
+
+};
+
+// end pagefunction
+
+// run pagefunction on load
+
+pagefunction();
+</script>

@@ -1,0 +1,146 @@
+<div class="row">
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+<h1 class="page-title txt-color-blue"><i class="fa fa-files-o fa-fw "></i> Avisos de Cobro</h1>
+</div>
+<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+<ul id="sparks">
+<li class="sparks-info">
+    <h5> Prom. Facturacion <span class="txt-color-blue"><i class="fa fa-arrow-circle-{{direccion_facturacion}}" data-rel="bootstrap-tooltip" title="Increased"></i>&nbsp;{{ promedio_facturacion }}</span></h5>
+    <div class="sparkline txt-color-blue hidden-mobile hidden-md hidden-sm">
+        {{ movimiento_facturacion }}
+        </div>
+    </li>
+    <li class="sparks-info">
+        <h5> Prom. Cobranza <span class="txt-color-greenDark"><i class="fa fa-arrow-circle-{{direccion_cobranza}}"></i>&nbsp;{{ promedio_cobranza }}</span></h5>
+        <div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
+            {{ movimiento_cobranza }}
+        </div>
+    </li>
+</ul>
+</div>
+</div>
+<section id="widget-grid" class="">
+<div id="printable"class="row">
+<article class="col-sm-12 col-md-12 col-lg-8 sortable-grid ui-sortable">
+<div data-widget-sortable="false" data-widget-custombutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-colorbutton="false" id="wid-id-9" class="jarviswidget well transparent" style="" role="widget">
+<header role="heading">
+<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+<h2>Accordions </h2>
+
+<span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+<!-- widget div-->
+<div role="content">
+
+<!-- widget edit box -->
+<div class="jarviswidget-editbox">
+<!-- This area used as dropdown edit box -->
+
+</div>
+<!-- end widget edit box -->
+
+<!-- widget content -->
+<div class="widget-body">
+<div id="accordion-2" class="panel-group smart-accordion-default">
+{% set n = 1 %}
+{% for cuenta in historico %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse-{{ n }}" 
+                   data-parent="#accordion-2" 
+                   data-toggle="collapse" 
+                   class="{{ n >1? 'collapsed': '' }}">
+                    <i class="fa fa-fw fa-plus-circle txt-color-green"></i>
+                    <i class="fa fa-fw fa-minus-circle txt-color-red"></i>
+                    {{cuenta.inmueble.nombre_inmueble}} - {{cuenta.propiedades.apto}} 
+                    {% set total = cuenta.recibos_act|length + cuenta.recibos_ant|length %} 
+                </a></h4>
+            </div>
+                <div class="panel-collapse collapse {{ n==1? 'in': '' }}" id="collapse-{{ n }}" style="">
+                <div class="panel-body">
+                    <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+		            <div class="panel panel-success pricing-big">
+		            	
+		                <div class="panel-heading">
+		                    <h3 class="panel-title">Año {{cuenta.ano_anterior}}</h3>
+		                </div>
+		                <div class="panel-body no-padding text-align-center">
+                                    <div class="price-features">
+                                    <ul class="list-unstyled text-left">
+                                        {%if cuenta.recibos_ant%}
+                                            {%for recibo in cuenta.recibos_ant%}
+                                                {% if recibo.aviso %}
+                                                    <li><i class="fa fa-check-circle text-success"></i> <a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
+                                                {%else%}
+                                                    <li><i class="fa fa-times-circle text-danger"></i> Mes: {{recibo.periodo|date('m-Y')}}</li>
+                                                {%endif%}
+                                            {%endfor%}
+                                        {%else%}
+                                            <li><i class="fa fa-times text-danger"></i> No hay avisos de cobro publicados</li>
+                                        {%endif%}
+                                    </ul>
+                                    </div>
+		                </div>
+		                <div class="panel-footer text-align-center">
+		                	<div>{{cuenta.recibos_ant|length}} Avisos de Cobro</div>
+		                </div>
+		            </div>
+		        </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+		            <div class="panel panel-primary pricing-big">
+		            	<div class="panel-heading">
+		                    <h3 class="panel-title">Año {{cuenta.ano_actual}}</h3>
+		                </div>
+		                <div class="panel-body no-padding text-align-center">
+                                    <div class="price-features">
+                                    <ul class="list-unstyled text-left">
+                                        {%if cuenta.recibos_act%}
+                                            {%for recibo in cuenta.recibos_act%}
+                                                {% if recibo.aviso %}
+                                                    <li><i class="fa fa-check-circle text-success"></i><a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
+                                                {%else%}
+                                                    <li><i class="fa fa-times-circle text-danger"></i> Mes: {{recibo.periodo|date('m-Y')}}</li>
+                                                {%endif%}
+                                            {%endfor%}
+                                        {%else%}
+                                            <li><i class="fa fa-times text-danger"></i> No hay avisos de cobro publicados</li>
+                                        {%endif%}
+                                    </ul>
+                                    </div>
+		                </div>
+		                <div class="panel-footer text-align-center">
+		                    <div>{{cuenta.recibos_act|length}} Avisos de cobro</div>
+		                </div>
+		            </div>
+		        </div>
+                    </div>
+                </div>
+                </div>
+                <!--div class="form-actions">
+                    <button class="btn btn-primary" type="submit" title="{{cuenta.inmueble.nombre_inmueble}}">Imprimir</button>
+                </div-->
+        </div>
+{% set n = n + 1 %}
+{% endfor %}
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<script type="text/javascript">
+	
+	pageSetUp();
+	
+	var pagefunction = function() {
+            $("a[name|='exportarPDF']").click(function() {
+                window.open('{{constant('ROOT')}}php/generarEstadoDeCuentaPDF.php?inmueble='+$(this).attr('id'));
+                return false;
+            });
+	};
+	
+	pagefunction();
+	
+</script>

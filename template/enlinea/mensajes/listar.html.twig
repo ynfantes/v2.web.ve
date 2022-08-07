@@ -1,0 +1,105 @@
+{% if lista %}
+<table id="inbox-table" class="table table-striped table-hover">
+    <tbody>
+            {% for mensaje in lista %}
+            <tr id="{{ mensaje.id }}" class="{% if not mensaje.leido %}unread{% endif %}">
+                <td class="inbox-table-icon">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="checkbox style-2" value="{{ mensaje.id }}">
+                                    <span></span> </label>
+                        </div>
+                </td>
+                <td class="inbox-data-from hidden-xs hidden-sm">
+                        <div>
+                                Administradora SAC
+                        </div>
+                </td>
+                <td class="inbox-data-message">
+                        <div>
+                            <span>{{ mensaje.asunto}}</span> {{ mensaje.msg }}....
+                        </div>
+                </td>
+                <td class="inbox-data-attachment hidden-xs">
+                        <div>
+                        </div>
+                </td>
+                <td class="inbox-data-date hidden-xs">
+                        <div>
+                                {{ mensaje.fecha|date('d/m/y')}}
+                        </div>
+                </td>
+            </tr>
+            {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="alert alert-info">
+Bandeja de entrada vacía.
+</p>
+{% endif %}
+<script>
+        // paginacion
+        $("a.back").removeClass("disabled");
+        $("a.next").removeClass("disabled");
+        {% if start == 1 %}
+        $("a.back").addClass("disabled");
+        {% endif %}
+        {% if limit==total %}
+        $("a.next").addClass("disabled");
+        {% endif %}
+        {% if total >0 %}
+        $("div.inbox-nav-bar span.pull-right").html('<span class="pull-right"><strong>{{ start }}-{{ limit }}</strong> de <strong>{{ total }}</strong></span>');
+        {% endif %}
+	$("a.back").attr("name",{{ pagina - 1 }});
+        $("a.next").attr("name",{{ pagina + 1 }});
+        //Gets tooltips activated
+	$("#inbox-table [rel=tooltip]").tooltip();
+
+	$("#inbox-table input[type='checkbox']").change(function() {
+		$(this).closest('tr').toggleClass("highlight", this.checked);
+	});
+
+	$("#inbox-table .inbox-data-message").click(function() {
+		$this = $(this);
+		getMail($this);
+	})
+	$("#inbox-table .inbox-data-from").click(function() {
+		$this = $(this);
+		getMail($this);
+	})
+	function getMail($this) {
+		//console.log($this.closest("tr").attr("id"));
+		loadURL("mensajes/abrir-mensaje/"+$this.closest("tr").attr("id"), $('#inbox-content > .table-wrap'));
+	}
+
+
+	$('.inbox-table-icon input:checkbox').click(function() {
+		enableDeleteButton();
+	})
+
+	$(".deletebutton").click(function() {
+                $('#inbox-table td input:checkbox:checked').parents("tr").rowslide();
+                $('#inbox-table td input:checkbox:checked').each(function() {
+                    $.ajax({
+                    url: "{{ constant("URL_SISTEMA")}}/mensajes/eliminar/"+$(this).val(),
+                    dataType:"json",
+                    cache: false
+                    });
+                });
+		
+		//$(".inbox-checkbox-triggered").removeClass('visible');
+		//$("#compose-mail").show();
+	});
+	function enableDeleteButton() {
+		var isChecked = $('.inbox-table-icon input:checkbox').is(':checked');
+
+		if (isChecked) {
+			$(".inbox-checkbox-triggered").addClass('visible');
+			//$("#compose-mail").hide();
+		} else {
+			$(".inbox-checkbox-triggered").removeClass('visible');
+			//$("#compose-mail").show();
+		}
+	}
+</script>

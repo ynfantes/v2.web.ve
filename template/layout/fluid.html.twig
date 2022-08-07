@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sistema de Administracion de condominios, condominio en linea, sistema de consultas condominio en linea, pago condominio" >
+<meta name="keywords" content="ppago condominio, sistema de administracioin de condominios, sistema en línea valoriza2, condominio en linea" >
+<meta name="author" content="pronet21.com.ve">
+{% block head %}
+<!-- #CSS Links -->
+<!-- Basic Styles -->
+<link rel="stylesheet" type="text/css" media="screen" href="{{constant('ROOT')}}assets/app/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="{{constant('ROOT')}}assets/app/essentials.css">
+
+<!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+<link rel="stylesheet" type="text/css" media="screen" href="{{constant('ROOT')}}assets/css/smartadmin-production.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="{{constant('ROOT')}}assets/css/smartadmin-skins.min.css">
+<link href="{{constant('ROOT')}}assets/css/fileinput.min.css" rel="stylesheet" type="text/css" />
+
+<!-- We recommend you use "your_style.css" to override SmartAdmin
+specific styles this will also ensure you retrain your customization with each SmartAdmin update.
+<link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+
+<!-- #FAVICONS -->
+<link rel="shortcut icon" href="{{constant('ROOT')}}assets/images/icons/favicon.png" />
+<!-- #GOOGLE FONT -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+
+<!-- #APP SCREEN / ICONS -->
+<!-- Specifying a Webpage Icon for Web Clip 
+Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+<link rel="apple-touch-icon" href="{{constant('ROOT')}}assets/images/splash/sptouch-icon-iphone.png">
+<link rel="apple-touch-icon" sizes="76x76" href="{{ constant('ROOT')}}assets/images/splash/touch-icon-ipad.png">
+<link rel="apple-touch-icon" sizes="120x120" href="{{constant('ROOT')}}assets/images/splash/touch-icon-iphone-retina.png">
+<link rel="apple-touch-icon" sizes="152x152" href="{{constant('ROOT')}}assets/images/splash/touch-icon-ipad-retina.png">
+
+<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<!-- Startup image for web apps -->
+<link rel="apple-touch-startup-image" href="{{constant('ROOT')}}assets/images/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+<link rel="apple-touch-startup-image" href="{{constant('ROOT')}}assets/images/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="{{constant('ROOT')}}assets/images/splash/iphone.png" media="screen and (max-device-width: 320px)">
+{% endblock %}
+<title>{% block titulo %}{% endblock %} - {{ constant('TITULO')}}</title>
+
+</head>
+<body class="fixed-header fixed-navigation fixed-ribbon smart-style-3">
+{% include 'misc/navbarapp.html.twig' %}
+{% block header %}
+{% endblock %}
+{% block contenido %}
+{% block sidebar %}
+{% include 'misc/sidebar.html.twig' %}
+{% endblock %}
+{% endblock %}
+{% block footer %}
+{% include 'misc/footerapp.html.twig' %}
+{% endblock %}
+<div id="shortcut" style="display: none;">
+<ul>
+<li>
+<a class="jarvismetro-tile big-cubes bg-color-blue" href="#cuenta/listar"> <span class="iconbox"> <i class="fa fa-inbox fa-4x"></i> <span><br />Mensajes <span class="label pull-right bg-color-darken">{{ mensajes }}</span></span> </span> </a>
+</li>
+<!--li>
+<a class="jarvismetro-tile big-cubes bg-color-orangeDark" href="#"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span><br />Calendario</span> </span> </a>
+</li-->
+<li>
+<a class="jarvismetro-tile big-cubes bg-color-blueDark" href="#cuenta/listar"> <span class="iconbox"> <i class="fa fa-clipboard fa-4x"></i> <span>Recibos Pendientes <span class="label pull-right bg-color-darken">{{ recibos }}</span></span> </span> </a>
+</li>
+<li>
+<a class="jarvismetro-tile big-cubes bg-color-greenLight" href="#pago/ver"> 
+    <span class="iconbox"> 
+        <i class="fa fa-files-o fa-4x"></i> 
+        <span>Recibos Cancelados 
+            <span class="label pull-right bg-color-darken">{{cancelacion}}</span>
+        </span>
+    </span>
+</a>
+</li>
+<li>
+<a class="jarvismetro-tile big-cubes selected bg-color-pinkDark" href="#propietario/actualizar"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Mi<br /> Propiterio </span> </span> </a>
+</li>
+</ul>
+</div>
+</body>
+<!--================================================== -->
+
+<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)
+<script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>-->
+
+
+<!-- #PLUGINS -->
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script>
+if (!window.jQuery) {
+document.write('<script src="{{ constant('ROOT') }}js/app/libs/jquery-2.0.2.min.js"><\/script>');
+}
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script>
+if (!window.jQuery.ui) {
+document.write('<script src="{{constant('ROOT')}}js/app/libs/jquery-ui-1.10.3.min.js"><\/script>');
+}
+</script>
+
+<!-- IMPORTANT: APP CONFIG -->
+<script src="{{constant('ROOT')}}assets/js/app/app.config.js"></script>
+
+<!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> 
+
+<!-- BOOTSTRAP JS -->
+<script src="{{constant('ROOT')}}assets/js/app/bootstrap.min.js"></script>
+
+<!-- CUSTOM NOTIFICATION -->
+<script src="{{constant('ROOT')}}assets/js/app/notification/SmartNotification.min.js"></script>
+
+<!-- JARVIS WIDGETS -->
+<script src="{{constant('ROOT')}}assets/js/app/smartwidgets/jarvis.widget.min.js"></script>
+
+<!-- EASY PIE CHARTS -->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+
+<!-- SPARKLINES -->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/sparkline/jquery.sparkline.min.js"></script>
+
+<!-- JQUERY VALIDATE -->
+<script src="{{constant('ROOT')}}assets/js/app/jquery-validate/jquery.validate.min.js"></script>
+
+<!-- JQUERY MASKED INPUT -->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/masked-input/jquery.maskedinput.min.js"></script>
+
+<!-- JQUERY SELECT2 INPUT -->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/select2/select2.min.js"></script>
+
+<!-- JQUERY UI + Bootstrap Slider -->
+<script src="{{constant('ROOT') }}assets/js/app/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+<!-- browser msie issue fix -->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+
+<!-- FastClick: For mobile devices: you can disable this in app.js -->
+<script src="{{constant('ROOT')}}assets/js/app/plugin/fastclick/fastclick.min.js"></script>
+
+<!--[if IE 8]>
+<h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+<![endif]-->
+
+
+<!-- MAIN APP JS FILE -->
+<script src="{{constant('ROOT')}}assets/js/app/app.min.js"></script>
+</html>

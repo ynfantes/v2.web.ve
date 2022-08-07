@@ -1,0 +1,132 @@
+<h2 class="email-open-header">
+	{{ mensaje[0].asunto }} <span class="label txt-color-white">recibidos</span>
+	<a href="javascript:void(0);" rel="tooltip" data-placement="left" data-original-title="Print" class="txt-color-darken pull-right"><i class="fa fa-print"></i></a>	
+</h2>
+
+<div class="inbox-info-bar">
+	<div class="row">
+		<div class="col-sm-9">
+                    <img src="{{ constant('ROOT') }}assets/images/avatars/5.png" alt="me" class="away">
+			<strong>Administradora SAC</strong>
+                        Para <strong>mí</strong>, enviado <i>{{ mensaje[0].fecha|date("g:ia \\, d/m/Y")}}</i></span> 
+		</div>
+		<div class="col-sm-3 text-right">
+			
+			<div class="btn-group text-left">
+				<button class="btn btn-primary btn-sm replythis">
+					<i class="fa fa-trash-o"></i> Eliminar
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div class="inbox-message">
+	{{ mensaje[0].contenido }}
+</div>
+
+<div class="email-infobox">
+
+	<div class="well well-sm well-light">
+		<h5>Related Invoice</h5>
+		<ul class="list-unstyled">
+			<li>
+				<i class="fa fa-file fa-fw text-success"></i><a href="javascript:void(0);"> #4831 - Paid</a>
+			</li>
+			<li>
+				<i class="fa fa-file fa-fw text-danger"></i><a href="javascript:void(0);"><strong> #4835 - Unpaid</strong></a>
+			</li>
+		</ul>
+
+
+	</div>
+
+	<div class="well well-sm well-light">
+		<h5>Upcoming Meetings</h5>
+		
+		<p>
+			<span class="label label-success"><i class="fa fa-check"></i> <strike>Agenda Review @ 10 AM</strike> </span>
+		</p>
+
+		<p>
+			<span class="label label-primary"><i class="fa fa-clock-o"></i> Client Meeting @ 2:30 PM</span>
+		</p>
+
+		<p>
+			<span class="label label-warning"><i class="fa fa-clock-o"></i> Salary Review @ 4:00 PM</span>
+		</p>		
+	</div>	
+
+	<ul class="list-inline">
+		<li><img src="{{ constant('ROOT') }}assets/images/avatars/5.png" alt="me" width="30px"></li>
+		<li><img src="{{ constant('ROOT') }}assets/images/avatars/3.png" alt="me" width="30px"></li>
+		<li><img src="{{ constant('ROOT') }}assets/images/avatars/sunny.png" alt="me" width="30px"></li>
+		<li><a href="javascript:void(0);">1 more</a></li>
+	</ul>
+
+</div>
+
+<script type="text/javascript">
+	
+	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+	 *
+	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+	 *
+	 * // activate tooltips
+	 * $("[rel=tooltip]").tooltip();
+	 *
+	 * // activate popovers
+	 * $("[rel=popover]").popover();
+	 *
+	 * // activate popovers with hover states
+	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
+	 *
+	 * // activate inline charts
+	 * runAllCharts();
+	 *
+	 * // setup widgets
+	 * setup_widgets_desktop();
+	 *
+	 * // run form elements
+	 * runAllForms();
+	 *
+	 ********************************
+	 *
+	 * pageSetUp() is needed whenever you load a page.
+	 * It initializes and checks for all basic elements of the page
+	 * and makes rendering easier.
+	 *
+	 */
+
+	pageSetUp();
+	
+	/*
+	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+	 * eg alert("my home function");
+	 * 
+	 * var pagefunction = function() {
+	 *   ...
+	 * }
+	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+	 * 
+	 * TO LOAD A SCRIPT:
+	 * var pagefunction = function (){ 
+	 *  loadScript(".../plugin.js", run_after_loaded);	
+	 * }
+	 * 
+	 * OR
+	 * 
+	 * loadScript(".../plugin.js", run_after_loaded);
+	 */
+	
+	
+	// PAGE RELATED SCRIPTS
+	
+	$(".table-wrap [rel=tooltip]").tooltip();
+
+	$(".replythis").click(function(){
+		loadURL("mensajes/eliminar-mensaje/{{ mensaje[0].id }}", $('#inbox-content > .table-wrap'));
+	})
+	
+</script>
