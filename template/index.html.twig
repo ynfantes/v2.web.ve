@@ -84,6 +84,16 @@ Condominio en línea<span class="badge badge-danger float-right fs-11">V2</span>
 <div class="box-title mb-30">
 <h2 class="fs-20">Ingrese sus credenciales de acceso</h2>
 </div>
+{% if mantenimiento %}
+<p class="alert alert-warning">
+    <strong>Servicio no disponible</strong><br>
+Estamos efectuando labores de mantenimiento,
+le pedimos disculpas por los inconvenientes causados. Regrese pronto
+</p>
+<div class="progress progress-mini progress-bar-striped active">
+<div style="width:{{avance}}%" class="progress-bar progress-bar-striped progress-bar-success"></div>
+</div>
+{% else %}
 <form id="login-form" class="m-0" method="post" action="#" autocomplete="off">
 <div class="clearfix">
 <div id="correo" class="form-label-group mb-4">
@@ -124,6 +134,7 @@ Condominio en línea<span class="badge badge-danger float-right fs-11">V2</span>
 </div-->
 </div>
 </form>
+{% endif %}
 
 </div>
 
