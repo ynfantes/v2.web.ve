@@ -10,8 +10,11 @@ if ($accion=='test') {
 //    die();
 }
 
-$mantenimiento = MANTENIMIENTO;
-$avance = 0;
+$mantenimiento      = MANTENIMIENTO;
+$avance             = 0;
+$url                = '';
+$_SESSION['state']  = '';
+$loginUrl           = '';
 
 if (!$mantenimiento) {
     
@@ -33,7 +36,7 @@ if (!$mantenimiento) {
 echo $twig->render('index.html.twig',array(
         'url'           => $url,
         'state'         => $_SESSION['state'],
-        'loginUrl'      => $loginUrl´,
+        'loginUrl'      => $loginUrl,
         'mantenimiento' => $mantenimiento,
         'avance'        => $avance
         )
