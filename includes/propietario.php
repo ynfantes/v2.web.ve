@@ -93,7 +93,7 @@ class propietario extends db implements crud  {
                 if(session_status()  == PHP_SESSION_NONE) {
                     session_start();
                 }
-                $result['id']       = $_SESSION['id'];
+                // $result['id']       = $_SESSION['id'];
                 $result['suceed']   = false;
                 $result['error']    = "<strong>Ups! </strong> Ha ingresado un password incorrecto";
             }
