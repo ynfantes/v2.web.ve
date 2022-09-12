@@ -14,8 +14,7 @@ while ($elemento = readdir($dir)){
         if(!is_dir($path.$elemento) ){
             $r = $pago->cancelacionExisteEnBaseDeDatos($elemento);
             if ($r==0) {
-                //unlink($path."/".$elemento);
-                echo 'Existe elimento: '.$elemento.'<br>';
+                unlink($path."/".$elemento);
                 $n++;
             } else {
                 $e++;
