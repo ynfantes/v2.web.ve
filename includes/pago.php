@@ -1098,4 +1098,19 @@ class pago extends db implements crud {
     public function insertarCancelacionDeGastos($data) {
         return db::insert("cancelacion_gastos",$data);
     }
+
+    public function cancelacionExisteEnBaseDeDatos($cancelacion) {
+        $cancelacion = str_replace(".pdf","",$cancelacion);
+        $query = "select numero_factura from cancelacion_gastos 
+            where concat(numero_factura,cod_admin)='".$cancelacion."'";
+        $r=0;
+        $result = $this->dame_query($query);
+        if ($result['suceed']==true) {
+            if (count($result['data'])>0) {
+                $r=1;
+            }
+        }
+        return $r;       
+    }
+
 }
