@@ -29,7 +29,7 @@ switch ($accion) {
             $confirma = '<div class="alert alert-block alert-success"><h4 class="alert-heading">';
             $confirma.= '<i class="fa fa-check-square-o"></i> Prerecibo autorizado!</h4>';
             $documento = $prerecibo->ver($_GET['id']);
-            if ($documento['suceed'] && count($documento['data'] > 0)) {
+            if ($documento['suceed'] && count($documento['data']) > 0) {
                 // enviamos un email de notificación a la administradora
                 $ini = parse_ini_file('../../includes/emails.ini');
                 
