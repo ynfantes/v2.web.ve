@@ -61,7 +61,7 @@ if (isset($_GET['cod_admin'])) {
 
 $tablas = array("factura_detalle", "facturas", "propiedades",
     "junta_condominio", "inmueble", "inmueble_deuda_confidencial", "movimiento_caja",
-    "fondos", "fondos_movimiento", "historico_avisos_cobro");
+    "fondos", "fondos_movimiento", "historico_avisos_cobro","cancelacion_gastos");
 
 if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $codinm = $_GET['codinm'];
@@ -78,6 +78,7 @@ if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $db->exec_query("delete from fondos where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from fondos_movimiento where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from historico_avisos_cobro where id_inmueble='$codinm' and cod_admin='$cod_admin'");
+    $db->exec_query("delete from cancelacion_gastos where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $mensaje = "Actualización inmueble $codinm Administradora:$cod_admin<br>";
 } else {
     if (isset($_GET['cod_admin'])) {
