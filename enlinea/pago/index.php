@@ -103,8 +103,8 @@ switch ($accion) {
         $ip = Misc::getRealIP();
         // <editor-fold defaultstate="collapsed" desc="data">
         $fields = array(
-            "KeyId" => KeyId,
-            "PublicKeyId" => PublicKeyId,
+            "KeyId" => 0,
+            "PublicKeyId" => 0,
             "Amount" => Misc::format_mysql_number($data['monto']),
             "Description" => "Pago de Condominio",
             "CardHolder" => $data['CardHolder'],
@@ -379,7 +379,7 @@ switch ($accion) {
                             }
                         }
                     }
-                    $banco = $inmuebles->obtenerCuentasBancariasPorInmueble($propiedad['id_inmueble']);
+                    $banco = $inmuebles->obtenerCuentasBancariasPorInmueble($session['usuario']['cod_admin'], $propiedad['id_inmueble']);
                     $inmueble['data'][0]['cuentas_bancarias'] = $banco['data'];
                     $cuenta[] = Array(
                         "inmueble"      => $inmueble['data'][0],
@@ -444,7 +444,7 @@ switch ($accion) {
 
     case "listarPagosPendientesOld":
         $pagos = new pago();
-        $pagos_maestro = $pagos->listarPagosPendientes();
+        $pagos_maestro = $pagos->listarPagosPendientes($session['usuario']['cod_admin']);
         
         if ($pagos_maestro['suceed'] && count($pagos_maestro['data']) > 0) {
             
