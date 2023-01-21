@@ -37,10 +37,10 @@ traditional href="" links. See documentation for details.
 <ul style="">
 <li class="active">
 <a title="Cartelera" href="inmueble/?accion=cartelera">
-<i class="et-clipboard"></i><span class="menu-item-parent">Cartelera</span></a>
+<i class="fa fa-clipboard"></i><span class="menu-item-parent">Cartelera</span></a>
 </li>
 <li>
-<a href="#"><i class="et-profile-male"></i> <span class="menu-item-parent">Propietario</span></a>
+<a href="#"><i class="fa fa-facebook"></i> <span class="menu-item-parent">Propietario</span></a>
 <ul>
 <li><a href="propietario/?accion=actualizar">Datos Personales</a>
 </li>
@@ -49,7 +49,7 @@ traditional href="" links. See documentation for details.
 </ul>
 </li>
 <li>
-<a href="#"><i class="et-strategy"></i> <span class="menu-item-parent">Junta de Condominio</span></a>
+<a href="#"><i class="fa fa-users"></i> <span class="menu-item-parent">Junta de Condominio</span></a>
 <ul>
 <li>
     <a href="inmueble/?accion=junta-condominio">Integrantes</a>
@@ -70,7 +70,7 @@ traditional href="" links. See documentation for details.
 {% else %}
 <li>
     <a href="prerecibo/?accion=soportes">
-        <i class="et-documents"></i>
+        <i class="fa fa-suitcase"></i>
         <span class="menu-item-parent">Soportes Facturación</span>
     </a>
 </li>
@@ -78,19 +78,19 @@ traditional href="" links. See documentation for details.
 <li>
 <li>
     <a href="cuenta/?accion=listar">
-        <i class="et-browser"></i> 
+        <i class="fa fa-book"></i> 
         <span class="menu-item-parent">Recibos por pagar</span>
         <span class="badge bg-color-{% if recibos > 0 %}red{% else %}blue{% endif %} pull-right inbox-badge">{{recibos}}</span>
     </a>
 </li>
 <li>
     <a href="cuenta/?accion=avisos">
-        <i class="et-documents"></i>
+        <i class="fa fa-bell"></i>
         <span class="menu-item-parent">Avisos de Cobro</span>
     </a>
 </li>
 <li>
-<a id="reportar-pago" href="pago/?accion=registrar"><i class="et-wallet"></i> <span class="menu-item-parent">Reportar Pago</span></a>
+<a id="reportar-pago" href="pago/?accion=registrar"><i class="fa fa-bitcoin"></i> <span class="menu-item-parent">Reportar Pago</span></a>
 </li>
 {#% if session.usuario.cedula == 2525 %#}
 <!--li>
@@ -98,20 +98,20 @@ traditional href="" links. See documentation for details.
 </li-->
 {#% endif %#}
 <li>
-<a href="pago/?accion=historico"><i class="et-pricetags"></i> <span class="menu-item-parent">Histórico Pagos</span></a>
+<a href="pago/?accion=historico"><i class="fa fa-history"></i> <span class="menu-item-parent">Histórico Pagos</span></a>
 </li>
 <!--li>
 <a href="pago/?accion=ver"><i class="et-layers"></i> <span class="menu-item-parent">Recibos Cancelados</span></a>
 </li-->
 <li>
-<a href="mensajes/?accion=bandeja-entrada"><i class="et-envelope"></i> <span class="menu-item-parent">Mensajes</span>{% if mensajes > 0 %}<span class="badge bg-color-orange pull-right inbox-badge">{{ mensajes }}</span>{% endif %}</a>
+<a href="mensajes/?accion=bandeja-entrada"><i class="fa fa-google"></i> <span class="menu-item-parent">Mensajes</span>{% if mensajes > 0 %}<span class="badge bg-color-orange pull-right inbox-badge">{{ mensajes }}</span>{% endif %}</a>
 </li>
 <li>
-<a href="inmueble/?accion=listarCuentasDeFondo"><i class="et-ribbon"></i> <span class="menu-item-parent">Cuentas de Fondo</span></a>
+<a href="inmueble/?accion=listarCuentasDeFondo"><i class="fa fa-bar-chart-o"></i> <span class="menu-item-parent">Cuentas de Fondo</span></a>
 </li>
 <li>
     <a target="parent" href="propietario?logout=true" title="Cerrar Sesión" data-action="userLogout" data-logout-msg="">
-        <i class="et-streetsign"></i> <span class="menu-item-parent">Cerrar Sesión</span></a>
+        <i class="fa fa-arrow-circle-left"></i> <span class="menu-item-parent">Cerrar Sesión</span></a>
 </li>
 </ul>
 </nav>
