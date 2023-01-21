@@ -1,7 +1,7 @@
 <div class="row">
 <!-- col -->
 <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-<h1 class="page-title txt-color-blue"><i class="fa-fw fa {% if id != 'clave' %} fa-users {% else %} fa-key {% endif %}"></i> Propietario <span>>
+<h1 class="page-title txt-color-blue"><i class="fa-fw fa {% if id != 'clave' %} fa-user {% else %} fa-key {% endif %}"></i> Propietario <span>>
 {% if id != 'clave' %}Datos Personales {% else %} Clave de acceso {% endif %} </span></h1>
 </div>
 <!-- end col -->
@@ -57,87 +57,140 @@ data-widget-sortable="false"
 <div id="hr1" class="tab-pane fade in active">
 <p class="alert alert-info">Estimado propietario, es importante para nosotros que mantenga actualizada su información de contacto. Ayudenos a mantenerlo informado en todo momento de la sitiación de su inmueble.</p>
 <div class="widget-body">
-<form class="form-horizontal" name="perfil">
+<form class="smart-form" name="perfil">
 <fieldset>
-<legend class="txt-color-blue"><strong>General</strong></legend>
+<legend class="txt-color-blue"><strong>Datos Generales</strong></legend>
 <input type="hidden" name="id" value="{{propietario.id}}"/>
 <input type="hidden" name="modificado" value="1"/>
-<div class="form-group">
-<label class="col-md-2 control-label">Nombre Razón Social</label>
-<div class="col-md-10">
-<input type="text" value="{{propietario.nombre}}" class="form-control" disabled="disabled">
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-2 control-label">Cédula de Identidad</label>
-<div class="col-md-4">
-<input type="text" list="list" class="form-control" value="{{ propietario.cedula }}"  disabled="disabled">
-</div>
+<div class="row">
+    <section class="col col-9">
+        <label class="input">
+            <i class="icon-prepend fa fa-user"></i>
+            <input 
+                type="text" 
+                value="{{propietario.nombre}}" 
+                class="form-control" 
+                disabled="disabled"
+                placeholder="Nombre / Razón Social"
+            >
+        </label>
+        <div class="note">Nombre o Razón Social</div>
+    </section>
+    <section class="col col-3">
+        <label class="input">
+            <input 
+                type="text" 
+                list="list" 
+                class="form-control" 
+                value="{{ propietario.cedula }}"  
+                disabled="disabled"
+                placeholder="Documento de Identidad"
+            >
+        </label>
+        <div class="note">Número documento identidad</div>
+    </section>
 </div>
 </fieldset>
 <fieldset>
-<legend class="txt-color-blue"><strong>Contacto</strong></legend>
-<div class="form-group">
-<label class="col-md-2 control-label" for="telefono1">Teléfono Habitación</label>
-<div class="col-md-4"><div class="input-group">
-<input type="text" id="telefono2" name="telefono2" value="{{propietario.telefono2}}" class="form-control" data-mask-placeholder="_" data-mask="(9999) 999-9999">
-<span class="input-group-addon"><i class="fa fa-phone"></i></span>
-</div>
-<p class="note">Formato: (XXXX) XXX-XXXX</p>        
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-2 control-label" for="telefono2">Teléfono Oficina</label>
-<div class="col-md-4"><div class="input-group">
-<input type="text" id="telefono1" name="telefono1" value="{{propietario.telefono1}}" class="form-control" data-mask-placeholder="_" data-mask="(9999) 999-9999">
-<span class="input-group-addon"><i class="fa fa-phone"></i></span>
-</div>
-<p class="note">Formato: (XXXX) XXX-XXXX</p>
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-2 control-label" for="telefono2">Teléfono Celular</label>
-<div class="col-md-4"><div class="input-group">
-<input type="text" id="telefono3" name="telefono3" value="{{ propietario.telefono3 }}" class="alphanumeric form-control"  data-mask-placeholder="_" data-mask="(9999) 999-9999">
-<span class="input-group-addon"><i class="fa fa-phone"></i></span>
-</div>
-<p class="note">Formato: (XXXX) XXX-XXXX</p>        
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-2 control-label" for="email">Correo electrónico</label>
-<div class="col-md-4"><div class="input-group">
-<input type="text" id="email" name="email" value="{{ propietario.email }}" class="required email form-control">
-<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-</div>
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-2 control-label" for="email">Correo electrónico Alternativo</label>
-<div class="col-md-4"><div class="input-group">
-<input type="text" id="email_alternativo" name="email_alternativo" value="{{ propietario.email_alternativo }}" class="required email form-control">
-<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-</div>
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-2 control-label" for="direccion">Dirección</label>
-<div class="col-md-10">
-    <textarea class="required form-control" name="direccion" maxlength="254">{{ propietario.direccion}}</textarea>
-</div>
+<legend class="txt-color-blue"><strong>Datos de Contacto</strong></legend>
+
+<div class="row">
+    <section class="col col-4">
+    <label class="input">
+        <i class="icon-prepend fa fa-phone"></i>
+        <input 
+            type="text" 
+            id="telefono2" 
+            name="telefono2" 
+            value="{{propietario.telefono2}}" 
+            class="form-control" 
+            data-mask-placeholder="_" 
+            data-mask="(9999) 999-9999"
+            placeholder="Teléfono hábitación"
+        >
+    </label>
+    <div class="note">Formato: (XXXX) XXX-XXXX</div>
+    </section>
+    <section class="col col-4">
+    <label class="input">
+        <i class="icon-prepend fa fa-phone"></i>
+        <input 
+            type="text" 
+            id="telefono1" 
+            name="telefono1" 
+            value="{{propietario.telefono1}}" 
+            class="form-control" 
+            data-mask-placeholder="_" 
+            data-mask="(9999) 999-9999"
+            placeholder="Teléfono Oficina"
+        >
+    </label>
+    <div class="note">Formato: (XXXX) XXX-XXXX</div>
+    </section>
+    <section class="col col-4">
+        <label class="input">
+            <i class="icon-prepend fa fa-mobile"></i>
+            <input 
+                type="text" 
+                id="telefono3" 
+                name="telefono3" 
+                value="{{ propietario.telefono3 }}" 
+                class="alphanumeric form-control"  
+                data-mask-placeholder="_" 
+                data-mask="(9999) 999-9999"
+                placeholder="Teléfono Celular"
+            >
+        </label>
+        <div class="note">Formato: (XXXX) XXX-XXXX</div>
+    </section>
 </div>
 
-</fieldset>
-<div class="form-actions">
 <div class="row">
-<div class="col-md-12">
-<button class="btn btn-success" name="actualizar">
-<i class="fa fa-save"></i>
-Guardar
-</button>
+    <section class="col col-6">
+        <label class="input">
+            <i class="icon-prepend fa fa-envelope"></i>
+            <input 
+                type="text" 
+                id="email" 
+                name="email" 
+                value="{{propietario.email }}" 
+                class="required email form-control"
+                placeholder="Correo electrónico"
+            >
+        </label>
+    </section>
+    <section class="col col-6">
+        <label class="input">
+            <i class="icon-prepend fa fa-envelope"></i>
+            <input 
+                type="text" 
+                id="email_alternativo" 
+                name="email_alternativo" 
+                value="{{propietario.email_alternativo}}" 
+                class="required email form-control"
+                placeholder="Correo alternativo"
+            >
+        </label>
+    </section>
 </div>
-</div>
-</div>
+<section>
+
+    <label class="textarea">
+        <textarea 
+            class="required form-control" 
+            name="direccion" 
+            maxlength="254"
+            placeholder="Dirección"
+        >{{propietario.direccion}}</textarea>
+    </label>
+</section>
+</fieldset>
+<footer>    
+    <button class="btn btn-success" name="actualizar">
+    <i class="fa fa-save"></i>
+    Guardar
+    </button>
+</footer>
 </form>
 </div>
 </div>
