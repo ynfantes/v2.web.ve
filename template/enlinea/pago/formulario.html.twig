@@ -58,15 +58,36 @@
 </div>
 <section id="widget-grid" class="">
 <div class="row">
-<div class="col-sm-12">
-<div class="alert alert-warning fade in hidden-xs">
-<a class="close" data-dismiss="alert" href="#">×</a>
-<h4 class="alert-heading"> <i class="fa-fw fa fa-warning"></i> Atención!</h4>
-<strong>Yo. {{session.usuario.nombre}}, declaro que estoy ingresando datos reales, fidedignos y legales de transferencia o depósito,
-de ser rechazados los mismos por el banco emisor o el banco receptor, 
-será cargado dicho valor en mi cuenta de gastos de condominio, sin aviso ni protesta.</strong>
-</div>
-</div>
+
+    <div class="col-md-9 col-xl-9">
+        <div class="alert alert-warning fade in hidden-xs">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            <h4 class="alert-heading"> <i class="fa-fw fa fa-warning"></i> Atención!</h4>
+            <strong>Yo. {{session.usuario.nombre}}, declaro que estoy ingresando datos reales, fidedignos y legales de transferencia o depósito,
+            de ser rechazados los mismos por el banco emisor o el banco receptor, 
+            será cargado dicho valor en mi cuenta de gastos de condominio, sin aviso ni protesta.</strong>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-3">
+        <div class="alert alert-success fade in hidden-xs">
+            <h4 class="alert-heading">
+            Bs.<span class="font-weight-bold txt-color-green" style="font-size:2em" id="tasa_del_dia">--</span> 
+            <small class="txt-color-green"><strong>Tasa del día</strong></small>
+            </h4>
+            <div><small><i class="fa-fw fa fa-bank"></i> Banco Central de Venezuela</small></div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+    <div class="alert alert-info fade in visible-xs">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-info"></i>
+        <strong>Info!</strong> Tasa del día <span id="tasa_del_dia2" class="font-lg label bg-color-red">--</span>
+    </div>
+    </div>
+
 <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 <div id="wid-id-0" class="jarviswidget transparent jarviswidget-sortable" data-widget-deletebutton="false" data-widget-editbutton="false" style="" role="widget">
 <header>
@@ -382,6 +403,7 @@ recibirá respuesta de confirmación</h4>
 </section>
 <!-- end widget grid -->
 <script src="{{constant('ROOT')}}assets/js/fileinput.min.js"></script>
+<script src="{{constant('ROOT')}}assets/js/tasa-bcv.js"></script>
 <script type="text/javascript">
 	pageSetUp();
 	var pagefunction = function() {
