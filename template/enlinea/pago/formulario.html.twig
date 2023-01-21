@@ -72,7 +72,7 @@
     <div class="col-md-3 col-3">
         <div class="alert alert-success fade in hidden-xs">
             <h4 class="alert-heading">
-            Bs.<span class="font-weight-bold txt-color-green" style="font-size:2em" id="tasa_del_dia">--</span> 
+            Bs.<span class="font-weight-bold txt-color-green" style="font-size:2em" id="tasa_del_dia">{{tasa.usd}}</span> 
             <small class="txt-color-green"><strong>Tasa del día</strong></small>
             </h4>
             <div><small><i class="fa-fw fa fa-bank"></i> Banco Central de Venezuela</small></div>
@@ -84,7 +84,7 @@
             ×
         </button>
         <i class="fa-fw fa fa-info"></i>
-        <strong>Info!</strong> Tasa del día <span id="tasa_del_dia2" class="font-lg label bg-color-red">--</span>
+        <strong>Info!</strong> Tasa del día <span id="tasa_del_dia2" class="font-lg label bg-color-red">{{tasa.usd}}</span>
     </div>
     </div>
 
@@ -403,7 +403,6 @@ recibirá respuesta de confirmación</h4>
 </section>
 <!-- end widget grid -->
 <script src="{{constant('ROOT')}}assets/js/fileinput.min.js"></script>
-<script src="{{constant('ROOT')}}assets/js/tasa-bcv.js"></script>
 <script type="text/javascript">
 	pageSetUp();
 	var pagefunction = function() {

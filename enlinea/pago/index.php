@@ -9,6 +9,21 @@ $bitacora = new bitacora();
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : "listar";
 
+function file_get_contents_curl($url){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
+function limpiarString($String){ 
+   $String = str_replace(array("|","|","[","^","´","`","¨","~","]","'","#","{","}",".","","\t","\n"," ", "Bs/USD","USD"),"",$String);
+   return $String;
+}
 
 switch ($accion) {
     
@@ -101,7 +116,7 @@ switch ($accion) {
 
         $ExpirationDate = $data['mes'] . "/" . $data['year'];
         $ip = Misc::getRealIP();
-        // <editor-fold defaultstate="collapsed" desc="data">
+        
         $fields = array(
             "KeyId" => 0,
             "PublicKeyId" => 0,
@@ -122,9 +137,7 @@ switch ($accion) {
             "TypUsr" => $data['TypUsr'],
             "Correo" => $data['email'],
             "TelTitular" => str_replace("-", "", $data['telefono']));
-        // </editor-fold>
-
-        // <editor-fold defaultstate="collapsed" desc="llamada al API">
+        
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -148,7 +161,6 @@ switch ($accion) {
         $err = curl_error($curl);
 
         curl_close($curl); 
-        // </editor-fold>
 
         if ($err) {
             echo "cURL Error #:" . $err;
@@ -303,25 +315,43 @@ switch ($accion) {
                     //var_dump($banco);
                     $inmueble['data'][0]['cuentas_bancarias'] = $banco['data'];
                     
-                    $cuenta[] = Array(
-                            "inmueble"      => $inmueble['data'][0],
-                            "propiedades"   => $propiedad,
-                            "cuentas"       => $factura['data'],
-                            "resultado"     => $resultado
-                            );
+                    $cuenta[] = [
+                        'cuentas'     => $factura['data'],
+                        'inmueble'    => $inmueble['data'][0],
+                        'propiedades' => $propiedad,
+                        'resultado'   => $resultado,
+                    ];
                 }
                 
             }
         }
         //var_dump($propiedades['data']);
-        echo $twig->render('enlinea/pago/formulario.html.twig', array(
-            "session"       => $session,
-            "cuentas"       => $cuenta,
-            "accion"        => $accion,
-            "usuario"       => $session['usuario'],
-            "propiedades"   => $propiedades['data'],
-            "bancos" => $bancos
-        ));
+        $tasa   = [];
+        $url    = 'https://www.bcv.org.ve';
+        
+        if(($html   = file_get_contents_curl($url)) == false) {
+            $error = error_get_last();
+            //die("HTTP request failed. Error was: " . $error['message']);
+        }
+
+        $doc = new DOMDocument();
+        @$doc->loadHTML($html, LIBXML_NOERROR);
+        $nodes = $doc->getElementById('dolar');
+        $lectura = rtrim(ltrim($nodes->nodeValue));
+        $lectura = explode(" ", limpiarString($lectura));
+        $tasa['dolar'] = $lectura[0];
+        $tasa['usd'] = number_format( str_replace(",",".",$lectura[0]), 2, ',', '.' );
+
+        $params = [
+            'accion'      => $accion,
+            'bancos'      => $bancos,
+            'cuentas'     => $cuenta,
+            'propiedades' => $propiedades['data'],
+            'session'     => $session,
+            'tasa'        => $tasa,
+            'usuario'     => $session['usuario'],
+        ];
+        echo $twig->render('enlinea/pago/formulario.html.twig', $params);
         break; 
         
     case "pago-tdc":
