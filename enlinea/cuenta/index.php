@@ -139,6 +139,7 @@ switch ($accion) {
                 $session['usuario']['cedula'],
                 $cod_admin);
         if ($propiedades['suceed'] == true) {
+            
             foreach ($propiedades['data'] as $propiedad) {
                 
                 $inmueble = $inmuebles->verDatosInmueble(
@@ -146,14 +147,15 @@ switch ($accion) {
                         $cod_admin);
                 
                 $inmueble = $inmueble['data'][0];
-                $ano_actual = date('Y');
+                $ano_actual = date('Y');    
                 $ano_anterior = date('Y', strtotime('-1 year'));
+                
                 $r = $avisos->obtenerAñosHistorico(
                         $inmueble['id'],
                         $propiedad['apto'],
                         $cod_admin);
                 
-                if ($r['suceed'] && count($r['data'])>0) {
+                if ($r['suceed'] && count($r['data'])>1) {
                     $ano_actual = $r['data'][0]['ano'];
                     if (count($r['data'])>1) {
                         $ano_anterior = $r['data'][1]['ano'];
@@ -174,19 +176,24 @@ switch ($accion) {
                     }
                     $recibos_ant = $result['data'];
                 }
-                $result = $avisos->historicoAvisosDeCobro(
-                        $inmueble['id'], 
-                        $propiedad['apto'], 
-                        $cod_admin,
-                        $ano_actual);
                 
-                if ($result['suceed'] && count($result['data']) > 0) {
-                    for ($index = 0; $index < count($result['data']); $index++) {
-                        $filename = "../avisos/".$result['data'][$index]['numero_factura'].$cod_admin.".pdf";
-                        $result['data'][$index]['aviso'] = file_exists($filename);
+                if ($ano_actual != $ano_anterior) {
+                    
+                    $result = $avisos->historicoAvisosDeCobro(
+                            $inmueble['id'], 
+                            $propiedad['apto'], 
+                            $cod_admin,
+                            $ano_actual);
+                    
+                    if ($result['suceed'] && count($result['data']) > 0) {
+                        for ($index = 0; $index < count($result['data']); $index++) {
+                            $filename = "../avisos/".$result['data'][$index]['numero_factura'].$cod_admin.".pdf";
+                            $result['data'][$index]['aviso'] = file_exists($filename);
+                        }
+                        $recibos_act = $result['data'];
                     }
-                    $recibos_act = $result['data'];
                 }
+                
                 $historico[] = Array(
                     "inmueble"      => $inmueble,
                     "propiedades"   => $propiedad,

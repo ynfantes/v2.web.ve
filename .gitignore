@@ -4,3 +4,4 @@
 /data/*.txt
 /includes/configuracion.php
 /DB
+.htaccess
