@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "conventional-changelog-cli": "^2.2.2"
+  },
+  "version": "1.0.0"
+}
