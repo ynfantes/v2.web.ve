@@ -61,7 +61,7 @@ if (isset($_GET['cod_admin'])) {
 
 $tablas = array("factura_detalle", "facturas", "propiedades",
     "junta_condominio", "inmueble", "inmueble_deuda_confidencial", "movimiento_caja",
-    "fondos", "fondos_movimiento", "historico_avisos_cobro", "cancelacion_gastos");
+    "fondos", "fondos_movimiento", "historico_avisos_cobro","cancelacion_gastos");
 
 if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $codinm = $_GET['codinm'];

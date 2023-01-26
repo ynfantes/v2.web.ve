@@ -10,6 +10,7 @@ require_once 'includes/constants.php';
 // }
     
 $accion = isset($_GET['accion']) ? $_GET['accion'] : "index";
+
 $mantenimiento      = MANTENIMIENTO;
 $avance             = 0;
 $url                = '';
@@ -18,13 +19,13 @@ $loginUrl           = '';
 
 if (!$mantenimiento) {
     
-    if(session_status()  == PHP_SESSION_NONE) {
-        session_start();
-    }
-    $_SESSION['state'] = md5(uniqid(rand(), TRUE));
-    $url = urlencode(ROOT.'faceauth.php');
-    require_once './g-config.php';
-    $loginUrl = $gClient->createAuthUrl();
+    // if(session_status()  == PHP_SESSION_NONE) {
+    //     session_start();
+    // }
+    // $_SESSION['state'] = md5(uniqid(rand(), TRUE));
+    // $url = urlencode(ROOT.'faceauth.php');
+    // require_once './g-config.php';
+    // $loginUrl = $gClient->createAuthUrl();
     
 } else {
     $min = date("i");

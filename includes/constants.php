@@ -2,8 +2,8 @@
 include_once 'configuracion.php';
 
 
-include_once dirname(dirname(dirname(__FILE__))).'/framework/twig/lib/Twig/Autoloader.php';
-include_once SERVER_ROOT . 'includes/extensiones.php';
+include_once SERVER_ROOT.'framework/twig/lib/Twig/Autoloader.php';
+include_once SERVER_ROOT.'includes/extensiones.php';
 Twig_Autoloader::register();
 
 $loader = new Twig_Loader_Filesystem(SERVER_ROOT . 'template');

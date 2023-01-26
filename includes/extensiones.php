@@ -1,7 +1,7 @@
 <?php
 
-include_once dirname(dirname(dirname(__FILE__))).'/framework/twig/lib/Twig/ExtensionInterface.php';
-include_once dirname(dirname(dirname(__FILE__))).'/framework/twig/lib/Twig/Extension.php';
+include_once SERVER_ROOT.'framework/twig/lib/Twig/ExtensionInterface.php';
+include_once SERVER_ROOT.'framework/twig/lib/Twig/Extension.php';
 
 class extensiones extends Twig_Extension {
 
