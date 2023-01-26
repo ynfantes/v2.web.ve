@@ -11,7 +11,7 @@ $r = $factura->facturaPerteneceACliente(
         $_SESSION['usuario']['cedula'],
         $_SESSION['usuario']['cod_admin']);
 
-if ($r==true) {
+if ($r == true ) {
     $titulo = "AC".$_GET['id'].".pdf";
     $content="Content-type: application/pdf";
     $url = URL_SISTEMA."/avisos/".$_GET['id'].$_SESSION['usuario']['cod_admin'].".pdf";
@@ -29,5 +29,5 @@ if ($r==true) {
 //    header("location:$url");
     
 } else {
-    echo "El recibo de condominio no se puede mostrar en estos momentos.";
+    echo "El aviso de cobro no se puede mostrar en estos momentos.";
 }

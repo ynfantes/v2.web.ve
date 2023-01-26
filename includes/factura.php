@@ -61,12 +61,16 @@ class factura extends db implements crud {
         if ($result['suceed']==true && count($result['data'])>0) {
             $pertenece = $result['data'][0]['cedula']==$cedula;
         }
+
         if (!$pertenece) {
-            $query = 'select cedula from propiedades join historico_avisos_cobro as a '
-                    . 'on propiedades.id_inmueble = a.id_inmueble and propiedades.apto '
-                    . '= a.apto where a.numero_factura="'.$factura.'" and a.cod_admin="'.$cod_admin.'"';
+            
+            $query =    "select cedula 
+                        from propiedades p 
+                        join historico_avisos_cobro h on p.id_inmueble = h.id_inmueble and p.apto = h.apto 
+                        where p.cod_admin='$cod_admin' and h.numero_factura='$factura'";
+
             $result = $this->dame_query($query);
-            if ($result['suceed']==true) {
+            if ($result['suceed'] && count($result['data'])>0) {
                 $pertenece = $result['data'][0]['cedula']==$cedula;
             }
         }
