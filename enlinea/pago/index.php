@@ -847,4 +847,18 @@ switch ($accion) {
             echo "0";
         }
         break; 
+
+    case "reenviarNotificacionRegistroPago":
+        $pago = new pago();
+        $lista = $pago->listarPagosEmailRegisroNoEnviado();
+
+        if ($lista['suceed'] && count($lista['data']) > 0) {
+            foreach ($lista['data'] as $registro) {
+                $pago->reenviarEmailPagoRegistrado($registro['id']);
+                echo '<br />';
+            }
+        } else {
+            echo 'No hay notificaciones pendientes por reenviar';
+        }
+        break;
 }

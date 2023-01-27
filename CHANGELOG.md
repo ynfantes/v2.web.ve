@@ -1,5 +1,24 @@
-##  (2023-01-25)
+## <small>1.0.1 (2023-01-27)</small>
 
+* 1.0.1 ([f7a9369](https://github.com/ynfantes/v2.web.ve/commit/f7a9369))
+* chore: ([5a890ca](https://github.com/ynfantes/v2.web.ve/commit/5a890ca))
+* feat: :sparkles: Se agrega el botón de login de Gmail ([cf269e3](https://github.com/ynfantes/v2.web.ve/commit/cf269e3))
+* feat(pago): :sparkles: Se implementa el reenvio de la notifiación de pagos registrados ([3dfa3ee](https://github.com/ynfantes/v2.web.ve/commit/3dfa3ee))
+* chore: Se le indica a GIT que ignore el htaccess ([61d439c](https://github.com/ynfantes/v2.web.ve/commit/61d439c))
+* revert: :rocket: Se elimina el archivo de prueba test-deploy.php ([7364a6d](https://github.com/ynfantes/v2.web.ve/commit/7364a6d))
+* test: :rocket: Se crea el archivo test-deploy.php ([d40a59f](https://github.com/ynfantes/v2.web.ve/commit/d40a59f))
+
+
+
+## 1.0.0 (2023-01-25)
+
+* 1.0.0 ([c3859d8](https://github.com/ynfantes/v2.web.ve/commit/c3859d8))
+
+
+
+## <small>0.0.1 (2023-01-25)</small>
+
+* 0.0.1 ([72b19ba](https://github.com/ynfantes/v2.web.ve/commit/72b19ba))
 * Add funcionalidad sitio en mantenimiento ([90afa5c](https://github.com/ynfantes/v2.web.ve/commit/90afa5c))
 * ADD tasa de cambio en la ventana de reportar pago ([c52f0c0](https://github.com/ynfantes/v2.web.ve/commit/c52f0c0))
 * Chance forza https to http ([0a7948a](https://github.com/ynfantes/v2.web.ve/commit/0a7948a))
@@ -21,6 +40,7 @@
 * FIX listado de avisos de cobro en la venta del histórico ([35c3fec](https://github.com/ynfantes/v2.web.ve/commit/35c3fec))
 * FIX ver avisos de cobro desde el histórico avisos de cobro ([a120a3c](https://github.com/ynfantes/v2.web.ve/commit/a120a3c))
 * UPDATED gitignore ([94644e1](https://github.com/ynfantes/v2.web.ve/commit/94644e1))
+* chore: Genera el archivo changelog.md ([4f0a9c7](https://github.com/ynfantes/v2.web.ve/commit/4f0a9c7))
 
 
 
