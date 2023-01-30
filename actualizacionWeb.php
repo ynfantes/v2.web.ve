@@ -79,6 +79,7 @@ if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $db->exec_query("delete from fondos_movimiento where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from historico_avisos_cobro where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from cancelacion_gastos where id_inmueble='$codinm' and cod_admin='$cod_admin'");
+
     $mensaje = "Actualización inmueble $codinm Administradora:$cod_admin<br>";
 } else {
     if (isset($_GET['cod_admin'])) {

@@ -160,74 +160,78 @@ $('.registro-btn').click(function() {
     $('a#forgot-password').attr('href','').addClass('d-none');
 });
 if($("#login-form").length>0) {
-$("#login-form").validate({
-submitHandler: function(form) {
-$.ajax({
-type: "POST",
-url: "{{constant('URL_SISTEMA')}}/propietario/login",
-dataType: "json",
-data: {
-"password": $("#login-form input[name='password']").val(),
-"email": $("#login-form input[name='email']").val()
-},
-beforeSend: function() {
-$("button.btn-primary").button("loading").addClass('disabled');
-$("div.alert").addClass("d-none").html('');
-$('.btn-link').addClass('d-none');
-},
-success: function (login) {
-
-if (login.existe) {
-    
-    if (login.suceed) {
-        if(login.inactivo>0) {
-            
-            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
-        
-        } else {
-            $('div.alert').removeClass('alert alert-danger').addClass('alert alert-success').html("<strong>Usuario registrado: </strong>Espere unos segundos, lo estamos redireccionando.....").removeClass('d-none');
-            registroLogin(login,'{{constant('URL_SISTEMA')}}');
-            
-        }
-    } else {
-        $('a#forgot-password').attr('href','{{constant('URL_SISTEMA')}}/propietario/recuperar-password/'+login.id).removeClass('d-none');
-        $('span#span_usuario').html(login.email);
-        $('div#correo').hide();
-        $('div#password').fadeIn();
-        $("input[name='password']").focus();
-        if (login.error) {
-            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
-        }
-    }
-} else {
-    $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.mensaje).removeClass("d-none");
-}
-$(".btn").button("reset").removeClass('disabled');
-},
-error: function(error) {
-$('#login-messages').removeClass('alert alert-success').addClass('alert alert-danger').html("Ocurrió un error durante el proceso.<br> Por favor intente más tarde.");
-$(".btn").button("reset").removeClass('disabled');
-}
-});
-},				
-// debug: true,
-errorPlacement: function(error, element) {
-$('div.alert').removeClass('d-none').html('<strong>Ups!</strong> Debe completar esta información!');
-},
-onkeyup: false,
-onclick: false,
-messages: {
-numero_documento: {required: ""},
-tipo_documento: {required: ""}					
-},
-/*errorElement: "span",
-highlight: function (element) {
-jQuery(element).parent().removeClass("has-success").addClass("has-error");
-},
-success: function (element) {
-jQuery(element).parent().removeClass("has-error").addClass("has-success");
-}*/
-});
+    $("#login-form").validate({
+    submitHandler: function(form) {
+        $.ajax({
+            type: "POST",
+            url: "{{constant('URL_SISTEMA')}}/propietario/login",
+            dataType: "json",
+            data: {
+                'password': $("#login-form input[name='password']").val(),
+                'email': $("#login-form input[name='email']").val()
+            },
+            beforeSend: function() {
+                $("button.btn-primary").button("loading").addClass('disabled');
+                $("div.alert").addClass("d-none").html('');
+                $('.btn-link').addClass('d-none');
+            },
+            success: function (login) {
+                console.log(`login:${login}`)
+                if (login.existe) {
+                    
+                    if (login.suceed) {
+                        if(login.inactivo>0) {
+                            
+                            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
+                        
+                        } else {
+                            $('div.alert').removeClass('alert alert-danger').addClass('alert alert-success').html("<strong>Usuario registrado: </strong>Espere unos segundos, lo estamos redireccionando.....").removeClass('d-none');
+                            registroLogin(login,'{{constant('URL_SISTEMA')}}');
+                            
+                        }
+                    } else {
+                        $('a#forgot-password').attr('href','{{constant('URL_SISTEMA')}}/propietario/recuperar-password/'+login.id).removeClass('d-none');
+                        $('span#span_usuario').html(login.email);
+                        $('div#correo').hide();
+                        $('div#password').fadeIn();
+                        $("input[name='password']").focus();
+                        if (login.error) {
+                            $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.error).removeClass("d-none"); 
+                        }
+                    }
+                } else {
+                    $('div.alert').removeClass('alert alert-success').addClass('alert alert-danger').html(login.mensaje).removeClass("d-none");
+                }
+                $(".btn").button("reset").removeClass('disabled');
+            },
+            error: function(error) {
+                $('#login-messages').removeClass('alert alert-success').addClass('alert alert-danger').html("Ocurrió un error durante el proceso.<br> Por favor intente más tarde.");
+                $(".btn").button("reset").removeClass('disabled');
+            }
+        }).fail(function (jqXHR, textStatus, error) {
+            // Handle error here
+            $('#login-messages').removeClass('alert alert-success').addClass('alert alert-danger').html(jqXHR.responseText);
+            //$('#editor-container').modal('show');
+        });
+    },				
+    debug: true,
+    errorPlacement: function(error, element) {
+        $('div.alert').removeClass('d-none').html('<strong>Ups!</strong> Debe completar esta información!');
+    },
+    onkeyup: false,
+    onclick: false,
+    messages: {
+    numero_documento: {required: ""},
+    tipo_documento: {required: ""}					
+    },
+    /*errorElement: "span",
+    highlight: function (element) {
+    jQuery(element).parent().removeClass("has-success").addClass("has-error");
+    },
+    success: function (element) {
+    jQuery(element).parent().removeClass("has-error").addClass("has-success");
+    }*/
+    });
 };
 </script>
 {% endblock %}
