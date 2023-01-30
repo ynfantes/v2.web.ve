@@ -1,3 +1,27 @@
+## <small>1.0.1 (2023-01-30)</small>
+
+* chore: Automatizacion version ([ebab2cf](https://github.com/ynfantes/v2.web.ve/commit/ebab2cf))
+* Agrega el framekork al proyecto ([8405180](https://github.com/ynfantes/v2.web.ve/commit/8405180))
+* Ajusta configuración inicial web Integral ([dc3ffdd](https://github.com/ynfantes/v2.web.ve/commit/dc3ffdd))
+* Ajustes varios ([de0df73](https://github.com/ynfantes/v2.web.ve/commit/de0df73))
+* Carga Script Base de Datos ([a80d9f5](https://github.com/ynfantes/v2.web.ve/commit/a80d9f5))
+* Create deployCPanel.yml ([8b746f4](https://github.com/ynfantes/v2.web.ve/commit/8b746f4))
+* Create deployIntegral.yml ([4ad6abb](https://github.com/ynfantes/v2.web.ve/commit/4ad6abb))
+* DELETE inicio con Gmail ([cc52afd](https://github.com/ynfantes/v2.web.ve/commit/cc52afd))
+* Elimina Framework ([6f20253](https://github.com/ynfantes/v2.web.ve/commit/6f20253))
+* Elimina Scripts generación Base de Datos ([e0a6106](https://github.com/ynfantes/v2.web.ve/commit/e0a6106))
+* FIX error al insertar los registros en la tabla cancelacion_gastos ([4135ea7](https://github.com/ynfantes/v2.web.ve/commit/4135ea7))
+* FIX ruta acceso Framework ([92f2677](https://github.com/ynfantes/v2.web.ve/commit/92f2677))
+* FIX ruta framework extensiones ([f32883e](https://github.com/ynfantes/v2.web.ve/commit/f32883e))
+* Se agrega el directorio Framework del proyecto ([b29a77f](https://github.com/ynfantes/v2.web.ve/commit/b29a77f))
+* Update deployCPanel.yml ([ca2b713](https://github.com/ynfantes/v2.web.ve/commit/ca2b713))
+* Update deployCPanel.yml ([ab4ce14](https://github.com/ynfantes/v2.web.ve/commit/ab4ce14))
+* Update deployCPanel.yml ([33e2219](https://github.com/ynfantes/v2.web.ve/commit/33e2219))
+* revert: :rocket: Se elimina el archivo de prueba test-deploy.php ([7364a6d](https://github.com/ynfantes/v2.web.ve/commit/7364a6d))
+* test: :rocket: Se crea el archivo test-deploy.php ([d40a59f](https://github.com/ynfantes/v2.web.ve/commit/d40a59f))
+
+
+
 ##  (2023-01-25)
 
 * Add funcionalidad sitio en mantenimiento ([90afa5c](https://github.com/ynfantes/v2.web.ve/commit/90afa5c))
