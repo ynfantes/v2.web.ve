@@ -1,0 +1,50 @@
+## <small>1.0.1 (2023-01-30)</small>
+
+* chore: Automatizacion version ([ebab2cf](https://github.com/ynfantes/v2.web.ve/commit/ebab2cf))
+* Agrega el framekork al proyecto ([8405180](https://github.com/ynfantes/v2.web.ve/commit/8405180))
+* Ajusta configuración inicial web Integral ([dc3ffdd](https://github.com/ynfantes/v2.web.ve/commit/dc3ffdd))
+* Ajustes varios ([de0df73](https://github.com/ynfantes/v2.web.ve/commit/de0df73))
+* Carga Script Base de Datos ([a80d9f5](https://github.com/ynfantes/v2.web.ve/commit/a80d9f5))
+* Create deployCPanel.yml ([8b746f4](https://github.com/ynfantes/v2.web.ve/commit/8b746f4))
+* Create deployIntegral.yml ([4ad6abb](https://github.com/ynfantes/v2.web.ve/commit/4ad6abb))
+* DELETE inicio con Gmail ([cc52afd](https://github.com/ynfantes/v2.web.ve/commit/cc52afd))
+* Elimina Framework ([6f20253](https://github.com/ynfantes/v2.web.ve/commit/6f20253))
+* Elimina Scripts generación Base de Datos ([e0a6106](https://github.com/ynfantes/v2.web.ve/commit/e0a6106))
+* FIX error al insertar los registros en la tabla cancelacion_gastos ([4135ea7](https://github.com/ynfantes/v2.web.ve/commit/4135ea7))
+* FIX ruta acceso Framework ([92f2677](https://github.com/ynfantes/v2.web.ve/commit/92f2677))
+* FIX ruta framework extensiones ([f32883e](https://github.com/ynfantes/v2.web.ve/commit/f32883e))
+* Se agrega el directorio Framework del proyecto ([b29a77f](https://github.com/ynfantes/v2.web.ve/commit/b29a77f))
+* Update deployCPanel.yml ([ca2b713](https://github.com/ynfantes/v2.web.ve/commit/ca2b713))
+* Update deployCPanel.yml ([ab4ce14](https://github.com/ynfantes/v2.web.ve/commit/ab4ce14))
+* Update deployCPanel.yml ([33e2219](https://github.com/ynfantes/v2.web.ve/commit/33e2219))
+* revert: :rocket: Se elimina el archivo de prueba test-deploy.php ([7364a6d](https://github.com/ynfantes/v2.web.ve/commit/7364a6d))
+* test: :rocket: Se crea el archivo test-deploy.php ([d40a59f](https://github.com/ynfantes/v2.web.ve/commit/d40a59f))
+
+
+
+##  (2023-01-25)
+
+* Add funcionalidad sitio en mantenimiento ([90afa5c](https://github.com/ynfantes/v2.web.ve/commit/90afa5c))
+* ADD tasa de cambio en la ventana de reportar pago ([c52f0c0](https://github.com/ynfantes/v2.web.ve/commit/c52f0c0))
+* Chance forza https to http ([0a7948a](https://github.com/ynfantes/v2.web.ve/commit/0a7948a))
+* Change declara variables index ([8e9ae9b](https://github.com/ynfantes/v2.web.ve/commit/8e9ae9b))
+* CHANGE iconos sidebar ([b2d776f](https://github.com/ynfantes/v2.web.ve/commit/b2d776f))
+* Change mensaje de mantenimiento pagina principal ([5becd59](https://github.com/ynfantes/v2.web.ve/commit/5becd59))
+* CHANGE menú recibos pagados ([124e855](https://github.com/ynfantes/v2.web.ve/commit/124e855))
+* CHANGE obtención tasa de cambio del día ([860f71b](https://github.com/ynfantes/v2.web.ve/commit/860f71b))
+* CHANGE presentación formulario datos del propietario ([1ab2f66](https://github.com/ynfantes/v2.web.ve/commit/1ab2f66))
+* CHANGE se reactiva la opción ver Recibos Cancelados ([a276708](https://github.com/ynfantes/v2.web.ve/commit/a276708))
+* Change warning to danger aviso mantenimiento ([fdfdfa7](https://github.com/ynfantes/v2.web.ve/commit/fdfdfa7))
+* Changed ahora si elimina cancelacion de gastos. Mantenimiento ([b0f0994](https://github.com/ynfantes/v2.web.ve/commit/b0f0994))
+* Feature Mantenimiento directorio cancelacion de gastos ([9ff8058](https://github.com/ynfantes/v2.web.ve/commit/9ff8058))
+* first commit ([194f6ff](https://github.com/ynfantes/v2.web.ve/commit/194f6ff))
+* FIX error al guardar registros en la tabla cancelacion_gastos ([622300a](https://github.com/ynfantes/v2.web.ve/commit/622300a))
+* Fix error al hacer login con una cuenta de correo no registrada ([31ceb9d](https://github.com/ynfantes/v2.web.ve/commit/31ceb9d))
+* FIX Error Count parameters autorización prerecibo ([182aa34](https://github.com/ynfantes/v2.web.ve/commit/182aa34))
+* FIX error en la página de destino .htaccess ([d87c71d](https://github.com/ynfantes/v2.web.ve/commit/d87c71d))
+* FIX listado de avisos de cobro en la venta del histórico ([35c3fec](https://github.com/ynfantes/v2.web.ve/commit/35c3fec))
+* FIX ver avisos de cobro desde el histórico avisos de cobro ([a120a3c](https://github.com/ynfantes/v2.web.ve/commit/a120a3c))
+* UPDATED gitignore ([94644e1](https://github.com/ynfantes/v2.web.ve/commit/94644e1))
+
+
+

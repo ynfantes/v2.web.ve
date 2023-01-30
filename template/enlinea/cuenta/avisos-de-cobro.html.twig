@@ -64,7 +64,7 @@
 		            <div class="panel panel-success pricing-big">
 		            	
 		                <div class="panel-heading">
-		                    <h3 class="panel-title">Año {{cuenta.ano_anterior}}</h3>
+		                    <h3 class="panel-title">{{'Año ' ~ cuenta.ano_anterior}}</h3>
 		                </div>
 		                <div class="panel-body no-padding text-align-center">
                                     <div class="price-features">
@@ -74,7 +74,7 @@
                                                 {% if recibo.aviso %}
                                                     <li><i class="fa fa-check-circle text-success"></i> <a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
                                                 {%else%}
-                                                    <li><i class="fa fa-times-circle text-danger"></i> Mes: {{recibo.periodo|date('m-Y')}}</li>
+                                                    <li><i class="fa fa-times-circle text-danger"></i> {{'Mes: ' ~ recibo.periodo|date('m-Y')}}</li>
                                                 {%endif%}
                                             {%endfor%}
                                         {%else%}
@@ -91,7 +91,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-6">
 		            <div class="panel panel-primary pricing-big">
 		            	<div class="panel-heading">
-		                    <h3 class="panel-title">Año {{cuenta.ano_actual}}</h3>
+		                    <h3 class="panel-title">{{'Año ' ~ cuenta.ano_actual}}</h3>
 		                </div>
 		                <div class="panel-body no-padding text-align-center">
                                     <div class="price-features">
@@ -101,7 +101,7 @@
                                                 {% if recibo.aviso %}
                                                     <li><i class="fa fa-check-circle text-success"></i><a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
                                                 {%else%}
-                                                    <li><i class="fa fa-times-circle text-danger"></i> Mes: {{recibo.periodo|date('m-Y')}}</li>
+                                                    <li><i class="fa fa-times-circle text-danger"></i> {{'Mes: ' ~ recibo.periodo|date('m-Y')}}</li>
                                                 {%endif%}
                                             {%endfor%}
                                         {%else%}
