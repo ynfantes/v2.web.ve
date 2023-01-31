@@ -1,13 +1,11 @@
-# This is a basic workflow that is manually triggered
-
-name: Publish Website www.v2.web.ve
+name: Publish Website servintegraladm.com
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
 on:
   push:
     branches:
-      - master
+      - master_integral
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,8 +18,23 @@ jobs:
         with:
           fetch-depth: 2
       - name: FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          ftp-server: ${{ secrets.FTP_SERVER_INTEGRAL }}
+          ftp-username: ${{ secrets.FTP_USERNAME_INTEGRAL }}
+          ftp-password: ${{ secrets.FTP_PASSWORD_INTEGRAL }}
+Footer
+© 2023 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+v2.web.ve/deployIntegral.yml at master · ynfantes/v2.web.ve
