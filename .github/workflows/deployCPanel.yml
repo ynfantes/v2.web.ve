@@ -25,3 +25,9 @@ jobs:
           server: ${{ secrets.FTP_SERVER_INTEGRAL }}
           username: ${{ secrets.FTP_USERNAME_INTEGRAL }}
           password: ${{ secrets.FTP_PASSWORD_INTEGRAL }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.vscode*/**
+            **/includes/configuracion.php
+            .htaccess
