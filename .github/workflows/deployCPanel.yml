@@ -1,3 +1,5 @@
+# This is a basic workflow that is manually triggered
+
 name: Publish Website servintegraladm.com
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
@@ -18,8 +20,8 @@ jobs:
         with:
           fetch-depth: 2
       - name: FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
-          ftp-server: ${{ secrets.FTP_SERVER_INTEGRAL }}
-          ftp-username: ${{ secrets.FTP_USERNAME_INTEGRAL }}
-          ftp-password: ${{ secrets.FTP_PASSWORD_INTEGRAL }}
+          server: ${{ secrets.FTP_SERVER_INTEGRAL }}
+          username: ${{ secrets.FTP_USERNAME_INTEGRAL }}
+          password: ${{ secrets.FTP_PASSWORD_INTEGRAL }}
