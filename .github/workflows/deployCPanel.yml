@@ -23,18 +23,3 @@ jobs:
           ftp-server: ${{ secrets.FTP_SERVER_INTEGRAL }}
           ftp-username: ${{ secrets.FTP_USERNAME_INTEGRAL }}
           ftp-password: ${{ secrets.FTP_PASSWORD_INTEGRAL }}
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-v2.web.ve/deployIntegral.yml at master · ynfantes/v2.web.ve
