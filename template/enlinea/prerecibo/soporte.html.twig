@@ -56,9 +56,9 @@
                         </td>
                         <td>
                             {% if detalle.soporte %}
-                                <a class="btn btn-xs btn-primary" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver soporte" target="_blank"><i class="fa fa-folder-open"></i></a> 
+                                <a class="btn btn-xs btn-primary" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento|replace({'Prerecibo': 'Soporte'})}}" title="ver soporte" target="_blank"><i class="fa fa-folder-open"></i></a> 
                             {% else %}
-                                <a class="btn btn-xs btn-primary btn-xs disabled" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver"><i class="fa fa-folder-open"></i></a> 
+                                <a class="btn btn-xs btn-primary btn-xs disabled" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento|replace({'Prerecibo': 'Soporte'})}}" title="ver"><i class="fa fa-folder-open"></i></a> 
                             {% endif %}
                             {% if detalle.publicado %}
                                 <a class="btn btn-primary btn-xs" href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver precibo" target="_blank"><i class="fa fa-eye"></i></a>
