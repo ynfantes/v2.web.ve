@@ -48,7 +48,7 @@
                     <tr>
                         <td>{{detalle.periodo | date("m-Y")}}</td>
                         <td>
-                            {% if detalle.soporte %}
+                            {% if detalle.publicado %}
                             <a href="{{constant('URL_SISTEMA')}}/prerecibo/ver/{{detalle.documento}}" title="ver" target="_blank">{{detalle.documento}}</a>
                             {%else%}
                             {{detalle.documento}}
