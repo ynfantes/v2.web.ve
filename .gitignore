@@ -5,4 +5,5 @@
 /includes/configuracion.php
 /DB
 /node_modules
+/enlinea/prerecibo/*.pdf
 .htaccess

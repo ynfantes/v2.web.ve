@@ -18,7 +18,7 @@ $mensaje='';
 $confirma='';
 switch ($accion) {
     
-    // <editor-fold defaultstate="collapsed" desc="autorizar">
+    
     case "autorizar":
 
         $actualizar = $prerecibo->actualizar($_GET['id'], Array("aprobado" => "-1",
@@ -63,9 +63,7 @@ switch ($accion) {
         ));
         echo json_encode($actualizar);
         break;
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="soportes">
     case "soportes":
         $propiedad = new propiedades();
         $inmuebles = new inmueble();
@@ -74,12 +72,14 @@ switch ($accion) {
         $propiedades = $propiedad->propiedadesPropietario(
                 $_SESSION['usuario']['cedula'],
                 $_SESSION['usuario']['cod_admin']);
-        if ($propiedades['suceed'] == true) {
+        
+        if ($propiedades['suceed']) {
             foreach ($propiedades['data'] as $propiedad) {
                 $prerecibos = $prerecibo->listarPorInmueble(
                         $propiedad['id_inmueble'],
                         $_SESSION['usuario']['cod_admin'],
                         12);
+                
                 
                 if ($prerecibos['suceed']) {
                     $inm = $inmuebles->verDatosInmueble(
@@ -96,17 +96,14 @@ switch ($accion) {
                             $prerecibos['data'][$index]['publicado'] = file_exists($filename);
                             $pos = strpos($filename,'_');  
                             $filename = str_replace(substr($filename, 0,$pos), "Soporte", $filename);
-                            $prerecibos['data'][$index]['soporte'] = file_exists($filename)? $filename: "";
+                            $prerecibos['data'][$index]['soporte'] = file_exists($filename);
                                                 }
                         if (!$mensaje == "") {
                             $resultado['suceed'] = $actualizar['suceed'];
                             $resultado['mensaje'] = $mensaje;
                         }
                     }
-                    $listado[] = Array(
-                        "inmueble"  => $inm['data'][0],
-                        "prerecibos"=> $prerecibos
-                            );
+                    $listado[] = [  "inmueble"  => $inm['data'][0], "prerecibos"=> $prerecibos ];
                 } else {
                     $resultado['suceed'] = False;
                     $resultado['mensaje'] = "Ha ocurrido un error, no se puede recuperar la información.";
@@ -129,9 +126,7 @@ switch ($accion) {
             "resultado"     => $resultado,
             "prerecibos"    => $listado));
         break; 
-    // </editor-fold>
-            
-    // <editor-fold defaultstate="collapsed" desc="listar">
+    
     case "listar":
         $propiedad = new propiedades();
         $inmuebles = new inmueble();
@@ -193,9 +188,7 @@ switch ($accion) {
             "resultado"     => $resultado,
             "prerecibos"    => $listado));
         break; 
-    // </editor-fold>
-        
-    // <editor-fold defaultstate="collapsed" desc="publicar">
+    
     case "publicar":
         $prerecibos = new prerecibo();
         $data = Array(
@@ -221,14 +214,16 @@ switch ($accion) {
             }
         }
         break; 
-// </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="ver">
+
     case "ver":
         
         $titulo = $_GET['id'];
         $content = 'Content-type: application/pdf';
         $url = URL_SISTEMA . "/prerecibo/" . $_GET['id'];
+        
+        header('Content-Disposition: inline; filename="' . $titulo . '"');
+        header($content);
+        readfile($url);
         if(session_status()  == PHP_SESSION_NONE) {
             session_start();
         }
@@ -237,10 +232,7 @@ switch ($accion) {
             "id_accion"     => 17,
             "descripcion"   => $titulo
         ));
-        header('Content-Disposition: inline; filename="' . $titulo . '"');
-        header($content);
-        readfile($url);
-        break; // </editor-fold>
+        break; 
         
     default:
         break;
