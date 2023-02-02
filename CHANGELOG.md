@@ -1,3 +1,42 @@
+## <small>1.0.2 (2023-02-02)</small>
+
+* fix: :bug: FIX inicio de sesion php cuando ya se ha enviar información al navegados ([dd7a397](https://github.com/ynfantes/v2.web.ve/commit/dd7a397)), closes [#issue-1568064992](https://github.com/ynfantes/v2.web.ve/issues/issue-1568064992)
+* fix: FIX Error: session_start(): Cannot start session when headers already sent al descargar un prer ([6fd78c8](https://github.com/ynfantes/v2.web.ve/commit/6fd78c8)), closes [#issue-1568064992](https://github.com/ynfantes/v2.web.ve/issues/issue-1568064992)
+* fix(soportes facturacion): :bug: Corrige que no se estaban mostrando los soportes de la facturacion ([7df7cb1](https://github.com/ynfantes/v2.web.ve/commit/7df7cb1))
+* fix(soportes facturacion): :bug: FIX link descarga de precibo, se estaba activando con los soportes ([d081375](https://github.com/ynfantes/v2.web.ve/commit/d081375))
+* fix(soportes facturacion): :bug: FIX link para la descarga de los soportes de facturación ([011125f](https://github.com/ynfantes/v2.web.ve/commit/011125f))
+* Agrega el framekork al proyecto ([8405180](https://github.com/ynfantes/v2.web.ve/commit/8405180))
+* Ajusta configuración inicial web Integral ([dc3ffdd](https://github.com/ynfantes/v2.web.ve/commit/dc3ffdd))
+* Ajustes varios ([de0df73](https://github.com/ynfantes/v2.web.ve/commit/de0df73))
+* Carga Script Base de Datos ([a80d9f5](https://github.com/ynfantes/v2.web.ve/commit/a80d9f5))
+* ci: ([2bf152d](https://github.com/ynfantes/v2.web.ve/commit/2bf152d))
+* Create deployCPanel.yml ([8b746f4](https://github.com/ynfantes/v2.web.ve/commit/8b746f4))
+* Create deployIntegral.yml ([4ad6abb](https://github.com/ynfantes/v2.web.ve/commit/4ad6abb))
+* DELETE inicio con Gmail ([cc52afd](https://github.com/ynfantes/v2.web.ve/commit/cc52afd))
+* Elimina Framework ([6f20253](https://github.com/ynfantes/v2.web.ve/commit/6f20253))
+* Elimina Scripts generación Base de Datos ([e0a6106](https://github.com/ynfantes/v2.web.ve/commit/e0a6106))
+* Excluye archivos deployment ([0f8ae2a](https://github.com/ynfantes/v2.web.ve/commit/0f8ae2a))
+* FIX error al insertar los registros en la tabla cancelacion_gastos ([4135ea7](https://github.com/ynfantes/v2.web.ve/commit/4135ea7))
+* FIX ruta acceso Framework ([92f2677](https://github.com/ynfantes/v2.web.ve/commit/92f2677))
+* FIX ruta framework extensiones ([f32883e](https://github.com/ynfantes/v2.web.ve/commit/f32883e))
+* FIX Script GitActions ([5ac8726](https://github.com/ynfantes/v2.web.ve/commit/5ac8726))
+* Se agrega el directorio Framework del proyecto ([b29a77f](https://github.com/ynfantes/v2.web.ve/commit/b29a77f))
+* Update deployCPanel.yml ([ca2b713](https://github.com/ynfantes/v2.web.ve/commit/ca2b713))
+* Update deployCPanel.yml ([ab4ce14](https://github.com/ynfantes/v2.web.ve/commit/ab4ce14))
+* Update deployCPanel.yml ([33e2219](https://github.com/ynfantes/v2.web.ve/commit/33e2219))
+* ci: :green_heart: Corrige el Scripts GitActions ([e6ee5f8](https://github.com/ynfantes/v2.web.ve/commit/e6ee5f8))
+* ci: :green_heart: Corrige el Scripts GitActions ([c2cdeb2](https://github.com/ynfantes/v2.web.ve/commit/c2cdeb2))
+* ci: :green_heart: Corrige error en la programación del archivo de deploy ([df62d46](https://github.com/ynfantes/v2.web.ve/commit/df62d46))
+* ci: :green_heart: Corrige los scripts CI git actions ([43760da](https://github.com/ynfantes/v2.web.ve/commit/43760da))
+* ci: :green_heart: Corrige Script Gitactions ([b388ac6](https://github.com/ynfantes/v2.web.ve/commit/b388ac6))
+* ci: Cahnge configuración CI ([edf151f](https://github.com/ynfantes/v2.web.ve/commit/edf151f))
+* chore: Automatizacion version ([ebab2cf](https://github.com/ynfantes/v2.web.ve/commit/ebab2cf))
+* chore: Change Verision ([87dc80c](https://github.com/ynfantes/v2.web.ve/commit/87dc80c))
+* revert: :rocket: Se elimina el archivo de prueba test-deploy.php ([7364a6d](https://github.com/ynfantes/v2.web.ve/commit/7364a6d))
+* test: :rocket: Se crea el archivo test-deploy.php ([d40a59f](https://github.com/ynfantes/v2.web.ve/commit/d40a59f))
+
+
+
 ## <small>1.0.1 (2023-01-30)</small>
 
 * chore: Automatizacion version ([ebab2cf](https://github.com/ynfantes/v2.web.ve/commit/ebab2cf))
