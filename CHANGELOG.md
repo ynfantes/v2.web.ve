@@ -1,3 +1,10 @@
+## <small>1.0.4 (2023-02-02)</small>
+
+* fix: FIX Error: session_start(): Cannot start session when headers already sent al descargar un prer ([337125f](https://github.com/ynfantes/v2.web.ve/commit/337125f))
+* chore: :bookmark: CHANGELOG ([e1d423d](https://github.com/ynfantes/v2.web.ve/commit/e1d423d))
+
+
+
 ## <small>1.0.1 (2023-01-27)</small>
 
 * 1.0.1 ([f7a9369](https://github.com/ynfantes/v2.web.ve/commit/f7a9369))
