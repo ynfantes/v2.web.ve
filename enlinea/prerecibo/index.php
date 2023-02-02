@@ -57,7 +57,7 @@ switch ($accion) {
         }
         $actualizar['mensaje']=$confirma;
         $bitacora->insertar(Array(
-            "id_sesion"     => $session['id'],
+            "id_sesion"     => $session['id_sesion'],
             "id_accion"     => 18,
             "descripcion"   => date('m-Y', strtotime($documento['data'][0]['periodo']))
         ));
@@ -114,7 +114,7 @@ switch ($accion) {
             $resultado['mensaje'] = "No se puede recuperar la información.";
         }
         $bitacora->insertar(Array(
-            "id_sesion"     =>  $_SESSION['id'],
+            "id_sesion"     =>  $_SESSION['id_sesion'],
             "id_accion"     => 15
         ));
 //        echo '<pre>';
@@ -179,7 +179,7 @@ switch ($accion) {
             }
         }
         $bitacora->insertar(Array(
-            "id_sesion"     =>  $_SESSION['id'],
+            "id_sesion"     =>  $_SESSION['id_sesion'],
             "id_accion"     => 16
         ));
         
@@ -221,12 +221,14 @@ switch ($accion) {
         $content = 'Content-type: application/pdf';
         $url = URL_SISTEMA . "/prerecibo/" . $_GET['id'];
         
+        if(session_status()  == PHP_SESSION_NONE) {
+            session_start();
+        }
         header('Content-Disposition: inline; filename="' . $titulo . '"');
         header($content);
         readfile($url);
-
         $bitacora->insertar(Array(
-            "id_sesion"     => $_SESSION['id'],
+            "id_sesion"     => $_SESSION['id_sesion'],
             "id_accion"     => 17,
             "descripcion"   => $titulo
         ));
