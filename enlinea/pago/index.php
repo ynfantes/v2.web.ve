@@ -549,6 +549,7 @@ switch ($accion) {
                         echo $pago["email"] . "|";
                         echo $enviado . "|";
                         echo $pago["telefono"] . "|";
+                        echo $pago["usuario_intranet"] . "|";
                         // --
                         foreach ($pago_detalle['data'] as $value) {
                             echo $value['id_inmueble'] . "|";
