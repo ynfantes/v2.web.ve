@@ -1,6 +1,6 @@
 <?php
 
-ini_set('max_execution_time', 600);
+ini_set('max_execution_time', 3000);
 
 header('Content-type: text/html; charset=utf-8');
 
