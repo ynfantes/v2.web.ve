@@ -348,37 +348,42 @@ foreach ($lineas as $linea) {
             echo($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo Detalle Factura">
+}
+
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_FACTURA_DETALLE;
-$contenidoFichero = JFile::read($archivo);
-$lineas = explode("\r\n", $contenidoFichero);
-echo "procesar archivo Detalle Factura (" . count($lineas) . ")<br />";
-$mensaje .= "procesar archivo Detalle Factura (" . count($lineas) . ")<br />";
-foreach ($lineas as $linea) {
+if (file_exists($archivo)) {
 
-    $registro = explode("\t", $linea);
-
-
-    if ($registro[0] != "") {
-
-        $registro = Array(
-            "id_factura" => $registro[0],
-            "detalle" => utf8_encode($registro[1]),
-            "codigo_gasto" => $registro[2],
-            "comun" => $registro[3],
-            "monto" => str_replace("\r", "", $registro[4]),
-            "cod_admin" => $cod_admin
-        );
-
-        $r = $facturas->insertar_detalle_factura($registro);
-
-        if ($r["suceed"] == FALSE) {
-            die($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
+    $contenidoFichero = JFile::read($archivo);
+    $lineas = explode("\r\n", $contenidoFichero);
+    echo "procesar archivo Detalle Factura (" . count($lineas) . ")<br />";
+    $mensaje .= "procesar archivo Detalle Factura (" . count($lineas) . ")<br />";
+    foreach ($lineas as $linea) {
+    
+        $registro = explode("\t", $linea);
+    
+    
+        if ($registro[0] != "") {
+    
+            $registro = Array(
+                "id_factura" => $registro[0],
+                "detalle" => utf8_encode($registro[1]),
+                "codigo_gasto" => $registro[2],
+                "comun" => $registro[3],
+                "monto" => str_replace("\r", "", $registro[4]),
+                "cod_admin" => $cod_admin
+            );
+    
+            $r = $facturas->insertar_detalle_factura($registro);
+    
+            if ($r["suceed"] == FALSE) {
+                die($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
+            }
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Movimiento Caja">
+}
+
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_MOVIMIENTO_CAJA;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -410,8 +415,8 @@ foreach ($lineas as $linea) {
             die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo Inmueble Estado Cuenta">
+}
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_EDO_CTA_INM;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -443,9 +448,8 @@ foreach ($lineas as $linea) {
             die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="graficos">
-// <editor-fold defaultstate="collapsed" desc="facturacion mensual">
+}
+
 if (GRAFICO_FACTURACION == 1) {
     $archivo = ACTUALIZ . $cod_admin . '_' . "FACTURACION_MENSUAL.txt";
     $contenidoFichero = JFile::read($archivo);
@@ -472,8 +476,7 @@ if (GRAFICO_FACTURACION == 1) {
         }
     }
 }
-// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="cobranza mensual">
+
 if (GRAFICO_COBRANZA == 1) {
     $archivo = ACTUALIZ . $cod_admin . '_' . "COBRANZA_MENSUAL.txt";
     $contenidoFichero = JFile::read($archivo);
@@ -500,9 +503,7 @@ if (GRAFICO_COBRANZA == 1) {
         }
     }
 }
-// </editor-fold>
-// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="movimiento cuentas de fondo">
+
 if (MOVIMIENTO_FONDO == 1) {
     $fondo = new fondo();
     $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_CUENTAS_DE_FONDO;
@@ -567,8 +568,8 @@ if (MOVIMIENTO_FONDO == 1) {
             }
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="gestiones">
+}
+
 $archivo = ACTUALIZ . $cod_admin . '_' . "GESTIONES.txt";
 if (file_exists($archivo)) {
     $gestion = new cobranza();
@@ -598,8 +599,7 @@ if (file_exists($archivo)) {
         }
     }
 }
-// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="archivo historico de avisos de cobro">
+
 $archivo = ACTUALIZ . $cod_admin . '_' . "HISTORICO_AVISOS_COBRO.txt";
 if (file_exists($archivo)) {
     $contenidoFichero = JFile::read($archivo);
@@ -621,7 +621,8 @@ if (file_exists($archivo)) {
             }
         }
     }
-}// </editor-fold>
+}
+
 
 $archivo = ACTUALIZ.$cod_admin.'_'."CANCELACION_GASTOS.txt";
 if (file_exists($archivo)) {
