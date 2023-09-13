@@ -4,7 +4,12 @@ include_once '../../includes/propietario.php';
 
 if ($_SERVER['REQUEST_METHOD']==='POST') {
 
-    var_dump($_POST);
+    $name = fopen($_POST['name'].'pdf','w');
+    $base64 = base64_decode($_POST['base64']);
+
+    $succed = fwrite($name,$base64);
+    
+    return json_encode($succed);
 
 } else {
     propietario::esPropietarioLogueado();
