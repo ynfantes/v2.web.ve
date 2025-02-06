@@ -116,9 +116,9 @@ Inmueble
                                     <!--td class="hidden-xs">{#{detalle.propietario}#}</td-->
                                     <td style="text-align: center;">{{detalle.recibos}}</td>
                                     <td><span class="pull-right">{{format_number(detalle.deuda)}}</span></td>
-                                    {%if cuenta.inmueble.facturacion_usd%}
+                                    {% if cuenta.inmueble.facturacion_usd %}
                                     <td><span class="pull-right">{{format_number(detalle.deuda_usd)}}</span></td>
-                                    {%endif%}
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                                 <tr>
@@ -126,9 +126,9 @@ Inmueble
                                     <!--td class="hidden-xs">&nbsp;</td-->
                                     <td style="text-align: center"><strong>{{n}}</strong></td>
                                     <td><span class="pull-right"><strong>{{format_number(total)}}</strong></span></td>
-                                    {%if cuenta.inmueble.facturacion_usd%}
+                                    {% if cuenta.inmueble.facturacion_usd %}
                                     <td><span class="pull-right"><strong>{{format_number(total_usd)}}</strong></span></td>
-                                    {%endif%}
+                                    {% endif %}
                                 </tr>
                         {% endif %}
                     </tbody>

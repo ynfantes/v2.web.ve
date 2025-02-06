@@ -96,7 +96,7 @@ if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
         die('Ups! v2.web.ve: Faltan parámetros en el llamado de actualización');
     }
 }
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo inmueble">
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_INMUEBLE;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -142,8 +142,8 @@ foreach ($lineas as $linea) {
             die();
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="procesamos el archivo cuentas">
+}
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_CUENTAS;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -197,8 +197,7 @@ if (file_exists($archivo)) {
         }
     }
 }
-// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="registramos las cuentas adicionales">
+
 $archivo = "./data/CUENTAS_INMUEBLE.txt";
 if (file_exists($archivo)) {
     $contenidoFichero = JFile::read($archivo);
@@ -225,32 +224,33 @@ if (file_exists($archivo)) {
             }
         }
     }
-} // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo Junta_Condominio">
+} 
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_JUNTA_CONDOMINIO;
-$contenidoFichero = JFile::read($archivo);
-$lineas = explode("\r\n", $contenidoFichero);
-$junta_condominio = new junta_condominio();
-echo "procesar archivo Junta Condominio (" . count($lineas) . ")<br />";
-$mensaje .= "procesar archivo Junta Condominio (" . count($lineas) . ")<br />";
-foreach ($lineas as $linea) {
+if (file_exists($archivo)) {
+    $contenidoFichero = JFile::read($archivo);
+    $lineas = explode("\r\n", $contenidoFichero);
+    $junta_condominio = new junta_condominio();
+    echo "procesar archivo Junta Condominio (" . count($lineas) . ")<br />";
+    $mensaje .= "procesar archivo Junta Condominio (" . count($lineas) . ")<br />";
+    foreach ($lineas as $linea) {
 
-    $registro = explode("\t", $linea);
+        $registro = explode("\t", $linea);
 
-    if ($registro[0] != "") {
-        $registro = Array("id_cargo" => $registro[1],
-            "id_inmueble" => $registro[0],
-            "cedula" => $registro[2],
-            "cod_admin" => $cod_admin);
-        $r = $junta_condominio->insertar($registro);
+        if ($registro[0] != "") {
+            $registro = Array("id_cargo" => $registro[1],
+                "id_inmueble" => $registro[0],
+                "cedula" => $registro[2],
+                "cod_admin" => $cod_admin);
+            $r = $junta_condominio->insertar($registro);
 
-        if ($r["suceed"] == FALSE) {
-            echo ARCHIVO_JUNTA_CONDOMINIO . "<br />" . $r['stats']['errno'] . "<br />" . $r['stats']['error'];
+            if ($r["suceed"] == FALSE) {
+                echo ARCHIVO_JUNTA_CONDOMINIO . "<br />" . $r['stats']['errno'] . "<br />" . $r['stats']['error'];
+            }
         }
     }
 }
-// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo Propietarios">
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_PROPIETARIOS;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -287,8 +287,7 @@ foreach ($lineas as $linea) {
           } */
     }
 }
-// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo Propiedades">
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_PROPIEDADES;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -316,8 +315,8 @@ foreach ($lineas as $linea) {
             echo "<b>Archivo Propiedades: " . $r['stats']['errno'] . "-" . $r['stats']['error'] . "</b><br />" . '<br/>' . $r['query'] . '<br/>';
         }
     }
-}// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Procesamos el archivo Facturas">
+}
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_FACTURA;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
@@ -383,39 +382,41 @@ if (file_exists($archivo)) {
     }
 }
 
-
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_MOVIMIENTO_CAJA;
-$contenidoFichero = JFile::read($archivo);
-$lineas = explode("\r\n", $contenidoFichero);
-echo "procesar archivo movimiento caja (" . count($lineas) . ")<br />";
-$mensaje .= "procesar archivo movimiento caja (" . count($lineas) . ")<br />";
-$pago = new pago();
-foreach ($lineas as $linea) {
+if(file_exists($archivo)) {
+    $contenidoFichero = JFile::read($archivo);
+    $lineas = explode("\r\n", $contenidoFichero);
+    echo "procesar archivo movimiento caja (" . count($lineas) . ")<br />";
+    $mensaje .= "procesar archivo movimiento caja (" . count($lineas) . ")<br />";
+    $pago = new pago();
+    foreach ($lineas as $linea) {
 
-    $registro = explode("\t", $linea);
+        $registro = explode("\t", $linea);
 
-    if ($registro[0] != "") {
+        if ($registro[0] != "") {
 
-        $registro = Array(
-            "numero_recibo" => $registro[0],
-            "fecha_movimiento" => $registro[1],
-            "forma_pago" => utf8_encode($registro[2]),
-            "monto" => $registro[3],
-            "cuenta" => utf8_encode($registro[4]),
-            "descripcion" => utf8_encode($registro[5]),
-            "id_inmueble" => $registro[6],
-            "id_apto" => str_replace("\r", "", $registro[7]),
-            "cod_admin" => $cod_admin
-        );
+            $registro = Array(
+                "numero_recibo" => $registro[0],
+                "fecha_movimiento" => $registro[1],
+                "forma_pago" => utf8_encode($registro[2]),
+                "monto" => $registro[3],
+                "cuenta" => utf8_encode($registro[4]),
+                "descripcion" => utf8_encode($registro[5]),
+                "id_inmueble" => $registro[6],
+                "id_apto" => str_replace("\r", "", $registro[7]),
+                "cod_admin" => $cod_admin
+            );
 
-        $r = $pago->insertarMovimientoCaja($registro);
+            $r = $pago->insertarMovimientoCaja($registro);
 
 
-        if ($r["suceed"] == FALSE) {
-            die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+            if ($r["suceed"] == FALSE) {
+                die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+            }
         }
     }
 }
+
 
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_EDO_CTA_INM;
 $contenidoFichero = JFile::read($archivo);
@@ -452,26 +453,28 @@ foreach ($lineas as $linea) {
 
 if (GRAFICO_FACTURACION == 1) {
     $archivo = ACTUALIZ . $cod_admin . '_' . "FACTURACION_MENSUAL.txt";
-    $contenidoFichero = JFile::read($archivo);
-    $lineas = explode("\r\n", $contenidoFichero);
-    echo "procesar archivo grafico facturacion mensual (" . count($lineas) . ")<br />";
-    $mensaje .= "procesar archivo grafico facturación mensual (" . count($lineas) . ")<br />";
-    foreach ($lineas as $linea) {
-        $registro = explode("\t", $linea);
+    if(file_exists($archivo)) {
+        $contenidoFichero = JFile::read($archivo);
+        $lineas = explode("\r\n", $contenidoFichero);
+        echo "procesar archivo grafico facturacion mensual (" . count($lineas) . ")<br />";
+        $mensaje .= "procesar archivo grafico facturación mensual (" . count($lineas) . ")<br />";
+        foreach ($lineas as $linea) {
+            $registro = explode("\t", $linea);
 
-        if ($registro[0] != "") {
+            if ($registro[0] != "") {
 
-            $registro = Array(
-                "id_inmueble" => $registro[0],
-                "periodo" => $registro[1],
-                "facturado" => $registro[2],
-                "cod_admin" => $cod_admin
-            );
+                $registro = Array(
+                    "id_inmueble" => $registro[0],
+                    "periodo" => $registro[1],
+                    "facturado" => $registro[2],
+                    "cod_admin" => $cod_admin
+                );
 
-            $r = $inmueble->insertarFacturacionMensual($registro);
+                $r = $inmueble->insertarFacturacionMensual($registro);
 
-            if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                if ($r["suceed"] == FALSE) {
+                    die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                }
             }
         }
     }
@@ -479,89 +482,94 @@ if (GRAFICO_FACTURACION == 1) {
 
 if (GRAFICO_COBRANZA == 1) {
     $archivo = ACTUALIZ . $cod_admin . '_' . "COBRANZA_MENSUAL.txt";
-    $contenidoFichero = JFile::read($archivo);
-    $lineas = explode("\r\n", $contenidoFichero);
-    echo "procesar archivo grafico cobranza mensual (" . count($lineas) . ")<br />";
-    $mensaje .= "procesar archivo grafico cobranza mensual (" . count($lineas) . ")<br />";
-    foreach ($lineas as $linea) {
-        $registro = explode("\t", $linea);
+    if(file_exists($archivo)) {
+        $contenidoFichero = JFile::read($archivo);
+        $lineas = explode("\r\n", $contenidoFichero);
+        echo "procesar archivo grafico cobranza mensual (" . count($lineas) . ")<br />";
+        $mensaje .= "procesar archivo grafico cobranza mensual (" . count($lineas) . ")<br />";
+        foreach ($lineas as $linea) {
+            $registro = explode("\t", $linea);
 
-        if ($registro[0] != "") {
+            if ($registro[0] != "") {
 
-            $registro = Array(
-                "id_inmueble" => $registro[0],
-                "periodo" => $registro[1],
-                "monto" => $registro[2],
-                "cod_admin" => $cod_admin
-            );
+                $registro = Array(
+                    "id_inmueble" => $registro[0],
+                    "periodo" => $registro[1],
+                    "monto" => $registro[2],
+                    "cod_admin" => $cod_admin
+                );
 
-            $r = $inmueble->insertarCobranzaMensual($registro);
+                $r = $inmueble->insertarCobranzaMensual($registro);
 
-            if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                if ($r["suceed"] == FALSE) {
+                    die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                }
             }
         }
     }
 }
 
 if (MOVIMIENTO_FONDO == 1) {
-    $fondo = new fondo();
+    
     $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_CUENTAS_DE_FONDO;
-    $contenidoFichero = JFile::read($archivo);
-    if ($contenidoFichero != '') {
-        $lineas = explode("\r\n", $contenidoFichero);
-        echo "procesar archivo cuentas de fondo (" . count($lineas) . ")<br/>";
-        $mensaje .= "procesar archivo cuentas de fondo (" . count($lineas) . ")<br/>";
-        foreach ($lineas as $linea) {
-            $registro = explode("\t", $linea);
-            if ($registro[0] != "") {
-                $registro = Array(
-                    "id_inmueble" => $registro[0],
-                    "codigo_gasto" => $registro[1],
-                    "descripcion" => utf8_encode($registro[2]),
-                    "saldo" => $registro[3],
-                    "mostrar" => 1,
-                    "cod_admin" => $cod_admin
-                );
-                $r = $fondo->insertarRegistroFondo($registro, Array("saldo" => $registro["saldo"]));
-            }
-        }
-        $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_MOVIMIENTOS_DE_FONDO;
+    if(file_exists($archivo)) {
+        $fondo = new fondo();
         $contenidoFichero = JFile::read($archivo);
         if ($contenidoFichero != '') {
             $lineas = explode("\r\n", $contenidoFichero);
-            echo "procesar archivo movimiento de fondo (" . count($lineas) . ")<br/>";
-            $mensaje .= "procesar archivo movimiento de fondo (" . count($lineas) . ")<br/>";
-            $id_inmueble = "";
-            $codigo_gasto = "";
-            foreach ($lineas as $l) {
-                $movimiento = explode("\t", $l);
-                if ($movimiento[0] != "") {
+            echo "procesar archivo cuentas de fondo (" . count($lineas) . ")<br/>";
+            $mensaje .= "procesar archivo cuentas de fondo (" . count($lineas) . ")<br/>";
+            foreach ($lineas as $linea) {
+                $registro = explode("\t", $linea);
+                if ($registro[0] != "") {
+                    $registro = Array(
+                        "id_inmueble" => $registro[0],
+                        "codigo_gasto" => $registro[1],
+                        "descripcion" => utf8_encode($registro[2]),
+                        "saldo" => $registro[3],
+                        "mostrar" => 1,
+                        "cod_admin" => $cod_admin
+                    );
+                    $r = $fondo->insertarRegistroFondo($registro, Array("saldo" => $registro["saldo"]));
+                }
+            }
+            $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_MOVIMIENTOS_DE_FONDO;
+            $contenidoFichero = JFile::read($archivo);
+            if ($contenidoFichero != '') {
+                $lineas = explode("\r\n", $contenidoFichero);
+                echo "procesar archivo movimiento de fondo (" . count($lineas) . ")<br/>";
+                $mensaje .= "procesar archivo movimiento de fondo (" . count($lineas) . ")<br/>";
+                $id_inmueble = "";
+                $codigo_gasto = "";
+                foreach ($lineas as $l) {
+                    $movimiento = explode("\t", $l);
+                    if ($movimiento[0] != "") {
 
-                    if ($id_inmueble != $movimiento[0] || $codigo_gasto != $movimiento[1]) {
-                        $id_inmueble = $movimiento[0];
-                        $codigo_gasto = $movimiento[1];
-                        $r = $fondo->obtenerIdCuentaFondo($id_inmueble, $codigo_gasto, $cod_admin);
-                        if ($r['suceed'] && count($r['data']) > 0) {
-                            $id = $r['data'][0]['id'];
-                        } else {
-                            $id = 0;
+                        if ($id_inmueble != $movimiento[0] || $codigo_gasto != $movimiento[1]) {
+                            $id_inmueble = $movimiento[0];
+                            $codigo_gasto = $movimiento[1];
+                            $r = $fondo->obtenerIdCuentaFondo($id_inmueble, $codigo_gasto, $cod_admin);
+                            if ($r['suceed'] && count($r['data']) > 0) {
+                                $id = $r['data'][0]['id'];
+                            } else {
+                                $id = 0;
+                            }
                         }
-                    }
 
-                    if ($id > 0) {
-                        $registro = Array(
-                            "id_fondo" => $id,
-                            "fecha" => $movimiento[2],
-                            "tipo" => $movimiento[3],
-                            "concepto" => utf8_encode($movimiento[4]),
-                            "debe" => $movimiento[5],
-                            "haber" => $movimiento[6]
-                        );
+                        if ($id > 0) {
+                            $registro = Array(
+                                "id_fondo" => $id,
+                                "fecha" => $movimiento[2],
+                                "tipo" => $movimiento[3],
+                                "concepto" => utf8_encode($movimiento[4]),
+                                "debe" => $movimiento[5],
+                                "haber" => $movimiento[6]
+                            );
 
-                        $r = $fondo->insertarMovimiento($registro);
-                        if ($r["suceed"] == FALSE) {
-                            echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                            $r = $fondo->insertarMovimiento($registro);
+                            if ($r["suceed"] == FALSE) {
+                                echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                            }
                         }
                     }
                 }
@@ -572,6 +580,7 @@ if (MOVIMIENTO_FONDO == 1) {
 
 $archivo = ACTUALIZ . $cod_admin . '_' . "GESTIONES.txt";
 if (file_exists($archivo)) {
+
     $gestion = new cobranza();
     $contenidoFichero = JFile::read($archivo);
     $lineas = explode("\r\n", $contenidoFichero);
@@ -686,6 +695,6 @@ $r = $mail->enviar_email(
 if ($r == "") {
     echo "Email de confirmación enviado con éxito<br />";
 } else {
-    echo "Falló el envio del emailo de ejecución del proceso<br />";
+    echo "Falló el envio del email de ejecución del proceso<br />";
 }
 echo "Cierre esta ventana para finalizar.";

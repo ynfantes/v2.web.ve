@@ -1,3 +1,4 @@
+
 <div class="row">
 <!-- col -->
 <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
@@ -87,7 +88,6 @@
         <strong>Info!</strong> Tasa del día <span id="tasa_del_dia2" class="font-lg label bg-color-red">{{tasa.usd}}</span>
     </div>
     </div>
-
 <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 <div id="wid-id-0" class="jarviswidget transparent jarviswidget-sortable" data-widget-deletebutton="false" data-widget-editbutton="false" style="" role="widget">
 <header>
@@ -158,41 +158,41 @@ TOTAL DEUDA&nbsp{{cuenta.inmueble.moneda}}:
 </thead>
 <tbody>
 {% for factura in cuenta.cuentas %}
-<tr>
-<td class="hidden-xs" style="text-align: center">
-<input type="hidden" name="id_inmueble[]" value="{{factura.id_inmueble}}"/>
-<input type="hidden" name="id_apto[]" value="{{factura.apto }}"/>
-<input type="hidden" name="periodo[]" value="{{factura.periodo}}"/>
-<input type="hidden" name="facturas[]" value="{{factura.numero_factura}}"/>
-{% if factura.aviso %}
-<a href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">{{ factura.numero_factura}}</a>
-{% else %}
-<abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
-{%endif %}
-</td>
-<td style="text-align: center">{{factura.periodo | date("m-Y") | upper}}</td>
-<td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
-<td class="hidden-xs"><span class="pull-right">{{format_number(factura.abonado)}}</span></td>
-<td><span class="pull-right">
-<input type="hidden" name="montos[]" value="{{factura.facturado - factura.abonado}}" />
-{{format_number(factura.facturado - factura.abonado)}}
-</span>
-</td>
-{%if cuenta.inmueble.facturacion_usd %}
-<td><span class="pull-right">{{format_number(factura.facturado_usd)}}</span></td>
-{%endif%}
-<td>
-    {% if factura.pagado == 0 %} 
-    <span class="label label-sm label-success">Pendiente</span> 
-    {% else %}
-    <a href="javascript:void(0);" data-html="true" data-original-title="{{factura.pagado_detalle}}" data-placement="top" rel="tooltip" class="label label-sm label-warning">Pendiente por procesar</a> 
-    {% endif %}
-</td>
-<td style="text-align: center">
-<input type="checkbox" name="id[]" value="{{counter}}" {{factura.pagado > 0? "disabled=\'disabled\'":"" }}>
-</td>
-</tr>
-{% set counter = counter + 1 %}
+        <tr>
+            <td class="hidden-xs" style="text-align: center">
+            <input type="hidden" name="id_inmueble[]" value="{{factura.id_inmueble}}"/>
+            <input type="hidden" name="id_apto[]" value="{{factura.apto }}"/>
+            <input type="hidden" name="periodo[]" value="{{factura.periodo}}"/>
+            <input type="hidden" name="facturas[]" value="{{factura.numero_factura}}"/>
+            {% if factura.aviso %}
+            <a href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">{{ factura.numero_factura}}</a>
+            {% else %}
+            <abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
+            {% endif %}
+            </td>
+            <td style="text-align: center">{{factura.periodo | date("m-Y") | upper}}</td>
+            <td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
+            <td class="hidden-xs"><span class="pull-right">{{format_number(factura.abonado)}}</span></td>
+            <td><span class="pull-right">
+            <input type="hidden" name="montos[]" value="{{factura.facturado - factura.abonado}}" />
+            {{format_number(factura.facturado - factura.abonado)}}
+            </span>
+            </td>
+            {% if cuenta.inmueble.facturacion_usd %}
+            <td><span class="pull-right">{{format_number(factura.facturado_usd)}}</span></td>
+            {% endif %}
+            <td>
+                {% if factura.pagado == 0 %} 
+                <span class="label label-sm label-success">Pendiente</span> 
+                {% else %}
+                <a href="javascript:void(0);" data-html="true" data-original-title="{{factura.pagado_detalle}}" data-placement="top" rel="tooltip" class="label label-sm label-warning">Pendiente por procesar</a> 
+                {% endif %}
+            </td>
+            <td style="text-align: center">
+            <input type="checkbox" name="id[]" value="{{counter}}" {{factura.pagado > 0? "disabled=\'disabled\'":"" }}>
+            </td>
+        </tr>
+        {% set counter = counter + 1 %}
 {% endfor %}
 <tr>
 <td class="hidden-xs"></td>
@@ -227,7 +227,7 @@ TOTAL DEUDA&nbsp{{cuenta.inmueble.moneda}}:
 <select class="form-control input-lg" name="tipo_pago">
 {% if session.usuario.cod_admin!='004' %}
 <option selected value="D">Depósito</option>
-{% endif%}
+{% endif %}
 <option value="T">Transferencia</option>
 </select>
 </div>

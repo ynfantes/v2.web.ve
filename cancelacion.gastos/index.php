@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     //if ($r==true) {
         $titulo = $_GET['id'].".pdf";
         $content='Content-type: application/pdf';
-        $url = URL_SISTEMA."/cancelacion.gastos/".$_GET['id'].".pdf";
+        $url = ROOT."/cancelacion.gastos/".$_GET['id'].".pdf";
+        die($url);
         header('Content-Disposition: attachment; filename="'.$titulo.'"');
         header($content);
         readfile($url);

@@ -1,9 +1,7 @@
 <?php
-
-include_once SERVER_ROOT.'framework/twig/lib/Twig/ExtensionInterface.php';
-include_once SERVER_ROOT.'framework/twig/lib/Twig/Extension.php';
-
-class extensiones extends Twig_Extension {
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+class extensiones extends AbstractExtension {
 
     public function getName() {
         return 'MiExtension';
@@ -33,14 +31,13 @@ class extensiones extends Twig_Extension {
     }
 
     public function getFunctions() {
-        return array(
-            'format_date'=> new Twig_Function_Method($this, 'format_date'),
-            'format_number'=>new Twig_Function_Method($this,'format_number'),
-            'url_sortable' => new Twig_Function_Method($this, 'url_sortable'),
-            'trim_text' => new Twig_Function_Method($this, 'trim_text'),
-            'formato_periodo' => new Twig_Function_Method($this,'formato_periodo')
-        );
+        return [
+            'format_date'     => new TwigFunction('format_date', [$this, 'format_date']),
+            'format_number'   => new TwigFunction('format_number', [$this,'format_number']),
+            'url_sortable'    => new TwigFunction('url_sortable', [$this, 'url_sortable']),
+            'trim_text'       => new TwigFunction('trim_text', [$this, 'trim_text']),
+            'formato_periodo' => new TwigFunction('formato_periodo', [$this,'formato_periodo'])
+        ];
     }
 
 }
-?>

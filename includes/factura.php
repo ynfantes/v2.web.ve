@@ -41,10 +41,33 @@ class factura extends db implements crud {
     }
     
     public function estadoDeCuenta($cod_admin, $inmueble, $apto) {
+        /*
         $consulta = "select * from ".self::tabla.
                 " where id_inmueble='$inmueble' and apto='$apto' 
                 and cod_admin='$cod_admin' and (facturado-abonado)>0 
                 order by periodo ASC";
+        */
+        $consulta = "SELECT 
+            f.*,
+            COALESCE(SUM(pd_validos.monto), 0) AS total_pagado,
+            (f.facturado - COALESCE(SUM(pd_validos.monto), 0)) AS saldo
+        FROM facturas f
+        LEFT JOIN (
+            SELECT pd.id_inmueble, pd.id_apto, pd.periodo, pd.monto
+            FROM pago_detalle pd
+            INNER JOIN pagos p ON pd.id_pago = p.id
+            WHERE p.estatus = 'p'
+        ) AS pd_validos
+        ON f.id_inmueble = pd_validos.id_inmueble
+        AND f.apto = pd_validos.id_apto
+        AND f.periodo = pd_validos.periodo
+        WHERE f.apto = '$apto' 
+            AND f.cod_admin = '$cod_admin' 
+            AND f.id_inmueble = '$inmueble'
+        GROUP BY f.cod_admin, f.apto, f.id_inmueble, f.numero_factura, f.periodo, 
+                f.facturado, f.abonado, f.fecha, f.facturado_usd
+        HAVING saldo > 0;";
+
         return db::query($consulta);
     }
     
@@ -78,28 +101,24 @@ class factura extends db implements crud {
     }
     
     public function avisoExisteEnBaseDeDatos($aviso) {
-        $aviso = str_replace(".pdf","",$aviso);
-        $cod_admin = substr($aviso,-3);
-        $aviso = substr($aviso,0, strlen($aviso)-3);
-        //echo('<br>'.$aviso.'<br>');
-        $query = "select numero_factura from facturas where numero_factura='$aviso' and cod_admin='$cod_admin'";
-        $r=0;
+         // Eliminar la extensión ".pdf"
+        $aviso = str_replace(".pdf", "", $aviso);
+        $cod_admin = substr($aviso, -3);
+        $aviso = substr($aviso, 0, -3);
+        
+        $query = "
+            SELECT numero_factura 
+            FROM facturas 
+            WHERE numero_factura = {$aviso} AND cod_admin = {$cod_admin} 
+            UNION 
+            SELECT numero_factura 
+            FROM historico_avisos_cobro 
+            WHERE numero_factura = {$aviso} AND cod_admin = {$cod_admin}
+        ";
+        
         $result = $this->dame_query($query);
-        if ($result['suceed']==true) {
-            if (count($result['data'])>0) {
-                $r=1;
-            }
-        } 
-        if ($r==0) {
-            $query = "select numero_factura from historico_avisos_cobro where numero_factura='$aviso' and cod_admin='$cod_admin'";
-            $result = $this->dame_query($query);
-            if ($result['suceed']==true) {
-                if (count($result['data'])>0) {
-                    $r=1;
-                }
-            }
-        }
-        return $r;       
+        
+        return ($result['suceed'] && count($result['data']) > 0) ? 1 : 0;      
     }
     
     public function numeroRecibosPendientesPropietario($cod_admin,$cedula) {

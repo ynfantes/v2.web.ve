@@ -1,0 +1,682 @@
+<div class="row">
+<!-- col -->
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+<h1 class="page-title txt-color-blue">
+<i class="fa-fw fa fa-credit-card"></i> Reportar pago
+</h1>
+</div>
+<!-- end col -->
+<!-- right side of the page with the sparkline graphs -->
+<!-- col -->
+<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+<!-- sparks -->
+<ul id="sparks">
+{% set cobranza = 0 %}
+{% for p in propiedades %}
+
+{% if p.meses_pendiente > constant('MESES_COBRANZA') %}
+{% set cobranza = 1 %}
+{% endif %}
+
+{% endfor %}
+{% if cobranza == 0 %}    
+<li class="sparks-info">
+<h5> Mi Deuda
+<span class="txt-color-blue">
+{% set recibos = 0 %}
+{% set total = 0 %}
+{% set inm = 0 %}
+{% set mov = "0" %}
+{% for c in cuentas%}
+{% set inm = inm + 1 %}
+{% for f in c.cuentas %}
+{% set saldo = f.facturado - f.abonado %}
+{% set total = total + saldo %}
+{% set recibos = recibos + 1 %}
+{% set mov = mov ~ ", " ~ saldo %}
+
+{% endfor %}
+{% endfor %}
+{{ format_number(total) }}
+</span></h5>
+</li>
+<li class="sparks-info">
+<h5>Mis Recibos <span class="txt-color-purple"><i class="fa fa-arrow-circle-up" data-rel="bootstrap-tooltip" title="Increased"></i>&nbsp;{{ recibos }}</span></h5>
+</li>
+<li class="sparks-info">
+<h5> Mis Inmuebles <span class="txt-color-greenDark"><i class="fa fa-building-o"></i>&nbsp;{{ inm }}</span></h5>
+<div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
+{{ mov }}
+</div>
+</li>
+{% endif %}
+</ul>
+<!-- end sparks -->
+</div>
+<!-- end col -->
+
+</div>
+<section id="widget-grid" class="">
+<div class="row">
+
+    <div class="col-md-9 col-xl-9">
+        <div class="alert alert-warning fade in hidden-xs">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            <h4 class="alert-heading"> <i class="fa-fw fa fa-warning"></i> Atención!</h4>
+            <strong>Yo. {{session.usuario.nombre}}, declaro que estoy ingresando datos reales, fidedignos y legales de transferencia o depósito,
+            de ser rechazados los mismos por el banco emisor o el banco receptor, 
+            será cargado dicho valor en mi cuenta de gastos de condominio, sin aviso ni protesta.</strong>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-3">
+        <div class="alert alert-success fade in hidden-xs">
+            <h4 class="alert-heading">
+            Bs.<span class="font-weight-bold txt-color-green" style="font-size:2em" id="tasa_del_dia">{{tasa.usd}}</span> 
+            <small class="txt-color-green"><strong>Tasa del día</strong></small>
+            </h4>
+            <div><small><i class="fa-fw fa fa-bank"></i> Banco Central de Venezuela</small></div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+    <div class="alert alert-info fade in visible-xs">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-info"></i>
+        <strong>Info!</strong> Tasa del día <span id="tasa_del_dia2" class="font-lg label bg-color-red">{{tasa.usd}}</span>
+    </div>
+    </div>
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div id="wid-id-0" class="jarviswidget transparent jarviswidget-sortable" data-widget-deletebutton="false" data-widget-editbutton="false" style="" role="widget">
+<header>
+<span class="widget-icon"> <i class="fa fa-desktop"></i> </span>
+<h3>Asistente reportar pago de condominio </h3>				
+</header>
+<!-- widget div-->
+<div role="content">
+<!-- widget content -->
+<div class="widget-body">
+<div class="row">
+<form novalidate="novalidate" id="wizard-1" enctype="multipart/form-data">
+<div class="col-sm-12" id="bootstrap-wizard-1">
+<div class="form-bootstrapWizard">
+<ul class="bootstrapWizard form-wizard">
+<li data-target="#step1" class="active">
+<a data-toggle="tab" href="#tab1"> <span class="step">1</span> <span class="title">Selección de facturas</span> </a>
+</li>
+<li data-target="#step2">
+<a data-toggle="tab" href="#tab2"> <span class="step">2</span> <span class="title">Información del pago</span> </a>
+</li>
+<li data-target="#step3">
+<a data-toggle="tab" href="#tab3"> <span class="step">3</span> <span class="title">Resultado</span> </a>
+</li>
+</ul>
+<div class="clearfix"></div>
+</div>
+<div class="tab-content">
+<div id="tab1" class="tab-pane active">
+<br>
+<h3><strong>Paso 1 </strong> - Selección de facturas a cancelar</h3>
+{% if cobranza == 1 %}
+    {% include 'misc/legal.html.twig' %}
+{% elseif recibos == 0 %}
+    <div class="alert alert-danger">
+    <strong><i class="ace-icon fa fa-times"></i> Atención: </strong> Estimado {{ session.usuario.nombre }} usted 
+    no tiene recibos pendiente por cancelar.
+    </div>
+{% else %}
+    <!-- verificamos si el propietarios debe pasar al Dpto. de Cobranza -->
+    {% set counter = 0 %}
+    {% set debtBS = 0 %}
+    {% set debtUSD = 0 %}
+    {% for cuenta in cuentas %}
+        <div class="row">
+        <div class="col col-lg-10 col-md-12">
+        <div class="table-responsive">
+        <table  class="table table-bordered table-striped">
+        <caption style="text-align: left;">
+        <h5><strong>{{cuenta.inmueble.nombre_inmueble}}</strong><br>
+        {{cuenta.inmueble.unidad}}:&nbsp<strong>{{cuenta.propiedades.apto}}</strong><br>
+        TOTAL DEUDA&nbsp{{cuenta.inmueble.moneda}}:
+        <strong>{{format_number(cuenta.propiedades.deuda_total)}}</strong>
+        </h5>
+        <p class="text-info">Marque las facturas a cancelar<p>
+        </caption>
+        <thead>
+        <tr>
+        <th class="hidden-xs" style="text-align: center">Nº FACTURA</th>
+        <th style="text-align: center">PERIODO</th>
+        <th class="hidden-xs" style="text-align: center">FACTURADO&nbsp{{cuenta.inmueble.moneda}}</th>
+        <th class="hidden-xs" style="text-align: center">ABONADO&nbsp{{cuenta.inmueble.moneda}}</th>
+        <th style="text-align: center">SALDO&nbsp{{cuenta.inmueble.moneda}}</th>
+        {% if cuenta.inmueble.facturacion_usd %}
+        <th style="text-align: center">SALDO $</th>
+        {% endif %}
+        <th style="text-align: center" class="">ESTATUS</th>
+        <th style="text-align: center">PAGAR</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for factura in cuenta.cuentas %}
+            {% if factura.pagado == 0 %}
+                <tr>
+                    <td class="hidden-xs" style="text-align: center">
+                    <input type="hidden" name="id_inmueble[]" value="{{factura.id_inmueble}}"/>
+                    <input type="hidden" name="id_apto[]" value="{{factura.apto }}"/>
+                    <input type="hidden" name="periodo[]" value="{{factura.periodo}}"/>
+                    <input type="hidden" name="facturas[]" value="{{factura.numero_factura}}"/>
+                    {% if factura.aviso %}
+                    <a href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">{{ factura.numero_factura}}</a>
+                    {% else %}
+                    <abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
+                    {% endif %}
+                    </td>
+                    <td style="text-align: center">{{factura.periodo | date("m-Y") | upper}}</td>
+                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
+                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.abonado)}}</span></td>
+                    <td><span class="pull-right">
+                    <input type="hidden" name="montos[]" value="{{factura.facturado - factura.abonado}}" />
+                    {{format_number(factura.facturado - factura.abonado)}}
+                    </span>
+                    </td>
+                    {% if cuenta.inmueble.facturacion_usd %}
+                    <td><span class="pull-right">{{format_number(factura.facturado_usd)}}</span></td>
+                    {% endif %}
+                    <td>
+                        {% if factura.pagado == 0 %} 
+                        <span class="label label-sm label-success">Pendiente</span> 
+                        {% else %}
+                        <a href="javascript:void(0);" data-html="true" data-original-title="{{factura.pagado_detalle}}" data-placement="top" rel="tooltip" class="label label-sm label-warning">Pendiente por procesar</a> 
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                    <input type="checkbox" name="id[]" value="{{counter}}" {{factura.pagado > 0? "disabled=\'disabled\'":"" }}>
+                    </td>
+                </tr>
+                {% set counter = counter + 1 %}
+                {% set debtBS = debtBS + factura.saldo %}
+            {% endif %}
+        {% endfor %}
+        {% if debtBS > 0 %}
+            <tr>
+            <td class="hidden-xs"></td>
+            <td class="hidden-xs"></td>
+            <td class="hidden-xs"></td>
+            <td></td>
+            <td><span class="pull-right">{{format_number(debtBS)}}<span class="pull-right"></td>
+            {% if cuenta.inmueble.facturacion_usd %}
+                    <td><span class="pull-right">{{format_number(cuenta.propiedades.deuda_usd)}}<span class="pull-right"></td>
+            {% endif %}
+            <td></td>
+            <td></td>
+            </tr>
+        {% endif %}
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+    {% endfor %}
+{% endif %}
+</div>
+<div id="tab2" class="tab-pane">
+<br>
+<h3><strong>Paso 2</strong> - Información del depósito o transferencia</h3>
+
+<div class="row">
+<div class="col-sm-4">
+<div class="form-group">
+<label>Forma de pago:</label> 
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-credit-card fa-lg fa-fw"></i></span>
+<select class="form-control input-lg" name="tipo_pago">
+{% if session.usuario.cod_admin!='004' %}
+<option selected value="D">Depósito</option>
+{% endif %}
+<option value="T">Transferencia</option>
+</select>
+</div>
+</div>
+</div>
+<input type="hidden" id="cod_admin" name="cod_admin" value="{{session.usuario.cod_admin}}" class="">
+<input type="hidden" id="estatus" name="estatus" value="P" class="">
+<input type="hidden" id="enviado" name="enviado" value="0" class="">
+<div class="col-sm-4">
+<div class="form-group">
+<label id="numero">Número de referencia:</label>
+<div class="input-group">
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-asterisk fa-lg fa-fw"></i></span>
+<input type="text" id="numero_documento" name="numero_documento" placeholder="Referencia" class="form-control input-lg" maxlength="14">
+</div>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="form-group">
+<label>Número de cuenta destino: </label>
+{% if cuentas[0].inmueble.cuentas_bancarias|length > 1 %}
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-list fa-lg fa-fw"></i></span>
+<select class="form-control input-lg" name="numero_cuenta">
+{% set dato = '' %}
+{% for cuenta in cuentas[0].inmueble.cuentas_bancarias %}
+{% if dato != cuenta.numero_cuenta %}
+<option value="{{cuenta.numero_cuenta}}" data-bind="{{cuenta.banco}}">{{cuenta.numero_cuenta}}</option>
+{% endif %}
+{% set dato = cuenta.numero_cuenta %}
+{% endfor %}
+</select>
+</div>
+{% else %}
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-list fa-lg fa-fw"></i></i></span>
+<input type="text" id="numero_cuenta" name="numero_cuenta" placeholder="Número de cuenta" class="form-control input-lg" value="{{ cuentas[0].inmueble.numero_cuenta }}">
+</div>
+{%endif%}
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-4">
+<div class="form-group">
+<label>Fecha depósito o transferencia: </label>
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-calendar-o fa-lg fa-fw"></i></span>
+<input type="text" id="fecha_documento" name="fecha_documento" placeholder="" class="form-control input-lg datepicker"  placeholder="" data-mask-placeholder="_" data-mask="99/99/9999">
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="form-group">
+<label>Banco origen de la transferencia: </label>
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-university fa-lg fa-fw"></i></i></span>
+<select class="form-control input-lg" 
+        id="banco_origen" 
+        name="banco_origen" 
+        class="form-control input-lg" 
+        disabled="disabled">
+<option value="">SELECCIONE UN BANCO DE LA LISTA</option>
+{% for banco in bancos %}
+<option value="{{banco.nombre}}" data-bind="{{banco.nombre}}">{{banco.nombre}}</option>
+{% endfor %}
+</select>
+<!--input type="text" id="banco_origen" name="banco_origen" placeholder="Banco origen"  class="form-control input-lg" disabled="disabled"-->
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="form-group">
+<label>Banco destino: </label>
+{% if cuentas[0].inmueble.cuentas_bancarias|length > 1 %}
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-university fa-lg fa-fw"></i></span>
+<select class="form-control input-lg" name="banco_destino">
+{% set dato = '' %}
+{% for cuenta in cuentas[0].inmueble.cuentas_bancarias %}
+    {% if dato != cuenta.banco %}
+    <option value="{{cuenta.banco}}" data-bind="{{cuenta.numero_cuenta}}">{{cuenta.banco}}</option>
+    {% endif %}
+    {% set dato = cuenta.banco %}
+{% endfor %}
+</select>
+</div>
+{% else %}
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-university fa-lg fa-fw"></i></span>
+<input type="text" id="banco_destino" name="banco_destino" placeholder="" class="form-control input-lg" value="{{cuentas[0].inmueble.banco}}">
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-4">
+<div class="form-group">
+<label>Monto: </label>
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-money fa-lg fa-fw"></i></span>
+<input type="text" id="monto" name="monto" placeholder="0,00" class="form-control input-lg">
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="form-group">
+<label>Correo electrónico: </label>
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-envelope-o fa-lg fa-fw"></i></i></span>
+<input type="text" id="email" name="email" placeholder="Correo electrónico"  class="form-control input-lg" value="{{ usuario.email }}">
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="form-group">
+<label>Teléfono Contacto: </label>
+<div class="input-group">
+<span class="input-group-addon"><i class="fa fa-mobile-phone fa-lg fa-fw"></i></span>
+<input type="text" id="telefono" name="telefono" placeholder="" class="form-control input-lg" data-mask-placeholder="_" data-mask="(9999)999-9999" value="{{ usuario.telefono3 }}">
+</div>
+</div>
+</div>
+</div>
+<!--div class="row">
+<div class="col-lg-8 col-sm-12">
+<div clas="form-group">
+<input id="soporte" name="soporte" type="file" accept="image/jpeg, image/png, application/pdf" data-show-preview="false">
+</div>
+</div>
+</div-->
+</div>
+<div id="tab3" class="tab-pane">
+<br>
+<h3><strong>Paso 3</strong> - Finalizar</h3>
+<br>
+<h1 class="text-center text-info"><strong><i class="fa fa-spinner fa-spin fa-lg"></i> Espere unos segundos....</strong></h1>
+<h4 class="text-center">Estamos procesando la información, sea paciente por favor. No cierre esta venta, en breve
+recibirá respuesta de confirmación</h4>
+<br>
+<h3 class="hidden text-center">Gracias por utilizar nuestros servicios, le hemos enviado el comprobante de pago a su correo electrónico.</h3>
+</div>
+<div class="form-actions">
+<div class="row">
+<div class="col-sm-12">
+<ul class="pager wizard no-margin">
+<li class="previous disabled"><a class="btn btn-lg btn-default" href="javascript:void(0);"> Anterior </a></li>
+<li class="next"><a class="btn btn-lg btn-default" href="javascript:void(0);"> Siguiente </a></li>
+<li class="finish hidden"><a class="btn btn-lg btn-default" href="#inmueble/?accion=cartelera">Finalizar</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</form>
+</div>
+
+</div>
+<!-- end widget content -->
+</div>
+<!-- end widget div -->
+
+</div>
+<!-- end widget -->
+
+</article>
+<!-- WIDGET END -->
+</div>
+</section>
+<!-- end widget grid -->
+<script src="{{constant('ROOT')}}assets/js/fileinput.min.js"></script>
+<script type="text/javascript">
+	pageSetUp();
+	var pagefunction = function() {
+
+        loadScript("{{constant('ROOT')}}assets/js/plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js", runBootstrapWizard);
+        //$('.btn-pago').removeClass('btn-pago').removeClass('visible-xs').addClass('d-none');
+        $("#soporte").fileinput({
+            //uploadUrl: 'solvencias/index.php',
+            //uploadAsync: false,
+            initialCaption: 'Anexe copia de su pago (.pdf, .jpg)',
+            browseLabel: "Seleccionar",
+            browseClass: "btn btn-success",
+            removeLabel: "Eliminar",
+            uploadLabel: "Subir",
+            showUpload: false,
+        });
+        $(":checkbox").click(function() {
+            var monto = 0;
+            $("input:checked").each(function() {
+                var  monto_factura = $("input[name|='montos[]']").eq($(this).val()).val();
+                monto = parseFloat(monto) + parseFloat(monto_factura);
+                //monto = parseFloat(monto) + (parseFloat($(this).closest("tr").find("td:eq(4)").text().replace(".", "").replace(",", ".")) * 100);
+            });
+            //monto = monto / 100;
+            $("#monto").val(monto.formatCurrency());
+        });
+        
+        $("select[name|='tipo_pago']").change(function() {
+            
+            if ($(this).val() == "T") {
+                $("#banco_origen").attr('disabled', false);
+                $('#numero').html("Código Transferencia:");
+            } else {
+                $("#banco_origen").attr('disabled', true);
+                $("#banco_origen").val('');
+                $('#numero').html("Número Depósito:");
+            }
+        });
+        {% if session.usuario.cod_admin == '004' %}
+            $("select[name|='tipo_pago']").change();
+        {%endif%}
+        $("select[name='banco_destino']").change(function() {
+            $("select[name='numero_cuenta']").val($("select[name='banco_destino'] option:selected").attr('data-bind'));
+        });
+        $("select[name='numero_cuenta']").change(function() {
+            $("select[name='banco_destino']").val($("select[name='numero_cuenta'] option:selected").attr('data-bind'));
+        });
+        /*$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+            _title : function(title) {
+                if (!this.options.title) {
+                    title.html("&#160;");
+                } else 
+                    title.html(this.options.title);
+                }
+            }
+        }));*/
+        $.SmartMessageBox({
+            content : "<div class='alert alert-warning'><h4 class=\"alert-heading\"> <i class=\"fa-fw fa fa-gavel\"></i> Ley especial contra delitos informáticos</h4><strong>Artículo 14º</strong> Fraude. <span class='hidden-xs'>El que, a través del\n\
+            uso indebido de tecnologías de información, valiéndose de \n\
+            <strong>cualquier manipulación en sistemas o cualquiera de sus componentes\n\
+            o en la data o información</strong> en ellos contenida, consiga insertar instrucciones falsas\n\
+            o fraudulentas que produzcan un resultado que permita obtener un provecho injusto en\n\
+            perjucio ajeno, será penado con prisión de <strong>tres a siete años y multa de\n\
+            trescientas a setecientas unidades tributarias.</strong><br></span><br>Yo declaro que estoy\n\
+            ingresando datos reales, fidedignos y legales de la transferencia o depósito,\n\
+            de ser rechazados los mismos por el banco emisor o receptor, será cargado\n\
+            dicho valor en mi cuenta de gastos de condominio, sin aviso ni protesta.\n\
+            <strong>"+$("#show-shortcut").text()+"</strong></div>",
+            buttons : "[Aceptar]"
+        });
+        function runBootstrapWizard() {
+
+                var $validator = $("#wizard-1").validate({
+
+                    rules : {
+                        email : {
+                            required : true,
+                            email : "Ingrese una email válido."
+                        },
+                        'id[]' : {
+                            required : true
+                        },
+                        numero_documento : {
+                            required : true,
+                            digits: true
+                        },
+                        numero_cuenta : {
+                            required : true
+                        },
+                        fecha_documento : {
+                            required : true
+                        },
+                        banco_destino : {
+                            required : true
+                        },
+                        monto : {
+                            required:true,
+                            number:true,
+                            min: 0.01
+                        },
+                        telefono : {
+                            required:true
+                        },
+                        banco_origen : {
+                            required: function() {
+                                return $("select[name|='tipo_pago']").val() == 'T';
+                            }
+                        },
+                        soporte : { required:true }
+                    },
+
+                    messages : {
+                        email: {
+                        required: "Ingrese su dirección de correo electrónico",
+                        email: "Ingrese un email válido"
+                        },
+                        monto : {
+                        required: "Debe ingresar el monto",
+                        number: "Debe introducir una cantidad válida",
+                        min: "El monto debe ser mayor que 1"
+                        },
+                        telefono : {
+                        required: 'Ingrese un número de teléfono de contacto'
+                        },
+                        banco_origen : {
+                        required: 'Ingrese el nombre del banco desde donde hizo la transferencia'
+                        },
+                        numero_documento : {
+                          required:  "Ingrese un número de referencia",
+                          digits: "Ingrese solo números"
+                        },
+                        numero_cuenta: "Ingrese el número de cuenta",
+                        fecha_documento: "Ingrese la fecha del depósito|transferencia",
+                        banco_destino: "Ingrese el nombre del banco donde hizo el(la) "+ $('#tipo_pago').val(),
+                        "id[]": "Debe seleccionar por lo menos una factura para continuar",
+                        soporte: "Seleccione una copia del soporte del pago"
+                    },
+                        
+                    highlight : function(element) {
+                        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                    },
+                    unhighlight : function(element) {
+                        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    },
+                    errorElement : 'span',
+                    errorClass : 'help-block',
+                    errorPlacement : function(error, element) {
+                        if(element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
+                            //var controls = element.closest('div[class*="col-"]');
+                            //controls.append(error);
+                            errorSeleccionFactura();
+                        } else {
+                            if (element.is('input[type=file]')) {
+                                error.insertAfter($(element).closest('div.file-input'));
+                                $('.help-block').css('color','#a94442');
+                            } else {
+                                if (element.parent('.input-group').length) {
+                                        error.insertAfter(element.parent());
+                                } else {
+                                        error.insertAfter(element);
+                                }
+                            }
+                        }
+                    }
+                });
+
+                $('#bootstrap-wizard-1').bootstrapWizard({
+                    'onTabShow' : function(tab,navigation,index) {
+                        {% if (recibos == 0 or recibos > constant('MESES_COBRANZA')) %}
+                            $("#bootstrap-wizard-1").find(".pager .next").addClass("disabled");
+                        {% endif %}
+                        if (!$(":checkbox").is(":enabled")) {
+                            $("#bootstrap-wizard-1").find(".pager .next").addClass("disabled");
+                        }
+                    },
+                    'tabClass' : 'form-wizard',
+                    'onTabClick' : function(tab, navigation, index) {
+                        return false;
+                    },
+                    'onPrevious' : function(tab, navigation, index) {
+                        if(index === 2) {
+                            return false;
+                        }
+                    },
+                    'onNext' : function(tab, navigation, index) {
+                        {% if (recibos == 0 or recibos > constant('MESES_COBRANZA'))%}
+                         return false;
+                        {% endif %}
+                        if (!$(":checkbox").is(":enabled")) {
+                            return false;
+                        }
+                        var $valid = $("#wizard-1").valid();
+                        if (!$valid) {
+                            if(index==2) errorPasoN2();
+                            $validator.focusInvalid();
+                            return false;
+                        } else {
+                            $('#bootstrap-wizard-1').find('.form-wizard').children('li').eq(index - 1).addClass('complete');
+                            $('#bootstrap-wizard-1').find('.form-wizard').children('li').eq(index - 1).find('.step').html('<i class="fa fa-check"></i>');
+                            if(index==2 ){
+                                $("li.next, li.previous").addClass("hidden");
+                                $("li.finish").removeClass("hidden");
+                                var data = new FormData($("#wizard-1")[0]);
+                                 $.ajax({
+                                 url: "{{constant('URL_SISTEMA')}}/pago/guardar",
+                                 type: 'POST',
+                                 data: data,
+                                 contentType:false,
+                                 processData:false,
+                                 success: function(data) {
+                                    var obj = jQuery.parseJSON(data);
+                                    if(obj.suceed) {
+                                       $("#tab3").find("h1").addClass("text-success").removeClass("text-info");    
+                                       $("#tab3").find("h1").html('<strong><i class="fa fa-lg fa-check-circle-o"></i> Muy Bien!</strong>');
+                                       $("li.previous").addClass("disabled");
+                                       $("#tab3").find("h3").removeClass("hidden");
+                                   } else {
+                                       $("#tab3").find("h1").addClass("text-danger").removeClass("text-info");
+                                       $("#tab3").find("h1").html('<strong><i class="fa fa-lg fa-warning"></i >Ups! Error al procesar esta transacción</strong>');
+                                   }
+                                   $("#tab3").find("h4").html(obj.mensaje);
+                                 },
+                                 error : function () {
+                                    $("#tab3").find("h1").addClass("text-danger").removeClass("text-info");
+                                    $("#tab3").find("h1").html('<strong><i class="fa fa-lg fa-warning"></i >Ups! Error al procesar esta transacción</strong>');
+                                 }  
+                                });
+                            }
+                            if(index==3) {
+                                $("li.next, li.previous").addClass("disabled");
+                            }
+                        }
+                    }
+                });
+
+		};
+        function errorSeleccionFactura() {
+            $.smallBox({
+                title : "Ups! No ha completado este paso.",
+                content : "<i class='fa fa-warning'></i><i> Debe seleccionar por lo menos una factura para continuar.</i>",
+                color : "#ed1c24",
+                iconSmall : "fa fa-times fa-2x fadeInRight animated",
+                timeout : 6000
+            });
+        }
+        function errorFaltaSoporte() {
+            $.smallBox({
+                title : "Ups! No ha completado este paso.",
+                content : "<i class='fa fa-warning'></i><i> Adjunte copia del comprobante del Depósito/Transferencia.</i>",
+                color : "#ed1c24",
+                iconSmall : "fa fa-times fa-2x fadeInRight animated",
+                timeout : 6000
+            });
+        }
+        function errorPasoN2() {
+            $.smallBox({
+                title : "Ups! No ha completado este paso.",
+                content : "<i class='fa fa-warning'></i><i> Corrija lo errores en pantalla para continuar.</i>",
+                color : "#ed1c24",
+                iconSmall : "fa fa-times fa-2x fadeInRight animated",
+                timeout : 6000
+            });
+        }
+
+	};
+	// end pagefunction
+	
+	// Load bootstrap wizard dependency then run pagefunction
+	pagefunction();
+
+</script>

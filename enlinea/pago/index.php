@@ -294,8 +294,11 @@ switch ($accion) {
                         for ($index = 0; $index < count($factura['data']); $index++) {
                             $filename = "../avisos/" . $factura['data'][$index]['numero_factura'].
                                     $session['usuario']['cod_admin'].".pdf";
+                            
                             $factura['data'][$index]['aviso'] = file_exists($filename);
+                            
                             $r = pago::facturaPendientePorProcesar($factura['data'][$index]['periodo'], $factura['data'][$index]['id_inmueble'], $factura['data'][$index]['apto']);
+                            
                             if ($r['suceed'] && count($r['data'])>0) {
                                 $factura['data'][$index]['pagado'] = 1;
                                 $factura['data'][$index]['pagado_detalle']= "<i class='fa fa-calendar-o'></i> ".
@@ -326,21 +329,39 @@ switch ($accion) {
             }
         }
         //var_dump($propiedades['data']);
-        $tasa   = [];
+        $tasa   = [
+            'dolar' => '0,00',
+            'usd'   => '0,00',
+        ];
         $url    = 'https://www.bcv.org.ve';
-        
-        if(($html   = file_get_contents_curl($url)) == false) {
-            $error = error_get_last();
-            //die("HTTP request failed. Error was: " . $error['message']);
-        }
+        $html   = file_get_contents_curl($url);
+        if($html == false) {
+            error_log(error_get_last()['message'] ?? "No se puedo leer el contenido de $url");
+        } else {
+            libxml_use_internal_errors(true); 
+            $doc = new DOMDocument();
 
-        $doc = new DOMDocument();
-        @$doc->loadHTML($html, LIBXML_NOERROR);
-        $nodes = $doc->getElementById('dolar');
-        $lectura = rtrim(ltrim($nodes->nodeValue));
-        $lectura = explode(" ", limpiarString($lectura));
-        $tasa['dolar'] = $lectura[0];
-        $tasa['usd'] = number_format( str_replace(",",".",$lectura[0]), 2, ',', '.' );
+            if ($doc->loadHTML($html, LIBXML_NOERROR)) {
+                $node = $doc->getElementById('dolar');
+                if ($node !== null) {
+
+                    $lectura = explode(" ", limpiarString($node->nodeValue));
+
+                    if(!empty($lectura[0])) {
+                        $nlectura = str_replace(',','.',$lectura[0]);
+                        if(is_numeric($nlectura)) {
+                            $tasa['dolar'] = $lectura[0];
+                            $tasa['usd'] = number_format($nlectura, 2, ',', '.' );
+                        }
+                    }
+                } else {
+                    error_log("No se encontró el elemento con ID 'dolar' en el HTML.");
+                }
+            } else {
+                error_log("No se pudo cargar el HTML en DOMDocument.");
+            }
+            libxml_clear_errors();  
+        }
 
         $params = [
             'accion'      => $accion,
@@ -351,7 +372,13 @@ switch ($accion) {
             'tasa'        => $tasa,
             'usuario'     => $session['usuario'],
         ];
-        echo $twig->render('enlinea/pago/formulario.html.twig', $params);
+        if ($session['administra']['codigo']=='0012') {
+            $url = 'enlinea/pago/formulario.html.0012.twig';
+        } else {
+
+            $url = 'enlinea/pago/formulario.html.twig';
+        }
+        echo $twig->render($url, $params);
         break; 
         
     case "pago-tdc":

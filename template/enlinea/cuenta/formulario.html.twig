@@ -50,119 +50,119 @@ data-widget-custombutton="false" >
 <div class="row">
 
 <!--div class="col-md-6 col-sm-6 col-lg-4"-->
-<article class="col-sm-6 col-sm-6 col-md-6 col-lg-3 responsive sortable-grid ui-sortable">
-<div class="well well-md  bg-color-orange txt-color-white no-border">
-<!-- propietario -->
-<span class="text">
-{{cuenta.inmueble.unidad}}
-<span class="pull-right">
-{{cuenta.propiedades.apto}}
-</span>
-</span>
-<!-- fin propietario -->
-<br/>
-<!-- deuda en Bs-->
-<span class="text">
-{{'TOTAL DEUDA ' ~ cuenta.inmueble.moneda}}
-<span class="pull-right">
-{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
-Dpto. Legal
-{% else %}
-{{format_number(cuenta.propiedades.deuda_total)}}
-{% endif %}
-</span>
-</span>
-<!-- fin deuda en Bs. -->
-<!-- deuda en dólares -->
-{% if cuenta.inmueble.facturacion_usd %}
-<span class="text">
-<br>
-TOTAL DEUDA $
-<span class="pull-right">
-{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
-Dpto. Legal
-{% else %}
-{{ format_number(cuenta.propiedades.deuda_usd) }}
-{% endif %}
-</span>
-</span>
-{% endif %}
-<!-- fin deuda en dólares -->
+<article class="col-sm-12 col-md-12 col-lg-3 responsive sortable-grid ui-sortable">
+
+<div class="well well-md bg-color-teal txt-color-white no-border">
+	<!-- propietario -->
+	<span class="text">
+	<i class="fa-fw fa fa-building"></i> {{cuenta.inmueble.unidad}}
+	<span class="pull-right">
+	{{cuenta.propiedades.apto}}
+	</span>
+	</span>
+	<!-- fin propietario -->
+	<br/>
+	<!-- deuda en Bs-->
+	<span class="text">
+	<i class="fa-fw fa fa-money"></i> {{'TOTAL DEUDA'}}
+	<span class="pull-right">
+	{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+	Dpto. Legal
+	{% else %}
+	{{cuenta.inmueble.moneda ~ format_number(cuenta.propiedades.deuda_total)}}
+	{% endif %}
+	</span>
+	</span>
+	<!-- fin deuda en Bs. -->
+	<!-- deuda en dólares -->
+	{% if cuenta.inmueble.facturacion_usd %}
+	<span class="text">
+	<br>EQUIVALENTE A
+	<span class="pull-right">
+	{% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
+	Dpto. Legal
+	{% else %}
+	${{format_number(cuenta.propiedades.deuda_usd) }}
+	{% endif %}
+	</span>
+	</span>
+	{% endif %}
+	<!-- fin deuda en dólares -->
 </div>
 <!--/div-->
 </article>
 <!--div class="col-md-12 col-sm-12 col-lg-8"-->
 <article class="col-sm-12 col-md-12 col-lg-9 sortable-grid ui-sortable">
 <!-- inicio well 2 -->
-<div class="well well-lg no-padding">
+
 {% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
 {% else %}
-{% if cuenta.cuentas is empty %}
-<div class="alert alert-danger">
-	<strong>
-		<i class="ace-icon fa fa-times"></i>
-		Atención:
-	</strong>
-	Estimado propietario(a) usted 
-	no tiene recibos pendiente de pago.
-</div>
-{% else %}
-<div class="table-responsive">
-	<table class="table table-hover">
-		<thead class="thin-border-bottom">
-			<tr class="text-primary">
-				<th style="text-align: center">Nº FACTURA</th>
-				<th style="text-align: center">PERIODO</th>
-				<th style="text-align: center" class="hidden-xs">FACTURADO&nbsp{{cuenta.inmueble.moneda}}</th>
-				<th style="text-align: center" class="hidden-xs">ABONADO&nbsp{{cuenta.inmueble.moneda}}</th>
-				<th style="text-align: center">SALDO&nbsp{{cuenta.inmueble.moneda}}</th>
-				{% if cuenta.inmueble.facturacion_usd %}
-					<th style="text-align: center">SALDO $</th>
-					{%endif%}
-					<th style="text-align: center" class="hidden-xs">AVISO DE COBRO</th>
-				</thead>
-			</tr>
-		</thead>
-		<tbody>
-			{% for factura in cuenta.cuentas %}
-				<tr>
-					<td style="text-align: center">
-						{% if factura.aviso %}
-							<a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{factura.numero_factura}}" target="_blank">{{factura.numero_factura}}</a>
-						{% else %}
-							<abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
-						{%endif %}
-					</td>
-					<td style="text-align: center">{{ factura.periodo | date("m-Y") | upper}}</td>
-					<td class="hidden-xs">
-						<span class="pull-right">{{format_number(factura.facturado)}}</span>
-					</td>
-					<td class="hidden-xs">
-						<span class="pull-right">{{format_number(factura.abonado)}}</span>
-					</td>
-					<td>
-						<span class="pull-right">{{format_number(factura.facturado - factura.abonado)}}</span>
-					</td>
-					{% if cuenta.inmueble.facturacion_usd %}
-						<td>
-							<span class="pull-right">{{format_number(factura.facturado_usd)}}</span>
-						</td>
-					{% endif %}
-					<td class="hidden-xs">
-						{% if factura.aviso %}
-							<a class="label label-success arrowed" href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">Disponible</a>
-						{% else %}
-							<span class="label label-danger arrowed">No Disponible</span>
-						{% endif %}
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
+	{% if cuenta.cuentas is empty %}
+		<div class="alert alert-danger">
+			<strong>
+				<i class="ace-icon fa fa-times"></i>
+				Atención:
+			</strong>
+			Estimado propietario(a) usted 
+			no tiene recibos pendiente de pago.
+		</div>
+	{% else %}
+		<div class="well well-lg no-padding">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead class="thin-border-bottom">
+						<tr class="text-primary">
+							<th style="text-align: center">Nº FACTURA</th>
+							<th style="text-align: center">PERIODO</th>
+							<th style="text-align: center" class="hidden-xs">FACTURADO&nbsp{{cuenta.inmueble.moneda}}</th>
+							<th style="text-align: center" class="hidden-xs">ABONADO&nbsp{{cuenta.inmueble.moneda}}</th>
+							<th style="text-align: center">SALDO&nbsp{{cuenta.inmueble.moneda}}</th>
+							{% if cuenta.inmueble.facturacion_usd %}
+								<th style="text-align: center">SALDO $</th>
+							{% endif %}
+							<th style="text-align: center" class="hidden-xs">AVISO DE COBRO</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for factura in cuenta.cuentas %}
+							<tr>
+								<td style="text-align: center">
+									{% if factura.aviso %}
+										<a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{factura.numero_factura}}" target="_blank">{{factura.numero_factura}}</a>
+									{% else %}
+										<abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
+									{% endif %}
+								</td>
+								<td style="text-align: center">{{ factura.periodo | date("m-Y") | upper}}</td>
+								<td class="hidden-xs">
+									<span class="pull-right">{{format_number(factura.facturado)}}</span>
+								</td>
+								<td class="hidden-xs">
+									<span class="pull-right">{{format_number(factura.abonado)}}</span>
+								</td>
+								<td>
+									<span class="pull-right">{{format_number(factura.facturado - factura.abonado)}}</span>
+								</td>
+								{% if cuenta.inmueble.facturacion_usd %}
+									<td>
+										<span class="pull-right">{{format_number(factura.facturado_usd)}}</span>
+									</td>
+								{% endif %}
+								<td class="hidden-xs">
+									{% if factura.aviso %}
+										<a class="label label-success arrowed" href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">Disponible</a>
+									{% else %}
+										<span class="label label-danger arrowed">No Disponible</span>
+									{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% endif %}
 {% endif %}
-{% endif %}
-</div>
 </div>
 <!-- fin well 2 --> 
 </div>

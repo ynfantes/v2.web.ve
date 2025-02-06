@@ -392,6 +392,7 @@ class pago extends db implements crud {
                 date("d/m/Y")
         );
         $mensaje .= $ini['PIE_MENSAJE_PAGO'];
+        /*
         ob_start();
         ?>
                 <page format="135x215" orientation="L">
@@ -458,19 +459,23 @@ class pago extends db implements crud {
                 </page>
         <?php
         $content = ob_get_clean();
+        */
         // convert to PDF
         require_once('../../includes/html2pdf/html2pdf.class.php');
         try         
         {
+            /*
             $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
             $html2pdf->setDefaultFont("Helvetica");
             // recibo
             $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
             $archivo = $html2pdf->Output('', 'S');
-            $mail = new mailto(SMTP);
             $voucher = Array("Recibo_electronico.pdf" => $archivo);
+            */
+            $voucher = null;
+            $mail = new mailto(SMTP);
             $r = $mail->enviar_email("Pago de Condominio", $mensaje, '', $data['email'], "", null, null, $voucher);
-            $archivo = '';
+            //$archivo = '';
         } 
         catch (HTML2PDF_exception $e) {
             echo "Error PDF :" . $e;
@@ -534,6 +539,7 @@ class pago extends db implements crud {
                     $forma_pago = 'TRANSFERENCIA';
                     break;
             }
+            /*
             ob_start();
             ?>
             <page format="135x215" orientation="L">
@@ -594,7 +600,7 @@ class pago extends db implements crud {
             </page>
             <?php
             $content = ob_get_clean();
-            
+            */
             $mensaje = sprintf($ini['CUERPO_MENSAJE_PAGO_RECEPCION_CONFIRMACION'], 
                     $propietario,
                     $forma_pago,
@@ -610,20 +616,22 @@ class pago extends db implements crud {
                     Misc::date_format($data['data'][0]['fecha']));
                     $mensaje.=$ini['PIE_MENSAJE_PAGO'];
                    
-            require_once('../../includes/html2pdf/html2pdf.class.php');
+            // require_once('../../includes/html2pdf/html2pdf.class.php');
             try
             {
+                /*
                 $html2pdf = new HTML2PDF('P', 'Letter', 'fr',true,'UTF-8',array(0, 10, 0, 0));
                 $html2pdf->setDefaultFont("Helvetica");
                 // recibo
                 $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
                 $archivo = $html2pdf->Output('','S');
-                $mail = new mailto(SMTP);
                 $voucher = ["Recibo de pago" => $archivo];
-                
+                */
+                $voucher = null;
+                $mail = new mailto(SMTP);
                 $r = $mail->enviar_email("Pago de Condominio", $mensaje, '', $data['data'][0]['email'], "",null,null,$voucher);
 
-                $archivo='';
+                //$archivo='';
                 if ($r=="") {
                     $this->actualizar($id, Array("enviado"=>1));
                     echo "Email enviado a ".$data['data'][0]['email']." Ok!";

@@ -317,7 +317,7 @@ Class db {
                 
                 if ($update != null) {
                     if (count(array_keys($update)) == 1) {
-                        $query.= " ON DUPLICATE KEY UPDATE  " . key($update) . " = " . $update[key($update)];
+                        $query.= " ON DUPLICATE KEY UPDATE  " . key($update) . " = '" . $update[key($update)] ."'";
                     } else {
                         $columnasUpdate = array_keys($update);
                         $valoresUpdate = array_values($update);

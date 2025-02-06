@@ -64,11 +64,10 @@ class HTML2PDF_locale
         self::$_list = array();
         $handle = fopen($file, 'r');
         while (!feof($handle)) {
-            // $line = fgetcsv($handle);
-            // if (count($line)!=2) continue;
-            //[x] ojo se agrego está linea porque peta ahora que se actualizo PHP a 7.2
-            $line = fgetcsv($handle); 
-            if (null != $line && count($line)!=2) continue; 
+            $line = fgetcsv($handle);
+            var_dump($line);
+            die();
+            if (count($line)!=2) continue;
             self::$_list[trim($line[0])] = trim($line[1]);
         }
         fclose($handle);

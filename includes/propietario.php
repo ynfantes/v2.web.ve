@@ -62,9 +62,9 @@ class propietario extends db implements crud  {
                             $administra['email'].' ó <br/>info@administracion-condominio.com.ve';
                 }
                 
-                $consulta = "select * from propiedades where cedula in (SELECT cedula FROM `propietarios` where clave='$password' )";
+                // $consulta = "select * from propiedades where cedula in (SELECT cedula FROM `propietarios` where clave='$password' )";
                 
-                $propiedades = db::query($consulta);
+                // $propiedades = db::query($consulta);
 
                 $res = db::select("*","junta_condominio",Array("cedula"=>$result['data'][0]['cedula']));
                 $junta_condominio = '';
