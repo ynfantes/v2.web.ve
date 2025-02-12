@@ -6,21 +6,18 @@ header('Content-type: text/html; charset=utf-8');
 
 include_once 'includes/db.php';
 include_once 'includes/file.php';
-/* include_once 'includes/inmueble.php';
-  include_once 'includes/junta_condominio.php';
-  include_once 'includes/propietario.php';
-  include_once 'includes/propiedades.php';
-  include_once 'includes/factura.php';
- */
 
 $db = new db();
 $administradoras = new administradora();
 
 if (isset($_GET['cod_admin'])) {
-
-    $r = $administradoras->verPorCodigo($_GET['cod_admin']);
+    $cod_admin = $_GET['cod_admin'];
+    
+    $r = $administradoras->verPorCodigo($cod_admin);
+    
     if ($r['suceed'] && count($r['data']) > 0) {
         $administradora = $r['data'][0];
+        $adminName = $administradora['nombre'];
 //        echo '<pre>';
 //        print_r($administradora);
 //        echo '-------<br>';
@@ -32,7 +29,7 @@ if (isset($_GET['cod_admin'])) {
         
         if ($administradora['inactivo']) {
             $mail = new mailto(SMTP);
-            $mensaje = "<strong>" . $administradora['nombre'] . "</strong>: SERVICIO SUSPENDIDO. <br />Este servicio está incluido con el Soporte Premium.";
+            $mensaje = "<strong>$adminName</strong><br>SERVICIO SUSPENDIDO. <br />Este servicio está incluido con el Soporte Premium.";
             $mensaje = '<div style="background-color:rgb(227,242,253);padding:50px 0 50px;">'
                     . '<div style="background-color:#fff; min-width:516px; max-width:516px;margin:0 auto; padding:40px 30px 50px 30px;">'
                     . '<div style="background: linear-gradient(145deg,#0d47a1,#42a5f5);padding-left:10px">'
@@ -43,9 +40,9 @@ if (isset($_GET['cod_admin'])) {
                     . '<div style="display: block;width: 60px;height: 2px;margin:10px 0;background-color:#1F41A3;position: relative;float:left"></div></div></div>';
             $r = $mail->enviar_email(
                 "[Suspendido] Sincronización ". $_SERVER['SERVER_NAME'], $mensaje, 
-                " [Valoriza2]", $administradora['email'], "", null, 'ynfantes@gmail.com');
+                " [Valoriza2]", $administradora['email'], "", null, 'webmail.pronet21@gmail.com');
             
-            die($administradora['nombre'].'.<br/>SERVICIO INACTIVO<br/>Este servicio está incluido con el Soporte Premium.');
+            die("$adminName<br/>SERVICIO SUSPENDIDO<br/>Este servicio está incluido con el Soporte Premium.");
             
         }
     } else {
@@ -63,9 +60,10 @@ $tablas = array("factura_detalle", "facturas", "propiedades",
     "junta_condominio", "inmueble", "inmueble_deuda_confidencial", "movimiento_caja",
     "fondos", "fondos_movimiento", "historico_avisos_cobro","cancelacion_gastos");
 
-if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
+if (isset($_GET['codinm'])) {
+    
     $codinm = $_GET['codinm'];
-    $cod_admin = $_GET['cod_admin'];
+
     $db->exec_query("delete from factura_detalle where id_factura in (select numero_factura from facturas wher id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from facturas where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     //$db->exec_query("update propietarios set baja=1 where cedula in (select cedula from propiedades where id_inmueble='$codinm') and cod_admin='$cod_admin'");
@@ -80,20 +78,14 @@ if (isset($_GET['codinm']) && isset($_GET['cod_admin'])) {
     $db->exec_query("delete from historico_avisos_cobro where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from cancelacion_gastos where id_inmueble='$codinm' and cod_admin='$cod_admin'");
 
-    $mensaje = "Actualización inmueble $codinm Administradora:$cod_admin<br>";
-} else {
-    if (isset($_GET['cod_admin'])) {
-        $cod_admin = $_GET['cod_admin'];
-        $mensaje = "Proceso de Actualización <strong>" . $administradora['nombre'] . "</strong><br />";
+    $mensaje = "<strong>$adminName</strong><br>Actualización inmueble $codinm<br>";
 
-        foreach ($tablas as $tabla) {
-            $r = $db->exec_query("delete from $tabla where cod_admin='$cod_admin'");
-            //$r = $db->exec_query("truncate table $tabla");
-            echo "limpiar tabla: $tabla<br />";
-        }
-        //$r = $db->exec_query("update propietarios set baja=1 where cod_admin='$cod_admin'");
-    } else {
-        die('Ups! v2.web.ve: Faltan parámetros en el llamado de actualización');
+} else {
+    $mensaje = "<strong>$adminName</strong><br />Proceso de actualización general<br>";
+
+    foreach ($tablas as $tabla) {
+        $r = $db->exec_query("delete from $tabla where cod_admin='$cod_admin'");
+        echo "limpiar tabla: $tabla<br />";
     }
 }
 
@@ -149,7 +141,7 @@ $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
 $inmueble = new inmueble();
 
-$mensaje .= "actulizando cuentas inmuebles (" . count($lineas) . ")<br />";
+$mensaje .= "actualizando cuentas inmuebles (" . count($lineas) . ")<br />";
 echo "actualizando cuentas inmuebles (" . count($lineas) . ")<br />";
 
 foreach ($lineas as $linea) {
@@ -257,21 +249,19 @@ $lineas = explode("\r\n", $contenidoFichero);
 $propietario = new propietario();
 echo "procesar archivo Propietarios (" . count($lineas) . ")<br />";
 $mensaje .= "procesar archivo Propietarios (" . count($lineas) . ")<br />";
-$n = 0;
 foreach ($lineas as $linea) {
-    $n++;
     $registro = explode("\t", $linea);
     if ($registro[0] != "") {
 
         $registro = Array(
-            'nombre'    => utf8_encode($registro[0]),
+            'nombre'    => mb_convert_encoding($registro[0],'UTF-8'),
             'clave'     => $registro[1],
             'email'     => $registro[2],
             'cedula'    => $registro[3],
             'telefono1' => $registro[4],
             'telefono2' => $registro[5],
             'telefono3' => $registro[6],
-            'direccion' => utf8_encode($registro[7]),
+            'direccion' => mb_convert_encoding($registro[7],'UTF-8'),
             'recibos'   => $registro[8],
             'email_alternativo' => $registro[9],
             'cod_admin' => $cod_admin,
@@ -280,11 +270,8 @@ foreach ($lineas as $linea) {
         $r = $propietario->registrarPropietario($registro);
 
         if ($r["suceed"] == FALSE) {
-            echo "Línea $n<br>";
             echo "<b>Archivo Propietario: " . $archivo . ' - ' . $r['stats']['errno'] . "-" . $r['stats']['error'] . "</b>" . '<br/>' . $r['query'] . '<br/>';
         }
-        /* }
-          } */
     }
 }
 
@@ -295,7 +282,6 @@ $propiedades = new propiedades();
 echo "procesar archivo Propiedades (" . count($lineas) . ")<br />";
 $mensaje .= "procesar archivo Propiedades (" . count($lineas) . ")<br />";
 foreach ($lineas as $linea) {
-
 
     $registro = explode("\t", $linea);
 
@@ -366,7 +352,7 @@ if (file_exists($archivo)) {
     
             $registro = Array(
                 "id_factura" => $registro[0],
-                "detalle" => utf8_encode($registro[1]),
+                "detalle" => mb_convert_encoding($registro[1],'UTF-8'),
                 "codigo_gasto" => $registro[2],
                 "comun" => $registro[3],
                 "monto" => str_replace("\r", "", $registro[4]),
@@ -398,10 +384,10 @@ if(file_exists($archivo)) {
             $registro = Array(
                 "numero_recibo" => $registro[0],
                 "fecha_movimiento" => $registro[1],
-                "forma_pago" => utf8_encode($registro[2]),
+                "forma_pago" => mb_convert_encoding($registro[2],'UTF-8'),
                 "monto" => $registro[3],
-                "cuenta" => utf8_encode($registro[4]),
-                "descripcion" => utf8_encode($registro[5]),
+                "cuenta" => mb_convert_encoding($registro[4],'UTF-8'),
+                "descripcion" => mb_convert_encoding($registro[5],'UTF-8'),
                 "id_inmueble" => $registro[6],
                 "id_apto" => str_replace("\r", "", $registro[7]),
                 "cod_admin" => $cod_admin
@@ -434,7 +420,7 @@ foreach ($lineas as $linea) {
         $registro = Array(
             "id_inmueble" => $registro[0],
             "apto" => $registro[1],
-            "propietario" => utf8_encode($registro[2]),
+            "propietario" => mb_convert_encoding($registro[2],'UTF-8'),
             "recibos" => $registro[3],
             "deuda" => $registro[4],
             "deuda_usd" => str_replace("\r", "", $registro[5]),
@@ -525,7 +511,7 @@ if (MOVIMIENTO_FONDO == 1) {
                     $registro = Array(
                         "id_inmueble" => $registro[0],
                         "codigo_gasto" => $registro[1],
-                        "descripcion" => utf8_encode($registro[2]),
+                        "descripcion" => mb_convert_encoding($registro[2],'UTF-8'),
                         "saldo" => $registro[3],
                         "mostrar" => 1,
                         "cod_admin" => $cod_admin
@@ -561,7 +547,7 @@ if (MOVIMIENTO_FONDO == 1) {
                                 "id_fondo" => $id,
                                 "fecha" => $movimiento[2],
                                 "tipo" => $movimiento[3],
-                                "concepto" => utf8_encode($movimiento[4]),
+                                "concepto" => mb_convert_encoding($movimiento[4],'UTF-8'),
                                 "debe" => $movimiento[5],
                                 "haber" => $movimiento[6]
                             );
@@ -594,7 +580,7 @@ if (file_exists($archivo)) {
                 "apto" => $registro[1],
                 "telefono" => $registro[2],
                 "contacto" => $registro[3],
-                "resultado" => utf8_encode($registro[4]),
+                "resultado" => mb_convert_encoding($registro[4],'UTF-8'),
                 "fecha_hora" => $registro[5],
                 "usuario" => $registro[6],
                 "tipo" => $registro[7],
@@ -690,7 +676,7 @@ $mensaje .= '</div><div style="display: block;width: 60px;height: 2px;margin:10p
 
 
 $r = $mail->enviar_email(
-        "Sincronización " . $_SERVER['SERVER_NAME'] . " " . $fecha, $mensaje, " [Valoriza2]", $administradora['email'], "", null, 'ynfantes@gmail.com');
+        "Sincronización " . $_SERVER['SERVER_NAME'] . " " . $fecha, $mensaje, " [Valoriza2]", $administradora['email'], "", null);
 
 if ($r == "") {
     echo "Email de confirmación enviado con éxito<br />";
