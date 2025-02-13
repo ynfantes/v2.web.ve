@@ -158,8 +158,8 @@
         </tr>
         </thead>
         <tbody>
-        {% for factura in cuenta.cuentas %}
-            {% if factura.pagado == 0 %}
+        {% if cuenta.cuentas is not empty %}
+            {% for factura in cuenta.cuentas %}
                 <tr>
                     <td class="hidden-xs" style="text-align: center">
                     <input type="hidden" name="id_inmueble[]" value="{{factura.id_inmueble}}"/>
@@ -196,8 +196,26 @@
                 </tr>
                 {% set counter = counter + 1 %}
                 {% set debtBS = debtBS + factura.saldo %}
-            {% endif %}
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <tr>
+                    <td class="hidden-xs" style="text-align: center">
+                        <input type="hidden" name="id_inmueble[]" value="{{cuenta.inmueble.id}}"/>
+                        <input type="hidden" name="id_apto[]" value="{{cuenta.propiedades.apto}}"/>
+                        <input type="hidden" name="periodo[]" value=""/>
+                        <input type="hidden" name="facturas[]" value=""/>
+                    </td>
+                    <td style="text-align: center"></td>
+                    <td class="hidden-xs"><span class="pull-right"></td>
+                    <td class="hidden-xs"><span class="pull-right"></td>
+                    <td><span class="pull-right"><input type="hidden" name="montos[]" value="0" /></span></td>
+                    {% if cuenta.inmueble.facturacion_usd %}
+                        <td><span class="pull-right"></span></td>
+                    {% endif %}
+                    <td></td>
+                    <td style="text-align: center"><input type="checkbox" name="id[]" value="{{counter}}"></td>
+                </tr>
+        {% endif %}
         {% if debtBS > 0 %}
             <tr>
             <td class="hidden-xs"></td>
@@ -449,7 +467,7 @@ recibirá respuesta de confirmación</h4>
         });
         {% if session.usuario.cod_admin == '004' %}
             $("select[name|='tipo_pago']").change();
-        {%endif%}
+        {% endif %}
         $("select[name='banco_destino']").change(function() {
             $("select[name='numero_cuenta']").val($("select[name='banco_destino'] option:selected").attr('data-bind'));
         });

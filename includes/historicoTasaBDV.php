@@ -46,8 +46,9 @@ class historicoTasaBDV extends db implements crud {
             
             $prices = $history['data'];
             $current_price = $prices[0]['precio'];
-            $previous_price = $prices[2]['precio'];
+            $previous_price = $prices[1]['precio'];
             $price_date = $prices[0]['fecha'];
+            $date_update = $prices[0]['fecha_actualizacion'];
             $variation = (($current_price - $previous_price) / $previous_price) * 100;
             $change = $current_price - $previous_price;
             
@@ -63,7 +64,8 @@ class historicoTasaBDV extends db implements crud {
                 'percent' => $variation,
                 'symbol'  => $variation > 0 ? '▲': $variation = 0 ? '▶': '▼',
                 'change'  => $change,
-                'fecha'   => $price_date
+                'fecha'   => $price_date,
+                'updated' => $date_update
             ];
         }
 

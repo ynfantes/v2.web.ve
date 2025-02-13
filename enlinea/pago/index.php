@@ -251,7 +251,12 @@ switch ($accion) {
         $propiedad = new propiedades();
         $facturas = new factura();
         $inmuebles = new inmueble();
-        $resultado = Array();
+        $bcvRates = new historicoTasaBDV();
+
+        $resultado = [];
+        $cuenta = [];
+        $bancos = [];
+
         if ($accion == 'guardar') {
             $resultado = $exito;
         }
@@ -260,8 +265,7 @@ switch ($accion) {
                 $session['usuario']['cedula'],
                 $session['usuario']['cod_admin']);
 
-        $cuenta = Array();
-        $bancos = Array();
+        
         $result = $inmuebles->listarBancosActivos();
         
         if ($result['suceed']) {
@@ -328,40 +332,23 @@ switch ($accion) {
                 
             }
         }
-        //var_dump($propiedades['data']);
+        
         $tasa   = [
             'dolar' => '0,00',
-            'usd'   => '0,00',
+            'usd'   => '-,--',
         ];
-        $url    = 'https://www.bcv.org.ve';
-        $html   = file_get_contents_curl($url);
-        if($html == false) {
-            error_log(error_get_last()['message'] ?? "No se puedo leer el contenido de $url");
+        
+        if ($session['usuario']['cod_admin'] == '0012') { // Francisco Los Samanes
+            $change = $inmueble['data'][0]['tasa_cambio'];
+            $tasa['usd'] = number_format($change, 2,",",".");
+
         } else {
-            libxml_use_internal_errors(true); 
-            $doc = new DOMDocument();
-
-            if ($doc->loadHTML($html, LIBXML_NOERROR)) {
-                $node = $doc->getElementById('dolar');
-                if ($node !== null) {
-
-                    $lectura = explode(" ", limpiarString($node->nodeValue));
-
-                    if(!empty($lectura[0])) {
-                        $nlectura = str_replace(',','.',$lectura[0]);
-                        if(is_numeric($nlectura)) {
-                            $tasa['dolar'] = $lectura[0];
-                            $tasa['usd'] = number_format($nlectura, 2, ',', '.' );
-                        }
-                    }
-                } else {
-                    error_log("No se encontró el elemento con ID 'dolar' en el HTML.");
-                }
-            } else {
-                error_log("No se pudo cargar el HTML en DOMDocument.");
+            $exchangeRate = $bcvRates->getPriceDollar();
+            if ($exchangeRate!= null) {
+                $tasa['usd'] = $exchangeRate['price'];
             }
-            libxml_clear_errors();  
         }
+        
 
         $params = [
             'accion'      => $accion,
