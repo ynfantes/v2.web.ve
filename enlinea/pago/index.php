@@ -730,32 +730,32 @@ switch ($accion) {
             <?php
 
             
-            $content = ob_get_clean();
-            // convert to PDF
-            require_once('../../includes/html2pdf/html2pdf.class.php');
+            // $content = ob_get_clean();
+            // // convert to PDF
+            // require_once('../../includes/html2pdf/html2pdf.class.php');
 
 
-            try             {
-                $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
-                $html2pdf->setDefaultFont("Helvetica");
-                // recibo
-                $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-                //$archivo = $html2pdf->Output('','S');
-                $html2pdf->Output('ticket.pdf');
+            // try             {
+            //     $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
+            //     $html2pdf->setDefaultFont("Helvetica");
+            //     // recibo
+            //     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+            //     //$archivo = $html2pdf->Output('','S');
+            //     $html2pdf->Output('ticket.pdf');
 
-                //$mail = new mailto(SMTP);
-                //$voucher = Array("Recibo de pago"=>$archivo);
-                //$r = $mail->enviar_email("Pago electrónico web", "Adjunto", '', $_POST['email'], "",null,null,$voucher);
-                                //$archivo='';
-                //if ($r=='') {
-                //    echo 'Email enviado con éxito';
-                //} else {
-                //    echo 'envio fallido';
-                //}
-            }             catch (HTML2PDF_exception $e) {
-                echo $e;
-                exit;
-            }
+            //     //$mail = new mailto(SMTP);
+            //     //$voucher = Array("Recibo de pago"=>$archivo);
+            //     //$r = $mail->enviar_email("Pago electrónico web", "Adjunto", '', $_POST['email'], "",null,null,$voucher);
+            //                     //$archivo='';
+            //     //if ($r=='') {
+            //     //    echo 'Email enviado con éxito';
+            //     //} else {
+            //     //    echo 'envio fallido';
+            //     //}
+            // }             catch (HTML2PDF_exception $e) {
+            //     echo $e;
+            //     exit;
+            // }
         }
         break; 
             
