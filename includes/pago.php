@@ -947,7 +947,7 @@ class pago extends db implements crud {
     }
     
     public static function facturaPendientePorProcesar($periodo,$inmueble,$apto) {
-        $sql = "SELECT * FROM pagos p join pago_detalle pd on p.id = pd.id_pago where p.estatus='p' and pd.periodo='".$periodo."' and id_inmueble='".$inmueble."' and id_apto='".$apto."'";
+        $sql = "SELECT p.* FROM pagos p join pago_detalle pd on p.id = pd.id_pago where p.estatus='p' and pd.periodo='".$periodo."' and id_inmueble='".$inmueble."' and id_apto='".$apto."'";
         
         $r = db::query($sql);
         

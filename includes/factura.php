@@ -53,7 +53,7 @@ class factura extends db implements crud {
             (f.facturado - COALESCE(SUM(pd_validos.monto), 0)) AS saldo
         FROM facturas f
         LEFT JOIN (
-            SELECT pd.id_inmueble, pd.id_apto, pd.periodo, pd.monto
+            SELECT pd.id_inmueble, pd.id_apto, pd.periodo, p.monto
             FROM pago_detalle pd
             INNER JOIN pagos p ON pd.id_pago = p.id
             WHERE p.estatus = 'p'

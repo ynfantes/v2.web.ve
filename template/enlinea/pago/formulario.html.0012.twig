@@ -174,10 +174,10 @@
                     </td>
                     <td style="text-align: center">{{factura.periodo | date("m-Y") | upper}}</td>
                     <td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
-                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.abonado)}}</span></td>
+                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.total_pagado)}}</span></td>
                     <td><span class="pull-right">
-                    <input type="hidden" name="montos[]" value="{{factura.facturado - factura.abonado}}" />
-                    {{format_number(factura.facturado - factura.abonado)}}
+                    <input type="hidden" name="montos[]" value="{{factura.saldo}}" />
+                    {{format_number(factura.saldo)}}
                     </span>
                     </td>
                     {% if cuenta.inmueble.facturacion_usd %}
@@ -187,11 +187,11 @@
                         {% if factura.pagado == 0 %} 
                         <span class="label label-sm label-success">Pendiente</span> 
                         {% else %}
-                        <a href="javascript:void(0);" data-html="true" data-original-title="{{factura.pagado_detalle}}" data-placement="top" rel="tooltip" class="label label-sm label-warning">Pendiente por procesar</a> 
+                        <a href="javascript:void(0);" data-html="true" data-original-title="{{factura.pagado_detalle}}" data-placement="top" rel="tooltip" class="label label-sm label-warning">Abono a cuenta</a> 
                         {% endif %}
                     </td>
                     <td style="text-align: center">
-                    <input type="checkbox" name="id[]" value="{{counter}}" {{factura.pagado > 0? "disabled=\'disabled\'":"" }}>
+                    <input type="checkbox" name="id[]" value="{{counter}}" >
                     </td>
                 </tr>
                 {% set counter = counter + 1 %}
@@ -292,7 +292,7 @@
 <span class="input-group-addon"><i class="fa fa-list fa-lg fa-fw"></i></i></span>
 <input type="text" id="numero_cuenta" name="numero_cuenta" placeholder="Número de cuenta" class="form-control input-lg" value="{{ cuentas[0].inmueble.numero_cuenta }}">
 </div>
-{%endif%}
+{% endif %}
 </div>
 </div>
 </div>
@@ -353,11 +353,12 @@
 <div class="row">
 <div class="col-sm-4">
 <div class="form-group">
-<label>Monto: </label>
+<label>Monto a pagar <span id="amount"></span>: </label>
 <div class="input-group">
-<span class="input-group-addon"><i class="fa fa-money fa-lg fa-fw"></i></span>
-<input type="text" id="monto" name="monto" placeholder="0,00" class="form-control input-lg">
+    <span class="input-group-addon"><i class="fa fa-money fa-lg fa-fw"></i></span>
+    <input type="text" id="monto" name="monto" placeholder="0,00" class="form-control input-lg">
 </div>
+<div class="note">Ingrese el monto real de su pago</div>
 </div>
 </div>
 <div class="col-sm-4">
@@ -448,10 +449,10 @@ recibirá respuesta de confirmación</h4>
             $("input:checked").each(function() {
                 var  monto_factura = $("input[name|='montos[]']").eq($(this).val()).val();
                 monto = parseFloat(monto) + parseFloat(monto_factura);
-                //monto = parseFloat(monto) + (parseFloat($(this).closest("tr").find("td:eq(4)").text().replace(".", "").replace(",", ".")) * 100);
             });
             //monto = monto / 100;
-            $("#monto").val(monto.formatCurrency());
+            $("#monto").attr("placeholder",monto.formatCurrency());
+            $("#amount").html(monto.formatCurrency());
         });
         
         $("select[name|='tipo_pago']").change(function() {

@@ -282,15 +282,15 @@ switch ($accion) {
 
             foreach ($propiedades['data'] as $propiedad) {
 
-            $inmueble = $inmuebles->verDatosInmueble(
-                    $propiedad['id_inmueble'],
-                    $session['usuario']['cod_admin']);
-            
-            $factura = $facturas->estadoDeCuenta(
-                    $session['usuario']['cod_admin'],
-                    $propiedad['id_inmueble'],
-                    $propiedad['apto']);
-            
+                $inmueble = $inmuebles->verDatosInmueble(
+                        $propiedad['id_inmueble'],
+                        $session['usuario']['cod_admin']);
+                
+                $factura = $facturas->estadoDeCuenta(
+                        $session['usuario']['cod_admin'],
+                        $propiedad['id_inmueble'],
+                        $propiedad['apto']);
+                
                 if ($factura['suceed'] == true) {
                     
                     if ($propiedad['meses_pendiente'] < MESES_COBRANZA) {
