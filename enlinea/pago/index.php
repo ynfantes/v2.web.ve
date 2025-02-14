@@ -337,18 +337,37 @@ switch ($accion) {
             'dolar' => '0,00',
             'usd'   => '-,--',
         ];
-        
-        if ($session['usuario']['cod_admin'] == '0012') { // Francisco Los Samanes
-            $change = $inmueble['data'][0]['tasa_cambio'];
-            $tasa['usd'] = number_format($change, 2,",",".");
+        $exchangeRate = $bcvRates->getPriceDollar();
+       
+        if ($exchangeRate!= null) {
+            
+            $update = $exchangeRate['updated']; 
 
-        } else {
-            $exchangeRate = $bcvRates->getPriceDollar();
-            if ($exchangeRate!= null) {
+            // Obtener la fecha y hora actual del servidor
+            $dtServidor = new DateTime(); 
+            $fechaServidor = $dtServidor->format("Y-m-d");
+            $horaServidor = $dtServidor->format("H:i:s");
+            
+            // Verificar si es sábado o domingo
+            $diaSemana = $dtServidor->format("N"); // 1 (Lunes) - 7 (Domingo)
+            
+            // Crear objeto DateTime para la fecha de actualización
+            $dtUpdate = new DateTime($update);
+            $fechaUpdate = $dtUpdate->format("Y-m-d");
+            $horaUpdate = $dtUpdate->format("H:i:s");
+
+            // Definir la hora de referencia (3:00 PM)
+            $horaReferencia = "15:00:00";
+            // Comprobación
+            if ($diaSemana == 6 || $diaSemana == 7) {
+                $tasa['usd'] = $exchangeRate['price'];
+            }
+            elseif ($fechaServidor === $fechaUpdate && $horaUpdate > $horaReferencia) {
+                $tasa['usd'] = $exchangeRate['prev'];
+            } else {
                 $tasa['usd'] = $exchangeRate['price'];
             }
         }
-        
 
         $params = [
             'accion'      => $accion,
