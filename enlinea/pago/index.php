@@ -359,8 +359,9 @@ switch ($accion) {
             // Definir la hora de referencia (3:00 PM)
             $horaReferencia = "15:00:00";
             // Comprobación
+            
             if ($diaSemana == 6 || $diaSemana == 7) {
-                $tasa['usd'] = $exchangeRate['price'];
+                $tasa['usd'] = $exchangeRate['prev'];
             }
             elseif ($fechaServidor === $fechaUpdate && $horaUpdate > $horaReferencia) {
                 $tasa['usd'] = $exchangeRate['prev'];
