@@ -56,22 +56,15 @@ if (isset($_GET['cod_admin'])) {
     die('Ups! v2.web.ve: Faltan parámetros en el llamado de actualización');
 }
 
-$tablas = array("factura_detalle", "facturas", "propiedades",
-    "junta_condominio", "inmueble", "inmueble_deuda_confidencial", "movimiento_caja",
-    "fondos", "fondos_movimiento", "historico_avisos_cobro","cancelacion_gastos");
-
 if (isset($_GET['codinm'])) {
-    
+    die("delete from inmueble_deuda_confidencial where id_inmueble=$codinm and cod_admin=$cod_admin");
     $codinm = $_GET['codinm'];
-
     $db->exec_query("delete from factura_detalle where id_factura in (select numero_factura from facturas wher id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from facturas where id_inmueble='$codinm' and cod_admin='$cod_admin'");
-    //$db->exec_query("update propietarios set baja=1 where cedula in (select cedula from propiedades where id_inmueble='$codinm') and cod_admin='$cod_admin'");
-    //$db->exec_query("delete from propietarios where cedula in (select cedula from propiedades where id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from junta_condominio where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from propiedades where id_inmueble='$codinm' and cod_admin='$cod_admin' and cod_admin='$cod_admin'");
     $db->exec_query("delete from inmueble where id='$codinm' and cod_admin='$cod_admin'");
-    $db->exec_query("delete from inmueble_deuda_confidencial where id_inmueble='$codinm' and cod_admin='$cod_admin'");
+    $db->exec_query("delete from inmueble_deuda_confidencial where id_inmueble=$codinm and cod_admin=$cod_admin");
     $db->exec_query("delete from movimiento_caja where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from fondos where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from fondos_movimiento where id_inmueble='$codinm' and cod_admin='$cod_admin'");
@@ -81,6 +74,11 @@ if (isset($_GET['codinm'])) {
     $mensaje = "<strong>$adminName</strong><br>Actualización inmueble $codinm<br>";
 
 } else {
+
+    $tablas = array("factura_detalle", "facturas", "propiedades",
+    "junta_condominio", "inmueble", "inmueble_deuda_confidencial", "movimiento_caja",
+    "fondos", "fondos_movimiento", "historico_avisos_cobro","cancelacion_gastos");
+
     $mensaje = "<strong>$adminName</strong><br />Proceso de actualización general<br>";
 
     foreach ($tablas as $tabla) {
@@ -637,7 +635,7 @@ if (file_exists($archivo)) {
                 "cod_admin"        => $cod_admin,
                 'fecha_movimiento' => $registro[0],
                 'monto'            => $registro[1],
-                'descripcion'      => utf8_encode($registro[2]),
+                'descripcion'      => mb_convert_encoding($registro[2],'UTF-8'),
                 'id_inmueble'      => $registro[3],
                 'id_apto'          => $registro[4],
                 'periodo'          => $registro[5],
