@@ -360,7 +360,7 @@ if (file_exists($archivo)) {
             $r = $facturas->insertar_detalle_factura($registro);
     
             if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
+                echo($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
             }
         }
     }
@@ -395,7 +395,7 @@ if(file_exists($archivo)) {
 
 
             if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
             }
         }
     }
@@ -430,7 +430,7 @@ foreach ($lineas as $linea) {
 
 
         if ($r["suceed"] == FALSE) {
-            die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+            echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
         }
     }
 }
@@ -486,7 +486,7 @@ if (GRAFICO_COBRANZA == 1) {
                 $r = $inmueble->insertarCobranzaMensual($registro);
 
                 if ($r["suceed"] == FALSE) {
-                    die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                    echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
                 }
             }
         }
@@ -587,7 +587,7 @@ if (file_exists($archivo)) {
             );
             $r = $gestion->insertar($registro);
             if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
+                echo($r['stats']['errno'] . "-" . $r['stats']['error'] . '<br/>' . $r['query'] . '<br/>');
             }
         }
     }
@@ -610,7 +610,7 @@ if (file_exists($archivo)) {
                 "periodo"        => $registro[3]), "IGNORE"
             );
             if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
             }
         }
     }
@@ -646,7 +646,7 @@ if (file_exists($archivo)) {
 
 
             if ($r["suceed"] == FALSE) {
-                die($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
+                echo($r['stats']['errno'] . "<br />" . $r['stats']['error'] . '<br/>' . $r['query']);
             }
         }
     }
