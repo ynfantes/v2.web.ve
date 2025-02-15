@@ -5,10 +5,10 @@
 <span> <!-- User image size is adjusted inside CSS, it should stay as is --> 
 
 <a data-action="toggleShortcut" id="show-shortcut" href="javascript:void(0);">
-{% if session['picture']%}
-{% set img = session['picture']%}
+{% if session['picture'] %}
+    {% set img = session['picture'] %}
 {% else %}
-{% set img = constant('ROOT') ~ "assets/images/avatars/male.png" %}
+    {% set img = constant('ROOT') ~ "assets/images/avatars/male.png" %}
 {% endif %}
 <img class="online" alt="me" src="{{img}}"> 
 <span>
@@ -16,7 +16,6 @@
 </span>
 <i class="fa fa-angle-down"></i>
 </a> 
-
 </span>
 </div>
 <!-- end user info -->
@@ -83,6 +82,15 @@ traditional href="" links. See documentation for details.
         <span class="badge bg-color-{% if recibos > 0 %}red{% else %}blue{% endif %} pull-right inbox-badge">{{recibos}}</span>
     </a>
 </li>
+{% if recibos == 0 and session.usuario.cod_admin == "0012" %}
+<!-- los samanes -->
+<li>
+    <a href="php/getSolvencia.php">
+        <i class="fa fa-file"></i> 
+        <span class="menu-item-parent">Constancia de condominio</span>
+    </a>
+</li>
+{% endif %}
 <li>
     <a href="cuenta/?accion=avisos">
         <i class="fa fa-bell"></i>

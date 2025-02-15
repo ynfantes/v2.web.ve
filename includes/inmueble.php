@@ -151,4 +151,9 @@ class inmueble extends db implements crud {
     public function listarBancosActivos(){
         return db::select("*","bancos",Array("inactivo"=>0));
     }
+
+    public function getLastBilledPeriod($cod_admin, $id_inmueble) {
+        $filter = ["cod_admin" => $cod_admin,"id_inmueble" => $id_inmueble];
+        return db::select("max(periodo) as periodo","facturacion_mensual",$filter);
+    }
 }
