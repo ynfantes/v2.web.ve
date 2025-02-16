@@ -2,7 +2,16 @@
 <div id="logo-group">
 
 <!-- PLACE YOUR LOGO HERE -->
-<span id="logo"> <img alt="{{constant('NOMBRE_APLICACION')}}" src="{{ constant('ROOT') }}assets/images/_smarty/logo_app.png"> </span>
+<span id="logo">
+{% if session.usuario.cod_admin == "0012" %}
+    {% set logo = "afconsultores.png" %}
+{% else %}
+    {% set logo = "app.png" %}
+{% endif %}
+<img 
+    alt="{{constant('NOMBRE_APLICACION')}}" 
+    src="{{constant('ROOT')}}assets/images/_smarty/logo_{{logo}}">
+</span>
 <!-- END LOGO PLACEHOLDER -->
 
 <!-- Note: The activity badge color changes when clicked and resets the number to 0
