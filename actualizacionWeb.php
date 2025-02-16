@@ -57,14 +57,14 @@ if (isset($_GET['cod_admin'])) {
 }
 
 if (isset($_GET['codinm'])) {
-    die("delete from inmueble_deuda_confidencial where id_inmueble=$codinm and cod_admin=$cod_admin");
+    
     $codinm = $_GET['codinm'];
     $db->exec_query("delete from factura_detalle where id_factura in (select numero_factura from facturas wher id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from facturas where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from junta_condominio where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from propiedades where id_inmueble='$codinm' and cod_admin='$cod_admin' and cod_admin='$cod_admin'");
     $db->exec_query("delete from inmueble where id='$codinm' and cod_admin='$cod_admin'");
-    $db->exec_query("delete from inmueble_deuda_confidencial where id_inmueble=$codinm and cod_admin=$cod_admin");
+    $db->exec_query("delete from inmueble_deuda_confidencial where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from movimiento_caja where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from fondos where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from fondos_movimiento where id_inmueble='$codinm' and cod_admin='$cod_admin'");

@@ -128,9 +128,10 @@
 {% else %}
     <!-- verificamos si el propietarios debe pasar al Dpto. de Cobranza -->
     {% set counter = 0 %}
-    {% set debtBS = 0 %}
-    {% set debtUSD = 0 %}
+    
     {% for cuenta in cuentas %}
+        {% set debtBS = 0 %}
+        {% set debtUSD = 0 %}
         <div class="row">
         <div class="col col-lg-10 col-md-12">
         <div class="table-responsive">
@@ -162,19 +163,19 @@
             {% for factura in cuenta.cuentas %}
                 <tr>
                     <td class="hidden-xs" style="text-align: center">
-                    <input type="hidden" name="id_inmueble[]" value="{{factura.id_inmueble}}"/>
-                    <input type="hidden" name="id_apto[]" value="{{factura.apto }}"/>
-                    <input type="hidden" name="periodo[]" value="{{factura.periodo}}"/>
-                    <input type="hidden" name="facturas[]" value="{{factura.numero_factura}}"/>
-                    {% if factura.aviso %}
-                    <a href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">{{ factura.numero_factura}}</a>
-                    {% else %}
-                    <abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
-                    {% endif %}
+                        <input type="hidden" name="id_inmueble[]" value="{{factura.id_inmueble}}"/>
+                        <input type="hidden" name="id_apto[]" value="{{factura.apto }}"/>
+                        <input type="hidden" name="periodo[]" value="{{factura.periodo}}"/>
+                        <input type="hidden" name="facturas[]" value="{{factura.numero_factura}}"/>
+                        {% if factura.aviso %}
+                        <a href="{{ constant('URL_SISTEMA')}}/avisos/ver/{{ factura.numero_factura}}" target="_blank">{{ factura.numero_factura}}</a>
+                        {% else %}
+                        <abbr title="Aviso de Cobro NO DISPONIBLE" class="initialism">{{ factura.numero_factura}}</abbr>
+                        {% endif %}
                     </td>
                     <td style="text-align: center">{{factura.periodo | date("m-Y") | upper}}</td>
                     <td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
-                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.total_pagado)}}</span></td>
+                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.saldo)}}</span></td>
                     <td><span class="pull-right">
                     <input type="hidden" name="montos[]" value="{{factura.saldo}}" />
                     {{format_number(factura.saldo)}}

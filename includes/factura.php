@@ -49,8 +49,8 @@ class factura extends db implements crud {
         */
         $consulta = "SELECT 
             f.*,
-            COALESCE(SUM(pd_validos.monto), 0) AS total_pagado,
-            (f.facturado - COALESCE(SUM(pd_validos.monto), 0)) AS saldo
+            f.abonado + COALESCE(SUM(pd_validos.monto), 0) AS total_pagado,
+            (f.facturado - f.abonado - COALESCE(SUM(pd_validos.monto), 0)) AS saldo
         FROM facturas f
         LEFT JOIN (
             SELECT pd.id_inmueble, pd.id_apto, pd.periodo, p.monto
