@@ -97,7 +97,7 @@ if($propiedades['suceed'] && count($propiedades['data'])>0) {
     
         <hr>
         <div style="text-align: center; font-size: 10pt;">
-            <strong>Dirección:</strong> Av. Principal De Coropo c/c Cll. las Dalias Edif Parcela 1-A / Primera Etapa Parcela 1-B / Segunda Etapa Parcela 1-B / Lote E-01 Piso S/n Apto S/n Urb Parque Los Samanes, Santa Rita Maracay Estado Aragua.
+            <strong>Dirección:</strong> <?php echo $data['direccion']; ?>
         </div>
         <div style="text-align: center; font-size: 10pt;">
             <strong>Teléfono:</strong> 0412-702.99.88
