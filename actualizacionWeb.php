@@ -99,14 +99,15 @@ foreach ($lineas as $linea) {
     $registro = explode("\t", $linea);
     
     if ($registro[0] != "") {
-        //echo '<code>';
-        //print_r($registro);
-        //echo '</code>';
-        $n = count($registro);
-        //die();
+
+        // echo '<code>';
+        // print_r($registro);
+        // echo '</code>';
+        // die("Registros: ($n)");
         $item = ["id"               => $registro[0],
                 "nombre_inmueble"   => $registro[1],
                 "deuda"             => $registro[2],
+
                 "fondo_reserva"     => $registro[3],
                 "beneficiario"      => $registro[4],
                 "banco"             => '',
@@ -123,11 +124,8 @@ foreach ($lineas as $linea) {
                 "cod_admin"         => $cod_admin];
 
 
-        // if ($n == 7) {
-        //     $item["moneda"] = $registro[6];
-        // }
-        if ($n == 14) { // se incorporó el campo dirección
-            $item["direccion"] = mb_convert_encoding($registro[13],'UTF-8','auto');
+        if (isset($registro[13])) { // se incorporó el campo dirección
+            $item["direccion"] = mb_convert_encoding($registro[13], 'UTF-8', 'ISO-8859-1');
         }
 
         $r = $inmueble->insertar($item);
@@ -187,7 +185,7 @@ if (file_exists($archivo)) {
             if ($r["suceed"] == FALSE) {
                 //echo ARCHIVO_INMUEBLE."<br />".$r['stats']['errno']."<br />".$r['stats']['error'];
                 echo $r['query'];
-                die();
+                //die();
             }
         }
     }
@@ -254,29 +252,37 @@ echo "procesar archivo Propietarios (" . count($lineas) . ")<br />";
 $mensaje .= "procesar archivo Propietarios (" . count($lineas) . ")<br />";
 foreach ($lineas as $linea) {
     $registro = explode("\t", $linea);
+    // $n = count($registro);
+    // echo '<code>';
+    // print_r($registro);
+    // echo '</code>';
+    // echo("Registros: ($n)");
+    // echo 'Set Reg(10) '. isset($registro[10]);
+    // echo 'Set Reg(11) '. isset($registro[11]);
+    // die();
     if ($registro[0] != "") {
 
-        $registro = ['nombre'           => mb_convert_encoding($registro[0],'UTF-8'),
-                    'clave'             => $registro[1],
-                    'email'             => $registro[2],
-                    'cedula'            => $registro[3],
-                    'telefono1'         => $registro[4],
-                    'telefono2'         => $registro[5],
-                    'telefono3'         => $registro[6],
-                    'direccion'         => mb_convert_encoding($registro[7],'UTF-8'),
-                    'recibos'           => $registro[8],
-                    'email_alternativo' => $registro[9],
-                    'cod_admin'         => $cod_admin,
-                    'baja'              => 0];
+        $item = ['nombre'           => mb_convert_encoding($registro[0],'UTF-8','ISO-8859-1'),
+                'clave'             => $registro[1],
+                'email'             => $registro[2],
+                'cedula'            => $registro[3],
+                'telefono1'         => $registro[4],
+                'telefono2'         => $registro[5],
+                'telefono3'         => $registro[6],
+                'direccion'         => mb_convert_encoding($registro[7],'UTF-8','ISO-8859-1'),
+                'recibos'           => $registro[8],
+                'email_alternativo' => $registro[9],
+                'cod_admin'         => $cod_admin,
+                'baja'              => 0];
         
                     // se agrea soporte para el campo codinm, apto
         if (isset($registro[10])) {
-            $registro['codinm'] = $registro[10];
+            $item['codinm'] = $registro[10];
         }
         if (isset($registro[11])) {
-            $registro['apto'] = $registro[11];
+            $item['apto'] = $registro[11];
         }
-        $r = $propietario->registrarPropietario($registro);
+        $r = $propietario->registrarPropietario($item);
 
         if ($r["suceed"] == FALSE) {
             echo "<b>Archivo Propietario: " . $archivo . ' - ' . $r['stats']['errno'] . "-" . $r['stats']['error'] . "</b>" . '<br/>' . $r['query'] . '<br/>';
@@ -361,7 +367,7 @@ if (file_exists($archivo)) {
     
             $registro = Array(
                 "id_factura" => $registro[0],
-                "detalle" => mb_convert_encoding($registro[1],'UTF-8'),
+                "detalle" => mb_convert_encoding($registro[1],'UTF-8','ISO-8859-1'),
                 "codigo_gasto" => $registro[2],
                 "comun" => $registro[3],
                 "monto" => str_replace("\r", "", $registro[4]),
@@ -393,10 +399,10 @@ if(file_exists($archivo)) {
             $registro = Array(
                 "numero_recibo" => $registro[0],
                 "fecha_movimiento" => $registro[1],
-                "forma_pago" => mb_convert_encoding($registro[2],'UTF-8'),
+                "forma_pago" => mb_convert_encoding($registro[2],'UTF-8','ISO-8859-1'),
                 "monto" => $registro[3],
                 "cuenta" => mb_convert_encoding($registro[4],'UTF-8'),
-                "descripcion" => mb_convert_encoding($registro[5],'UTF-8'),
+                "descripcion" => mb_convert_encoding($registro[5],'UTF-8','ISO-8859-1'),
                 "id_inmueble" => $registro[6],
                 "id_apto" => str_replace("\r", "", $registro[7]),
                 "cod_admin" => $cod_admin
@@ -429,7 +435,7 @@ foreach ($lineas as $linea) {
         $registro = Array(
             "id_inmueble" => $registro[0],
             "apto" => $registro[1],
-            "propietario" => mb_convert_encoding($registro[2],'UTF-8'),
+            "propietario" => mb_convert_encoding($registro[2],'UTF-8','ISO-8859-1'),
             "recibos" => $registro[3],
             "deuda" => $registro[4],
             "deuda_usd" => str_replace("\r", "", $registro[5]),
@@ -520,7 +526,7 @@ if (MOVIMIENTO_FONDO == 1) {
                     $registro = Array(
                         "id_inmueble" => $registro[0],
                         "codigo_gasto" => $registro[1],
-                        "descripcion" => mb_convert_encoding($registro[2],'UTF-8'),
+                        "descripcion" => mb_convert_encoding($registro[2],'UTF-8','ISO-8859-1'),
                         "saldo" => $registro[3],
                         "mostrar" => 1,
                         "cod_admin" => $cod_admin
@@ -556,7 +562,7 @@ if (MOVIMIENTO_FONDO == 1) {
                                 "id_fondo" => $id,
                                 "fecha" => $movimiento[2],
                                 "tipo" => $movimiento[3],
-                                "concepto" => mb_convert_encoding($movimiento[4],'UTF-8'),
+                                "concepto" => mb_convert_encoding($movimiento[4],'UTF-8','ISO-8859-1'),
                                 "debe" => $movimiento[5],
                                 "haber" => $movimiento[6]
                             );
@@ -589,7 +595,7 @@ if (file_exists($archivo)) {
                 "apto" => $registro[1],
                 "telefono" => $registro[2],
                 "contacto" => $registro[3],
-                "resultado" => mb_convert_encoding($registro[4],'UTF-8'),
+                "resultado" => mb_convert_encoding($registro[4],'UTF-8','ISO-8859-1'),
                 "fecha_hora" => $registro[5],
                 "usuario" => $registro[6],
                 "tipo" => $registro[7],
@@ -646,7 +652,7 @@ if (file_exists($archivo)) {
                 "cod_admin"        => $cod_admin,
                 'fecha_movimiento' => $registro[0],
                 'monto'            => $registro[1],
-                'descripcion'      => mb_convert_encoding($registro[2],'UTF-8'),
+                'descripcion'      => mb_convert_encoding($registro[2],'UTF-8','ISO-8859-1'),
                 'id_inmueble'      => $registro[3],
                 'id_apto'          => $registro[4],
                 'periodo'          => $registro[5],

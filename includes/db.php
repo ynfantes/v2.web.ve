@@ -48,7 +48,7 @@ Class db {
             set_error_handler('Misc::error_handler');
             $this->mysqli = new mysqli($this->host, $this->user, $this->password, $this->db);
             $this->mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
-            $this->mysqli->query("SET NAMES 'utf8'");
+            $this->mysqli->set_charset("utf8mb4");
             
         } catch (Exception $exc) {
             echo $this->mysqli->connect_errno . " " . $this->mysqli->connect_error;
