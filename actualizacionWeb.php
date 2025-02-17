@@ -97,34 +97,39 @@ echo $mensaje;
 foreach ($lineas as $linea) {
 
     $registro = explode("\t", $linea);
+    
     if ($registro[0] != "") {
         //echo '<code>';
         //print_r($registro);
         //echo '</code>';
         $n = count($registro);
         //die();
-        $item = Array(
-            "id" => $registro[0],
-            "nombre_inmueble" => $registro[1],
-            "deuda" => $registro[2],
-            "fondo_reserva" => $registro[3],
-            "beneficiario" => $registro[4],
-            "banco" => '',
-            "numero_cuenta" => '',
-            "supervision" => '0',
-            "RIF" => $registro[5],
-            "meses_mora" => $registro[6],
-            "porc_mora" => $registro[7],
-            "moneda" => $registro[8],
-            "unidad" => $registro[9],
-            "facturacion_usd" => $registro[10],
-            "tasa_cambio" => $registro[11],
-            "redondea_usd" => $registro[12],
-            "cod_admin" => $cod_admin);
+        $item = ["id"               => $registro[0],
+                "nombre_inmueble"   => $registro[1],
+                "deuda"             => $registro[2],
+                "fondo_reserva"     => $registro[3],
+                "beneficiario"      => $registro[4],
+                "banco"             => '',
+                "numero_cuenta"     => '',
+                "supervision"       => '0',
+                "RIF"               => $registro[5],
+                "meses_mora"        => $registro[6],
+                "porc_mora"         => $registro[7],
+                "moneda"            => $registro[8],
+                "unidad"            => $registro[9],
+                "facturacion_usd"   => $registro[10],
+                "tasa_cambio"       => $registro[11],
+                "redondea_usd"      => $registro[12],
+                "cod_admin"         => $cod_admin];
 
-        if ($n == 7) {
-            $item["moneda"] = $registro[6];
+
+        // if ($n == 7) {
+        //     $item["moneda"] = $registro[6];
+        // }
+        if ($n == 14) { // se incorporó el campo dirección
+            $item["direccion"] = mb_convert_encoding($registro[13],'UTF-8','auto');
         }
+
         $r = $inmueble->insertar($item);
 
         if ($r["suceed"] == FALSE) {
@@ -251,20 +256,26 @@ foreach ($lineas as $linea) {
     $registro = explode("\t", $linea);
     if ($registro[0] != "") {
 
-        $registro = Array(
-            'nombre'    => mb_convert_encoding($registro[0],'UTF-8'),
-            'clave'     => $registro[1],
-            'email'     => $registro[2],
-            'cedula'    => $registro[3],
-            'telefono1' => $registro[4],
-            'telefono2' => $registro[5],
-            'telefono3' => $registro[6],
-            'direccion' => mb_convert_encoding($registro[7],'UTF-8'),
-            'recibos'   => $registro[8],
-            'email_alternativo' => $registro[9],
-            'cod_admin' => $cod_admin,
-            'baja'      => 0
-        );
+        $registro = ['nombre'           => mb_convert_encoding($registro[0],'UTF-8'),
+                    'clave'             => $registro[1],
+                    'email'             => $registro[2],
+                    'cedula'            => $registro[3],
+                    'telefono1'         => $registro[4],
+                    'telefono2'         => $registro[5],
+                    'telefono3'         => $registro[6],
+                    'direccion'         => mb_convert_encoding($registro[7],'UTF-8'),
+                    'recibos'           => $registro[8],
+                    'email_alternativo' => $registro[9],
+                    'cod_admin'         => $cod_admin,
+                    'baja'              => 0];
+        
+                    // se agrea soporte para el campo codinm, apto
+        if (isset($registro[10])) {
+            $registro['codinm'] = $registro[10];
+        }
+        if (isset($registro[11])) {
+            $registro['apto'] = $registro[11];
+        }
         $r = $propietario->registrarPropietario($registro);
 
         if ($r["suceed"] == FALSE) {
