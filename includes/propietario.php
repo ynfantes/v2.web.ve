@@ -207,11 +207,10 @@ class propietario extends db implements crud  {
     }
     
     public function obtenerPropietariosActualizados($cod_admin) {
-        $query = "SELECT p . * , pr.id_inmueble, pr.apto
+        $query = "SELECT p.* 
             FROM propietarios p
-            JOIN propiedades pr ON p.cedula = pr.cedula
             WHERE p.modificado = 1 and p.cod_admin='$cod_admin' 
-            and baja=0 Order By pr.id_inmueble ASC,pr.apto";
+            and baja=0 Order By p.codinm ASC,p.apto";
         
         return $this->dame_query($query);
     }

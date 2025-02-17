@@ -1,8 +1,10 @@
 <?php
 
-ini_set('max_execution_time', 3000);
+ini_set('max_execution_time', 30000);
 
 header('Content-type: text/html; charset=utf-8');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 include_once 'includes/db.php';
 include_once 'includes/file.php';
@@ -62,7 +64,8 @@ if (isset($_GET['codinm'])) {
     $db->exec_query("delete from factura_detalle where id_factura in (select numero_factura from facturas wher id_inmueble='$codinm') and cod_admin='$cod_admin'");
     $db->exec_query("delete from facturas where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from junta_condominio where id_inmueble='$codinm' and cod_admin='$cod_admin'");
-    $db->exec_query("delete from propiedades where id_inmueble='$codinm' and cod_admin='$cod_admin' and cod_admin='$cod_admin'");
+    $db->exec_query("delete from propietarios where codinm='$codinm' and cod_admin='$cod_admin'");
+    $db->exec_query("delete from propiedades where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from inmueble where id='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from inmueble_deuda_confidencial where id_inmueble='$codinm' and cod_admin='$cod_admin'");
     $db->exec_query("delete from movimiento_caja where id_inmueble='$codinm' and cod_admin='$cod_admin'");
@@ -121,12 +124,8 @@ foreach ($lineas as $linea) {
                 "facturacion_usd"   => $registro[10],
                 "tasa_cambio"       => $registro[11],
                 "redondea_usd"      => $registro[12],
-                "cod_admin"         => $cod_admin];
-
-
-        if (isset($registro[13])) { // se incorporó el campo dirección
-            $item["direccion"] = mb_convert_encoding($registro[13], 'UTF-8', 'ISO-8859-1');
-        }
+                "cod_admin"         => $cod_admin,
+                "direccion"         => mb_convert_encoding($registro[13], 'UTF-8', 'ISO-8859-1')];
 
         $r = $inmueble->insertar($item);
 
@@ -273,17 +272,12 @@ foreach ($lineas as $linea) {
                 'recibos'           => $registro[8],
                 'email_alternativo' => $registro[9],
                 'cod_admin'         => $cod_admin,
-                'baja'              => 0];
+                'baja'              => 0,
+                'codinm'            => $registro[10],
+                'apto'              => $registro[11]];
         
-                    // se agrea soporte para el campo codinm, apto
-        if (isset($registro[10])) {
-            $item['codinm'] = $registro[10];
-        }
-        if (isset($registro[11])) {
-            $item['apto'] = $registro[11];
-        }
         $r = $propietario->registrarPropietario($item);
-
+        
         if ($r["suceed"] == FALSE) {
             echo "<b>Archivo Propietario: " . $archivo . ' - ' . $r['stats']['errno'] . "-" . $r['stats']['error'] . "</b>" . '<br/>' . $r['query'] . '<br/>';
         }
