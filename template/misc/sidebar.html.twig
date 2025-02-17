@@ -34,12 +34,24 @@ traditional href="" links. See documentation for details.
 -->
 
 <ul style="">
-<li class="active">
-<a title="Cartelera" href="inmueble/?accion=cartelera">
-<i class="fa fa-clipboard"></i><span class="menu-item-parent">Cartelera</span></a>
-</li>
+{% set persona = 'Mis Datos' %}
+{% if session.usuario.cod_admin != '888' %}
+    {% set persona = 'Propietario' %}
+    <li class="active">
+    <a title="Cartelera" href="inmueble/?accion=cartelera">
+    <i class="fa fa-clipboard"></i><span class="menu-item-parent">Cartelera</span></a>
+    </li>
+{% else %}
+    <li class="active">
+        <a href="cuenta/?accion=listar">
+            <i class="fa fa-book"></i> 
+            <span class="menu-item-parent">Recibos por pagar</span>
+            <span class="badge bg-color-{% if recibos > 0 %}red{% else %}blue{% endif %} pull-right inbox-badge">{{recibos}}</span>
+        </a>
+    </li>
+{% endif %}
 <li>
-<a href="#"><i class="fa fa-facebook"></i> <span class="menu-item-parent">Propietario</span></a>
+<a href="#"><i class="fa fa-facebook"></i> <span class="menu-item-parent">{{persona}}</span></a>
 <ul>
 <li><a href="propietario/?accion=actualizar">Datos Personales</a>
 </li>
@@ -47,6 +59,7 @@ traditional href="" links. See documentation for details.
 </li>
 </ul>
 </li>
+{% if session.usuario.cod_admin != '888' %}
 <li>
 <a href="#"><i class="fa fa-users"></i> <span class="menu-item-parent">Junta de Condominio</span></a>
 <ul>
@@ -58,6 +71,7 @@ traditional href="" links. See documentation for details.
 </li>
 </ul>
 </li>
+{% endif %}
 {% if session.junta != '' %}
 <li>
     <a href="prerecibo/?accion=listar">
@@ -67,14 +81,16 @@ traditional href="" links. See documentation for details.
     </a>
 </li>
 {% else %}
-<li>
-    <a href="prerecibo/?accion=soportes">
-        <i class="fa fa-suitcase"></i>
-        <span class="menu-item-parent">Soportes Facturación</span>
-    </a>
-</li>
+    {% if session.usuario.cod_admin != '888' %}
+        <li>
+            <a href="prerecibo/?accion=soportes">
+                <i class="fa fa-suitcase"></i>
+                <span class="menu-item-parent">Soportes Facturación</span>
+            </a>
+        </li>
+    {% endif %}
 {% endif %}
-<li>
+{% if session.usuario.cod_admin != '888' %}
 <li>
     <a href="cuenta/?accion=listar">
         <i class="fa fa-book"></i> 
@@ -82,6 +98,7 @@ traditional href="" links. See documentation for details.
         <span class="badge bg-color-{% if recibos > 0 %}red{% else %}blue{% endif %} pull-right inbox-badge">{{recibos}}</span>
     </a>
 </li>
+{% endif %}
 {% if recibos == 0 and session.usuario.cod_admin == "0012" %}
 <!-- los samanes -->
 <li>
@@ -114,9 +131,11 @@ traditional href="" links. See documentation for details.
 <li>
 <a href="mensajes/?accion=bandeja-entrada"><i class="fa fa-google"></i> <span class="menu-item-parent">Mensajes</span>{% if mensajes > 0 %}<span class="badge bg-color-orange pull-right inbox-badge">{{ mensajes }}</span>{% endif %}</a>
 </li>
+{% if session.usuario.cod_admin != '888' %}
 <li>
 <a href="inmueble/?accion=listarCuentasDeFondo"><i class="fa fa-bar-chart-o"></i> <span class="menu-item-parent">Cuentas de Fondo</span></a>
 </li>
+{% endif %}
 <li>
     <a target="parent" href="propietario?logout=true" title="Cerrar Sesión" data-action="userLogout" data-logout-msg="">
         <i class="fa fa-arrow-circle-left"></i> <span class="menu-item-parent">Cerrar Sesión</span></a>
