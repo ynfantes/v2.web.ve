@@ -54,6 +54,8 @@ if($propiedades['suceed'] && count($propiedades['data'])>0) {
         $mesB  = $meses[$fechaF->format("n") - 1]; // Obtener nombre del mes
         $anioB = $fechaF->format("Y"); // Año
     }
+    $numero = rand(100, 999);
+
 }
 ?>
 <page backtop="20mm" backbottom="20mm" backleft="15mm" backright="15mm">
@@ -65,7 +67,7 @@ if($propiedades['suceed'] && count($propiedades['data'])>0) {
     </div>
     <br><br><br><br>
     <div style="text-align: center; font-size: 16pt; font-weight: bold;">
-        CERTIFICADO DE SOLVENCIA N° _____
+        CERTIFICADO DE SOLVENCIA N° <?php echo $numero; ?>
     </div>
     <br><br><br><br>
     <table style="width: 100%; font-size: 12pt; line-height: 1.5;">
@@ -74,7 +76,7 @@ if($propiedades['suceed'] && count($propiedades['data'])>0) {
                 Por medio de la presente se hace constar que el Inmueble: <strong><?php echo $propiedades['row']['apto']; ?></strong> ubicado en: 
                 <?php echo $data['nombre_inmueble']; ?>, propiedad de <strong><?php echo $usuario['nombre']; ?></strong>, titular de la C.I. / RIF N° 
                 <strong><?php echo $usuario['cedula'] ?></strong>, a la fecha se encuentra<br><strong>SOLVENTE</strong>
-                con todas las cuotas financieras del condominio hasta la emisión del Aviso de Cobro correspondiente al mes de <strong><?php echo "$mesB de $anioB" ?></strong>.
+                con todas las cuotas financieras hasta la emisión del Aviso de Cobro correspondiente al mes de <strong><?php echo "$mesB de $anioB" ?></strong>.
                 Dicha solvencia tiene vigencia hasta el <strong><?php echo "$diaV de $mesV de $anioV"?>.</strong>
             </td>
         </tr>
@@ -90,8 +92,6 @@ if($propiedades['suceed'] && count($propiedades['data'])>0) {
     <br><br><br><br><br><br><br><br>
     <div style="text-align: center; font-size: 12pt;">
         __________________________
-        <br>
-        Lcdo. Francisco Acevedo
     </div>
     <page_footer>
     

@@ -175,7 +175,7 @@
                     </td>
                     <td style="text-align: center">{{factura.periodo | date("m-Y") | upper}}</td>
                     <td class="hidden-xs"><span class="pull-right">{{format_number(factura.facturado)}}</span></td>
-                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.saldo)}}</span></td>
+                    <td class="hidden-xs"><span class="pull-right">{{format_number(factura.total_pagado)}}</span></td>
                     <td><span class="pull-right">
                     <input type="hidden" name="montos[]" value="{{factura.saldo}}" />
                     {{format_number(factura.saldo)}}

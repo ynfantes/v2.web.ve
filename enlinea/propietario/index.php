@@ -106,7 +106,7 @@ switch ($accion) {
         $listado = $propietario->listarPropietariosClavesActualizadas();
 
 
-        if ($listado['suceed'] && count($listado['data'] > 0)) {
+        if ($listado['suceed'] && count($listado['data']) > 0) {
             foreach ($listado['data'] as $clave) {
 
 
