@@ -18,8 +18,8 @@ function checkPropertiesAdministrator($cod_admin, $maxInmueble, &$mensaje) {
     $inmuebles = $inmueble->getPropertyByAdmin($cod_admin);
     if ($inmuebles['suceed']) {
         
-        $countInm = count($inmuebles['data']) +  1;
-        
+        $countInm = count($inmuebles['data']);
+        $countInm++;
         if($countInm > $maxInmueble) {
             $mensaje.= "**********<br>";
             $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
