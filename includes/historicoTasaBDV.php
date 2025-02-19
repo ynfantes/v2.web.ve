@@ -55,6 +55,7 @@ class historicoTasaBDV extends db implements crud {
             $current_price = number_format($current_price,2,",",".");
             $previous_price = number_format($previous_price,2,",",".");
             $symbol = $variation > 0 ? '▲': $variation = 0 ? '▶': '▼';
+            $variation = floatval($variation);
             $variation = number_format($variation, 2,",",".");
             $change = number_format($change, 2,",",".");
 

@@ -2,6 +2,9 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+$cod_admin = $elements[0];
+$id_inmueble = $elements[1];
+$apto = $elements[2];
 
 $propiedad = new propiedades();
 $inmueble = new inmueble();
@@ -9,54 +12,50 @@ $inmueble = new inmueble();
 session_start();
 $usuario = $_SESSION['usuario'];
 
-$propiedades = $propiedad->propiedadesPropietario($usuario['cedula'], $usuario['cod_admin']);
+$propiedades = $propiedad->verPropiedad($id_inmueble,$apto,$cod_admin);
+$inmuebles = $inmueble->verDatosInmueble($id_inmueble, $cod_admin);
 
-if($propiedades['suceed'] && count($propiedades['data'])>0) {
+if ($inmuebles['suceed'] && count($inmuebles['data'])>0) {    
+    $data = $inmuebles['data'][0];
+    $billing = $inmueble->getLastBilledPeriod($cod_admin, $id_inmueble);
 
-    $inmuebles = $inmueble->verDatosInmueble($propiedades['row']['id_inmueble'], $usuario['cod_admin']);
-    
-    if ($inmuebles['suceed'] && count($inmuebles['data'])>0) {    
-        $data = $inmuebles['data'][0];
-        $billing = $inmueble->getLastBilledPeriod($data['cod_admin'], $data['id']);
-
-        if($billing['suceed'] && count($billing['data'])>0) {
-            $lastBilledPeriod = $billing['data'][0]['periodo'];
-        }
-
-    } else {
-        die('No se encuentra información del condominio');
+    if($billing['suceed'] && count($billing['data'])>0) {
+        $lastBilledPeriod = $billing['data'][0]['periodo'];
     }
-    
-    $meses = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-    $fecha = new DateTime(); // Fecha actual
-    $fecha->modify("+30 days"); // Sumar 30 días
 
-    $dia  = date("d");
-    $mes  = $meses[date("n") - 1];
-    $anio = date("Y");    
-
-    $diaV  = $fecha->format("d"); // Día del mes
-    $mesV  = $meses[$fecha->format("n") - 1]; // Obtener nombre del mes
-    $anioV = $fecha->format("Y"); // Año
-
-    if ($lastBilledPeriod) {
-        $dateF = new DateTime($lastBilledPeriod);
-        $mesB  = $meses[$dateF->format("n") - 1];
-        $anioB = $dateF->format("Y");
-
-    } else {
-        $fechaF = new DateTime();
-        $fechaF->modify(("-1 month"));
-
-        $mesB  = $meses[$fechaF->format("n") - 1]; // Obtener nombre del mes
-        $anioB = $fechaF->format("Y"); // Año
-    }
-    $numero = rand(100, 999);
-
+} else {
+    die('No se encuentra información del condominio');
 }
+
+$meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+$fecha = new DateTime(); // Fecha actual
+$fecha->modify("+30 days"); // Sumar 30 días
+
+$dia  = date("d");
+$mes  = $meses[date("n") - 1];
+$anio = date("Y");    
+
+$diaV  = $fecha->format("d"); // Día del mes
+$mesV  = $meses[$fecha->format("n") - 1]; // Obtener nombre del mes
+$anioV = $fecha->format("Y"); // Año
+
+if ($lastBilledPeriod) {
+    $dateF = new DateTime($lastBilledPeriod);
+    $mesB  = $meses[$dateF->format("n") - 1];
+    $anioB = $dateF->format("Y");
+
+} else {
+    $fechaF = new DateTime();
+    $fechaF->modify(("-1 month"));
+
+    $mesB  = $meses[$fechaF->format("n") - 1]; // Obtener nombre del mes
+    $anioB = $fechaF->format("Y"); // Año
+}
+$numero = rand(100, 999);
+
 ?>
 <page backtop="20mm" backbottom="20mm" backleft="15mm" backright="15mm">
     <div style="text-align: center; font-size: 16pt; font-weight: bold;">

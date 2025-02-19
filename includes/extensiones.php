@@ -1,6 +1,7 @@
 <?php
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\TwigFilter;
 class extensiones extends AbstractExtension {
 
     public function getName() {
@@ -36,8 +37,21 @@ class extensiones extends AbstractExtension {
             'format_number'   => new TwigFunction('format_number', [$this,'format_number']),
             'url_sortable'    => new TwigFunction('url_sortable', [$this, 'url_sortable']),
             'trim_text'       => new TwigFunction('trim_text', [$this, 'trim_text']),
-            'formato_periodo' => new TwigFunction('formato_periodo', [$this,'formato_periodo'])
+            'formato_periodo' => new TwigFunction('formato_periodo', [$this,'formato_periodo']),
+            
         ];
+    }
+
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('base64_encode', [$this, 'base64Encode']),
+        ];
+    }
+
+    public function base64Encode($string)
+    {
+        return base64_encode($string);
     }
 
 }

@@ -108,6 +108,7 @@ switch ($accion) {
                             $filename = "../avisos/".$f['data'][$index]['numero_factura'].
                                     $session['usuario']['cod_admin'].".pdf";
                             $f['data'][$index]['aviso'] = file_exists($filename);
+                            
                         }
 
                     $cuenta[] = Array(

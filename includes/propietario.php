@@ -46,13 +46,15 @@ class propietario extends db implements crud  {
         
         if ($email!="" && $password!="") {
             
-            $result = db::select("*",self::tabla,Array("clave"=>$password,"email"=>$email,"baja"=>0));
+            $result = db::select("*",self::tabla,["clave"=>$password,"email"=>$email,"baja"=>0]);
             
             if ($result['suceed'] == 'true' && count($result['data']) > 0) {
-                $administra         = array();
+                $person             = $result['data'][0];
+                $person['solvente'] = false;
+                $administra         = [];
                 $administradoras    = new administradora;
                 $inactivo           = 0 ;
-                $administradora     = $administradoras->verPorCodigo($result['data'][0]['cod_admin']);
+                $administradora     = $administradoras->verPorCodigo($person['cod_admin']);
                 
                 if ($administradora['suceed'] && count($administradora['data'])>0) {
                     
@@ -62,9 +64,18 @@ class propietario extends db implements crud  {
                             $administra['email'].' ó <br/>info@administracion-condominio.com.ve';
                 }
                 
-                // $consulta = "select * from propiedades where cedula in (SELECT cedula FROM `propietarios` where clave='$password' )";
+                $propiedades = db::select("*","propiedades",["cod_admin" => $person['cod_admin'], "cedula" => $person['cedula']]);
                 
-                // $propiedades = db::query($consulta);
+                if($propiedades['suceed'] && count($propiedades['data'])>0) {
+                    foreach ($propiedades['data'] as $propiedad) {
+                        if($propiedad['meses_pendiente'] == 0) {
+                            $person['solvente'] = true;
+                            break;
+                        }
+
+                    }
+
+                }
 
                 $res = db::select("*","junta_condominio",Array("cedula"=>$result['data'][0]['cedula']));
                 $junta_condominio = '';
@@ -80,7 +91,7 @@ class propietario extends db implements crud  {
                     $_SESSION['id_sesion'] = $sesion['insert_id'];
                 }
                 
-                $_SESSION['usuario']    = $result['data'][0];
+                $_SESSION['usuario']    = $person;
                 $_SESSION['junta']      = $junta_condominio;
                 $_SESSION['administra'] = $administra;
                 $_SESSION['status']     = 'logueado';

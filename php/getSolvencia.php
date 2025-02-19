@@ -3,7 +3,10 @@ require_once '../includes/constants.php';
 require_once SERVER_ROOT.'/vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
-
+if (isset($_GET['id'])) {
+    $id=base64_decode($_GET['id']);
+    $elements = explode(",", $id);
+}
 ob_start();
 include(dirname(__FILE__).'/modeloSolvencia.php');
 $html = ob_get_clean();

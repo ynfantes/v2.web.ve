@@ -98,14 +98,26 @@ data-widget-custombutton="false" >
 {% if cuenta.propiedades.meses_pendiente > constant('MESES_COBRANZA') %}
 {% else %}
 	{% if cuenta.cuentas is empty %}
-		<div class="alert alert-danger">
-			<strong>
-				<i class="ace-icon fa fa-times"></i>
-				Atención:
-			</strong>
-			Estimado propietario(a) usted 
-			no tiene recibos pendiente de pago.
-		</div>
+		{% if session.usuario.cod_admin == "0012" %}
+			{% set id = session.usuario.cod_admin ~ ',' ~ cuenta.propiedades.id_inmueble ~ ',' ~  cuenta.propiedades.apto %}
+			<div>
+				<a href="javascript:void(0);" class="btn btn-labeled btn-success btn-lg"
+				onclick="javascript:printSolvency('{{id|base64_encode}}');"> 
+				<span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
+				Imprimir Solvencia de Condominio 
+				</a>
+			</div>
+		{% else %}
+			<div class="alert alert-danger">
+				<strong>
+					<i class="ace-icon fa fa-times"></i>
+					Atención:
+				</strong>
+				Estimado propietario(a) usted 
+				no tiene recibos pendiente de pago.
+			</div>
+		 
+		{% endif %}
 	{% else %}
 		<div class="well well-lg no-padding">
 			<div class="table-responsive">
@@ -243,4 +255,10 @@ data-widget-custombutton="false" >
 	// run pagefunction on load
 
 	pagefunction();
+	function printSolvency(id) {
+		// Crear la URL con los parámetros codificados
+		const url = `/php/getSolvencia.php?id=${id}`;
+		// Abrir la página de destino con los parámetros codificados
+		window.open(url, "_blank");
+	}
 </script>

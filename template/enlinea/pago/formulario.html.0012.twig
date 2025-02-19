@@ -120,11 +120,7 @@
 <h3><strong>Paso 1 </strong> - Selección de facturas a cancelar</h3>
 {% if cobranza == 1 %}
     {% include 'misc/legal.html.twig' %}
-{% elseif recibos == 0 %}
-    <div class="alert alert-danger">
-    <strong><i class="ace-icon fa fa-times"></i> Atención: </strong> Estimado {{ session.usuario.nombre }} usted 
-    no tiene recibos pendiente por cancelar.
-    </div>
+
 {% else %}
     <!-- verificamos si el propietarios debe pasar al Dpto. de Cobranza -->
     {% set counter = 0 %}
@@ -182,7 +178,16 @@
                     </span>
                     </td>
                     {% if cuenta.inmueble.facturacion_usd %}
-                    <td><span class="pull-right">{{format_number(factura.facturado_usd)}}</span></td>
+                        {% if factura.abonado == 0 %}
+                            {% set balanceUSD = factura.facturado_usd %}
+                        {% else %}
+                            {% set balanceUSD = factura.saldo * factura.facturado_usd / (factura.facturado - factura.abonado) %}
+                        {% endif %}
+                        <td>
+                            <span class="pull-right">
+                                {{format_number(balanceUSD)}}
+                            </span>
+                        </td>
                     {% endif %}
                     <td>
                         {% if factura.pagado == 0 %} 
@@ -597,9 +602,7 @@ recibirá respuesta de confirmación</h4>
 
                 $('#bootstrap-wizard-1').bootstrapWizard({
                     'onTabShow' : function(tab,navigation,index) {
-                        {% if (recibos == 0 or recibos > constant('MESES_COBRANZA')) %}
-                            $("#bootstrap-wizard-1").find(".pager .next").addClass("disabled");
-                        {% endif %}
+                        
                         if (!$(":checkbox").is(":enabled")) {
                             $("#bootstrap-wizard-1").find(".pager .next").addClass("disabled");
                         }
@@ -614,9 +617,6 @@ recibirá respuesta de confirmación</h4>
                         }
                     },
                     'onNext' : function(tab, navigation, index) {
-                        {% if (recibos == 0 or recibos > constant('MESES_COBRANZA'))%}
-                         return false;
-                        {% endif %}
                         if (!$(":checkbox").is(":enabled")) {
                             return false;
                         }
