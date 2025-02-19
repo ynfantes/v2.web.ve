@@ -52,7 +52,7 @@ data-widget-custombutton="false" >
 <!--div class="col-md-6 col-sm-6 col-lg-4"-->
 <article class="col-sm-12 col-md-12 col-lg-3 responsive sortable-grid ui-sortable">
 
-<div class="well well-md bg-color-teal txt-color-white no-border">
+<div class="well well-md bg-color-teal txt-color-white no-border" style="margin-bottom:20px">
 	<!-- propietario -->
 	<span class="text">
 	<i class="fa-fw fa fa-building"></i> {{cuenta.inmueble.unidad}}
@@ -100,10 +100,9 @@ data-widget-custombutton="false" >
 	{% if cuenta.cuentas is empty %}
 		{% if session.usuario.cod_admin == "0012" %}
 			{% set id = session.usuario.cod_admin ~ ',' ~ cuenta.propiedades.id_inmueble ~ ',' ~  cuenta.propiedades.apto %}
-			<div>
-				<a href="javascript:void(0);" class="btn btn-labeled btn-success btn-lg"
+			<div class="col-sm-12 col-md-12 col-lg-6">
+				<a href="javascript:void(0);" class="btn btn-success btn-lg btn-block"
 				onclick="javascript:printSolvency('{{id|base64_encode}}');"> 
-				<span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
 				Imprimir Solvencia de Condominio 
 				</a>
 			</div>
