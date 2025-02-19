@@ -2,7 +2,7 @@
   "dependencies": {
     "conventional-changelog-cli": "^2.2.2"
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "version": "conventional-changelog -i CHANGELOG.md -s && git add CHANGELOG.md"
   }

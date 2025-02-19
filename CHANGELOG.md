@@ -1,3 +1,9 @@
+## <small>1.2.1 (2025-02-19)</small>
+
+* fix: Corrige la presentación del apartado cuentas de fondo ([b8b5d25](https://github.com/ynfantes/v2.web.ve/commit/b8b5d25))
+
+
+
 ## 1.2.0 (2025-02-19)
 
 * chore: Se agrega soporte a twig vía composer ([9ab0445](https://github.com/ynfantes/v2.web.ve/commit/9ab0445))
