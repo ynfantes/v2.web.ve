@@ -1,3 +1,9 @@
+## <small>1.2.2 (2025-02-19)</small>
+
+* fix: Corrige el conteo de los condominios por administrador durante el preceso de sincronización wb ([cc4b995](https://github.com/ynfantes/v2.web.ve/commit/cc4b995))
+
+
+
 ## <small>1.2.1 (2025-02-19)</small>
 
 * fix: Corrige la presentación del apartado cuentas de fondo ([b8b5d25](https://github.com/ynfantes/v2.web.ve/commit/b8b5d25))
