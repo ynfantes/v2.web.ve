@@ -1,3 +1,9 @@
+## 1.1.0 (2025-02-19)
+
+* feat: Se forza la recarga de los archivos dinámicos al actualizar la versión del service worker ([4d7ec38](https://github.com/ynfantes/v2.web.ve/commit/4d7ec38))
+
+
+
 ## <small>1.0.5 (2025-02-19)</small>
 
 * feat: Implementa el método de recepcion de archivos vía http. ([16d7058](https://github.com/ynfantes/v2.web.ve/commit/16d7058))
