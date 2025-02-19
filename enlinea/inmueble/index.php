@@ -269,51 +269,44 @@ switch ($accion) {
         break;
 
     case "listarCuentasDeFondo":
-        $fondo = new fondo();
+        $fondo    = new fondo();
         $inmueble = new inmueble();
-        $cuenta = Array();
-        $fondos = Array();
-        $m = Array();
-        $propiedades = $inmueble->listarInmueblesPorPropietario(
-                $session['usuario']['cedula'],
-                $cod_admin);
+        $cuenta   = [];
+        $fondos   = [];
+        $m        = [];
+        $propiedades = $inmueble->listarInmueblesPorPropietario($session['usuario']['cedula'],$cod_admin);
         
         if ($propiedades['suceed'] && count($propiedades['data']) > 0) {
+            
             $id_inmueble = $propiedades['data'][0]['id_inmueble'];
             
             $r = $fondo->listarCuentasDeFondoInmueble($id_inmueble,$cod_admin);
-            $bitacora->insertar(Array(
-                "id_sesion"     => $session['id_sesion'],
-                "id_accion"     => 16,
-                "descripcion"   => $id_inmueble,
-            ));
+            $bitacora->insertar(["id_sesion"  => $session['id_sesion'],
+                                "id_accion"   => 16,
+                                "descripcion" => $id_inmueble]);
             
             if ($r['suceed'] && count($r['data']) > 0) {
-                $fondos = $r['data'];
+                $fondos       = $r['data'];
                 $codigo_gasto = isset($_GET['id']) ? $_GET['id']:$fondos[0]['codigo_gasto'];
-                $cuenta_fondo = $fondo->obtenerIdCuentaFondo(
-                        $id_inmueble, 
-                        $codigo_gasto,
-                        $cod_admin);
+                $cuenta_fondo = $fondo->obtenerIdCuentaFondo($id_inmueble, $codigo_gasto, $cod_admin);
                 
                 if ($cuenta_fondo['suceed'] && count($cuenta_fondo['data'])>0) {
                     $cuenta = $cuenta_fondo['data'][0];
                 }
-                $movimientos = $fondo->consultaEstadoDeCuentaFondo($id_inmueble, $codigo_gasto,$cod_admin);
+                $movimientos = $fondo->consultaEstadoDeCuentaFondo($id_inmueble, $codigo_gasto, $cod_admin);
                 if ($movimientos['suceed'] && count($movimientos['data'])>0) {
                     $m = $movimientos['data'];
                 }
             }
         }
-        
-        echo $twig->render('enlinea/inmueble/fondos.html.twig', array(
-            "session"       => $session,
-            "propiedades"   => $propiedades['data'],
-            "id_inmueble"   => $id_inmueble,
-            "fondos"        => $fondos,
-            "movimientos"   => $m,
-            "cuenta"        => $cuenta
-        ));
+        $params = ["session"  => $session,
+                "propiedades" => $propiedades['data'],
+                "id_inmueble" => $id_inmueble,
+                "fondos"      => $fondos,
+                "movimientos" => $m,
+                "cuenta"      => $cuenta];
+
+        echo $twig->render('enlinea/inmueble/fondos.html.twig', $params);
         break; 
         
     case "imprimircuenta":

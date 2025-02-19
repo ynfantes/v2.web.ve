@@ -65,9 +65,13 @@ data-widget-custombutton="false" >
 <span class="input-group-addon">
 <i class="ace-icon fa fa-th-large"></i>
 </span>
+{% set codinm = "" %}
 <select class="form-control" id="form-field-select-1">
 {% for inmueble in propiedades %}
-   <option value="{{ inmueble.id }}" selected="{% if inmueble.id == id_inmueble %}selected{%endif%}">{{inmueble.nombre_inmueble}}</option>
+    {% if codinm != inmueble.id_inmueble %}
+        {% set codinm = inmueble.id_inmueble %}
+        <option value="{{ inmueble.id_inmueble }}" selected="{% if codinm == id_inmueble %}selected{% endif %}">{{inmueble.nombre_inmueble}}</option>
+    {% endif %}
 {% endfor %}
 </select>
 </div>
