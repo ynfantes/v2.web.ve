@@ -74,39 +74,41 @@ switch ($accion) {
                 $_SESSION['usuario']['cod_admin']);
         
         if ($propiedades['suceed']) {
+            $codInm = '';
+            $cod_admin = $_SESSION['usuario']['cod_admin'];
             foreach ($propiedades['data'] as $propiedad) {
-                $prerecibos = $prerecibo->listarPorInmueble(
-                        $propiedad['id_inmueble'],
-                        $_SESSION['usuario']['cod_admin'],
-                        12);
-                
-                
-                if ($prerecibos['suceed']) {
-                    $inm = $inmuebles->verDatosInmueble(
-                            $propiedad['id_inmueble'],
-                            $_SESSION['usuario']['cod_admin']);
-                    
-                    if (!count($prerecibos['data']) > 0) {
-                        $resultado['suceed'] = false;
-                        $resultado['mensaje'] = "No se ha publicado ningún pre-recibo hasta ahora.";
-                    } else {
 
-                        for ($index = 0; $index < count($prerecibos['data']); $index++) {
-                            $filename = $prerecibos['data'][$index]['documento'];
-                            $prerecibos['data'][$index]['publicado'] = file_exists($filename);
-                            $pos = strpos($filename,'_');  
-                            $filename = str_replace(substr($filename, 0,$pos), "Soporte", $filename);
-                            $prerecibos['data'][$index]['soporte'] = file_exists($filename);
-                                                }
-                        if (!$mensaje == "") {
-                            $resultado['suceed'] = $actualizar['suceed'];
-                            $resultado['mensaje'] = $mensaje;
+                if ($codInm <> $propiedad['id_inmueble']) {
+                    
+                    $codInm = $propiedad['id_inmueble'];
+
+                    $prerecibos = $prerecibo->listarPorInmueble($codInm, $cod_admin,12);
+                    
+                    if ($prerecibos['suceed']) {
+                        $inm = $inmuebles->verDatosInmueble($codInm,$cod_admin);
+                        
+                        if (!count($prerecibos['data']) > 0) {
+                            $resultado['suceed'] = false;
+                            $resultado['mensaje'] = "No se ha publicado ningún pre-recibo hasta ahora.";
+                        } else {
+    
+                            for ($index = 0; $index < count($prerecibos['data']); $index++) {
+                                $filename = $prerecibos['data'][$index]['documento'];
+                                $prerecibos['data'][$index]['publicado'] = file_exists($filename);
+                                $pos = strpos($filename,'_');  
+                                $filename = str_replace(substr($filename, 0,$pos), "Soporte", $filename);
+                                $prerecibos['data'][$index]['soporte'] = file_exists($filename);
+                                                    }
+                            if (!$mensaje == "") {
+                                $resultado['suceed'] = $actualizar['suceed'];
+                                $resultado['mensaje'] = $mensaje;
+                            }
                         }
+                        $listado[] = [  "inmueble"  => $inm['data'][0], "prerecibos"=> $prerecibos ];
+                    } else {
+                        $resultado['suceed'] = False;
+                        $resultado['mensaje'] = "Ha ocurrido un error, no se puede recuperar la información.";
                     }
-                    $listado[] = [  "inmueble"  => $inm['data'][0], "prerecibos"=> $prerecibos ];
-                } else {
-                    $resultado['suceed'] = False;
-                    $resultado['mensaje'] = "Ha ocurrido un error, no se puede recuperar la información.";
                 }
             }
         } else {
@@ -117,10 +119,10 @@ switch ($accion) {
             "id_sesion"     =>  strval($_SESSION['id_sesion']),
             "id_accion"     => 15
         ));
-//        echo '<pre>';
-//        echo print_r($listado);
-//        echo '</pre>';
-//        die();
+    //    echo '<pre>';
+    //    echo print_r($listado);
+    //    echo '</pre>';
+    //    die();
         echo $twig->render('enlinea/prerecibo/soporte.html.twig', array(
             "session"       => $session,
             "resultado"     => $resultado,
