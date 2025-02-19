@@ -1,3 +1,41 @@
+## <small>1.0.5 (2025-02-19)</small>
+
+* feat: Implementa el método de recepcion de archivos vía http. ([16d7058](https://github.com/ynfantes/v2.web.ve/commit/16d7058))
+* feat: Implementa la funcionalidad al metodo que escribe los avisos de cobro ([0d18b62](https://github.com/ynfantes/v2.web.ve/commit/0d18b62))
+* feat: Permite a los propietarios solventes descargar su solvencia de condominio ([7795452](https://github.com/ynfantes/v2.web.ve/commit/7795452))
+* feat: Se agrega el logo de afconsultores ([e5a9616](https://github.com/ynfantes/v2.web.ve/commit/e5a9616))
+* feat: Se agrega una comprobación de la cantidad de condominios registrados por administrador ([bfcc5b0](https://github.com/ynfantes/v2.web.ve/commit/bfcc5b0))
+* feat: Se implementa la firma de una petición POST para recibir los avisos de cobro vía HTTP ([8ec4164](https://github.com/ynfantes/v2.web.ve/commit/8ec4164))
+* feat: Se muestra la tasa aplicada para el condominio y se crea un nuevo formulari para registrar pag ([05f406e](https://github.com/ynfantes/v2.web.ve/commit/05f406e))
+* feat: Se muestra la versión de la aplicación en el index ([c52ee59](https://github.com/ynfantes/v2.web.ve/commit/c52ee59))
+* feat(actualizacionWeb): Se agrega soporte para el campo direccion en la tabla inmueble ([f016daa](https://github.com/ynfantes/v2.web.ve/commit/f016daa))
+* feat(Los Samanes): Muestra las facturas con abonos hechos desde la página. permitiendo hacer otro pa ([fc6b691](https://github.com/ynfantes/v2.web.ve/commit/fc6b691))
+* feat(solvencia condominio): Se agrega la direcció dinámicamente a la solvencia del condominio ([533d189](https://github.com/ynfantes/v2.web.ve/commit/533d189))
+* feat(valoriza2): Ajuste el menú para los clientes de Valoriza2 ([848e56c](https://github.com/ynfantes/v2.web.ve/commit/848e56c))
+* fix: :bug: Acceso de valoriza2 para equipos con sistemas operativos antiguos ([5ac6f44](https://github.com/ynfantes/v2.web.ve/commit/5ac6f44))
+* fix: Corrige el nombre del archivo con el que se guarda el aviso de cobro que se recibe durante la s ([4e6a593](https://github.com/ynfantes/v2.web.ve/commit/4e6a593))
+* fix: Corrige error al leer el archivo detalle factura de la sincronizaci{on web ([730d12f](https://github.com/ynfantes/v2.web.ve/commit/730d12f))
+* fix: Corrige error connection timeout al ejecutar la sincronización web ([28457e7](https://github.com/ynfantes/v2.web.ve/commit/28457e7))
+* fix: Corrige la apertura de la solvencia de condominio en un ventana nueva ([1bdd6ad](https://github.com/ynfantes/v2.web.ve/commit/1bdd6ad))
+* fix: Corrige la presentación de los soportes de facturación. Se estaban mostrando repetidos cuando e ([1106fb9](https://github.com/ynfantes/v2.web.ve/commit/1106fb9))
+* fix: Corrige la presentación en el estado de cuenta de Los Samanes ([5978d98](https://github.com/ynfantes/v2.web.ve/commit/5978d98))
+* fix: Corrige modelo solvencia AFConsultores. ([a966f3f](https://github.com/ynfantes/v2.web.ve/commit/a966f3f))
+* fix: Mejora la presentación del botón Imprimir solvencia de condominio ([2df11a8](https://github.com/ynfantes/v2.web.ve/commit/2df11a8))
+* fix: Se corrige la impresión de la tasa de cambio del día. Se toma en cuenta la fecha valor del BCV  ([e6213f5](https://github.com/ynfantes/v2.web.ve/commit/e6213f5))
+* fix: Se emite la solvencia de condominio desde la consulta del estado de cuenta ([12de544](https://github.com/ynfantes/v2.web.ve/commit/12de544))
+* fix(actualizacionWeb): Corrige la carga de la data de los propietarios ([00cd4bc](https://github.com/ynfantes/v2.web.ve/commit/00cd4bc))
+* fix(ActualizacionWeb): Corrige problemas de codificación de caracteres en la base de datos ([2dafa0f](https://github.com/ynfantes/v2.web.ve/commit/2dafa0f))
+* fix(pagos): Corrige la presentación de la tasa de cambio para los días de fin de semana ([a4d30fa](https://github.com/ynfantes/v2.web.ve/commit/a4d30fa))
+* fix((actualizacionWeb)): Corrige que no se detenga el proceso en caso de error en la inserción de da ([b3007bf](https://github.com/ynfantes/v2.web.ve/commit/b3007bf))
+* fix((actualizacionweb)): Sistituye funciones deprecadas en la actualizacionWeb ([72b73e7](https://github.com/ynfantes/v2.web.ve/commit/72b73e7))
+* fix((pagos)): Corrige un error en la ventana de reportar pagos de Los Samanes ([1fa255d](https://github.com/ynfantes/v2.web.ve/commit/1fa255d))
+* build: Install html2pdf via composer ([268ea88](https://github.com/ynfantes/v2.web.ve/commit/268ea88))
+* refactor: Cambios varios ([e4bebc8](https://github.com/ynfantes/v2.web.ve/commit/e4bebc8))
+* refactor: Corrige errores del lint de la clase db ([72f9564](https://github.com/ynfantes/v2.web.ve/commit/72f9564))
+* refactor: Elimina código repetido ([4b4bc6b](https://github.com/ynfantes/v2.web.ve/commit/4b4bc6b))
+
+
+
 ## <small>1.0.4 (2023-02-02)</small>
 
 * fix: FIX Error: session_start(): Cannot start session when headers already sent al descargar un prer ([337125f](https://github.com/ynfantes/v2.web.ve/commit/337125f))
