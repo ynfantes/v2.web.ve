@@ -32,13 +32,17 @@ if (!$mantenimiento) {
     $avance = $min * 100 / 60;
 }
 
-
+$packageJson = file_get_contents('package.json');
+$packageData = json_decode($packageJson, true);
+// Obtener la versión
+$version = $packageData['version'] ?? '';
 
 echo $twig->render('index.html.twig',array(
         'url'           => $url,
         'state'         => $_SESSION['state'],
         'loginUrl'      => $loginUrl,
         'mantenimiento' => $mantenimiento,
-        'avance'        => $avance
+        'avance'        => $avance,
+        'version'       => $version
         )
 );
