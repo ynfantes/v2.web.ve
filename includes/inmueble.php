@@ -156,4 +156,8 @@ class inmueble extends db implements crud {
         $filter = ["cod_admin" => $cod_admin,"id_inmueble" => $id_inmueble];
         return db::select("max(periodo) as periodo","facturacion_mensual",$filter);
     }
+
+    public function getPropertyByAdmin($cod_admin) {
+        return db::select("*",self::tabla,["cod_admin"=>"$cod_admin"]);
+    }
 }

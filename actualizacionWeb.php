@@ -12,6 +12,42 @@ include_once 'includes/file.php';
 $db = new db();
 $administradoras = new administradora();
 
+function checkPropertiesAdministrator($cod_admin, $maxInmueble, &$mensaje) {
+    // aquí comprobamos la cantidad de edificios que tiene registrado
+    $inmueble = new inmueble();
+    $inmuebles = $inmueble->getPropertyByAdmin($cod_admin);
+    if ($inmuebles['suceed']) {
+        
+        $countInm = count($inmuebles['data']) +  1;
+        
+        if($countInm > $maxInmueble) {
+            $mensaje.= "**********<br>";
+            $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
+            $mensaje.= "Usted ha excedido el máximo permitido.<br>";
+            $mensaje.= "**********<br>";
+
+            if($cod_admin == "056") {
+                $mensaje.= "El servicio estará disponible hasta el 21/02/2025";
+
+            } else {
+                die($mensaje);
+
+            }
+        }
+        elseif ($countInm == $maxInmueble){
+            $mensaje.= "**********<br>";
+            $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
+            $mensaje.= "Usted está en el límite permitido.<br>";
+            $mensaje.= "**********<br>";
+        } else {
+            $mensaje.= "**********<br>";
+            $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
+            $mensaje.= "Actualmente tiene registrado $countInm.<br>";
+            $mensaje.= "**********<br>";
+        }
+    }
+}
+
 if (isset($_GET['cod_admin'])) {
     $cod_admin = $_GET['cod_admin'];
     
@@ -20,6 +56,7 @@ if (isset($_GET['cod_admin'])) {
     if ($r['suceed'] && count($r['data']) > 0) {
         $administradora = $r['data'][0];
         $adminName = $administradora['nombre'];
+        $maxInmueble = $administradora['maxInmueble'];
 //        echo '<pre>';
 //        print_r($administradora);
 //        echo '-------<br>';
@@ -47,6 +84,7 @@ if (isset($_GET['cod_admin'])) {
             die("$adminName<br/>SERVICIO SUSPENDIDO<br/>Este servicio está incluido con el Soporte Premium.");
             
         }
+        
     } else {
         die('Acceso Denegado');
     }
@@ -87,11 +125,15 @@ if (isset($_GET['codinm'])) {
     foreach ($tablas as $tabla) {
         $r = $db->exec_query("delete from $tabla where cod_admin='$cod_admin'");
         echo "limpiar tabla: $tabla<br />";
+
     }
+    echo "<br>";
 }
+checkPropertiesAdministrator($cod_admin,$maxInmueble,$mensaje);
 
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_INMUEBLE;
 $contenidoFichero = JFile::read($archivo);
+
 $lineas = explode("\r\n", $contenidoFichero);
 $inmueble = new inmueble();
 $mensaje .= "procesar archivo inmueble (" . count($lineas) . ")<br />";
