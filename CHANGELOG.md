@@ -1,3 +1,10 @@
+## 1.2.0 (2025-02-19)
+
+* chore: Se agrega soporte a twig vía composer ([9ab0445](https://github.com/ynfantes/v2.web.ve/commit/9ab0445))
+* refactor: Se elimina el archivo hora.php no se usa en la aplicación ([9881f3b](https://github.com/ynfantes/v2.web.ve/commit/9881f3b))
+
+
+
 ## 1.1.0 (2025-02-19)
 
 * feat: Se forza la recarga de los archivos dinámicos al actualizar la versión del service worker ([4d7ec38](https://github.com/ynfantes/v2.web.ve/commit/4d7ec38))
