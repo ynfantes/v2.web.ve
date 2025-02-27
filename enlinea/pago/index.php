@@ -286,10 +286,20 @@ switch ($accion) {
                         $propiedad['id_inmueble'],
                         $session['usuario']['cod_admin']);
                 
-                $factura = $facturas->estadoDeCuenta(
+                if ($session['usuario']['cod_admin'] == '0012') {
+                    $factura = $facturas->estadoDeCuentaPagos(
                         $session['usuario']['cod_admin'],
                         $propiedad['id_inmueble'],
                         $propiedad['apto']);
+
+                } else {
+
+                    $factura = $facturas->estadoDeCuenta(
+                            $session['usuario']['cod_admin'],
+                            $propiedad['id_inmueble'],
+                            $propiedad['apto']);
+                            
+                }
                 
                 if ($factura['suceed'] == true) {
                     

@@ -178,7 +178,7 @@
                     </span>
                     </td>
                     {% if cuenta.inmueble.facturacion_usd %}
-                        {% if factura.abonado == 0 %}
+                        {% if factura.total_pagado == 0 %}
                             {% set balanceUSD = factura.facturado_usd %}
                         {% else %}
                             {% set balanceUSD = factura.saldo * factura.facturado_usd / (factura.facturado - factura.abonado) %}
@@ -202,6 +202,7 @@
                 </tr>
                 {% set counter = counter + 1 %}
                 {% set debtBS = debtBS + factura.saldo %}
+                {% set debtUSD = debtUSD + balanceUSD %}
             {% endfor %}
         {% else %}
             <tr>
@@ -230,7 +231,7 @@
             <td></td>
             <td><span class="pull-right">{{format_number(debtBS)}}<span class="pull-right"></td>
             {% if cuenta.inmueble.facturacion_usd %}
-                    <td><span class="pull-right">{{format_number(cuenta.propiedades.deuda_usd)}}<span class="pull-right"></td>
+                    <td><span class="pull-right">{{format_number(debtUSD)}}<span class="pull-right"></td>
             {% endif %}
             <td></td>
             <td></td>

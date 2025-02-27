@@ -41,12 +41,15 @@ class factura extends db implements crud {
     }
     
     public function estadoDeCuenta($cod_admin, $inmueble, $apto) {
-        /*
         $consulta = "select * from ".self::tabla.
                 " where id_inmueble='$inmueble' and apto='$apto' 
                 and cod_admin='$cod_admin' and (facturado-abonado)>0 
                 order by periodo ASC";
-        */
+        
+        return db::query($consulta);
+    }
+    
+    public function estadoDeCuentaPagos($cod_admin, $inmueble, $apto) {
         $consulta = "SELECT 
             f.*,
             f.abonado + COALESCE(SUM(pd_validos.monto), 0) AS total_pagado,
@@ -70,7 +73,7 @@ class factura extends db implements crud {
 
         return db::query($consulta);
     }
-    
+
     public function facturaPerteneceACliente($factura,$cedula,$cod_admin) {
         
         $query = "select propiedades.* from propiedades join 
