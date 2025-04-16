@@ -1,3 +1,10 @@
+## 1.3.0 (2025-04-16)
+
+* feat: Implementar registro y manejo del Service Worker, generar archivo de versión y actualizar cach ([d504487](https://github.com/ynfantes/v2.web.ve/commit/d504487))
+* perf: Update service worker ([7af2dc9](https://github.com/ynfantes/v2.web.ve/commit/7af2dc9))
+
+
+
 ## <small>1.2.2 (2025-02-19)</small>
 
 * fix: Corrige el conteo de los condominios por administrador durante el preceso de sincronización wb ([cc4b995](https://github.com/ynfantes/v2.web.ve/commit/cc4b995))
