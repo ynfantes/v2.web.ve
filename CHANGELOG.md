@@ -1,3 +1,11 @@
+## <small>1.3.3 (2025-04-16)</small>
+
+* feat: Actualizar script de versión para agregar commit automático tras la generación de versión ([482cbcf](https://github.com/ynfantes/v2.web.ve/commit/482cbcf))
+* feat: Actualizar script de versión para incluir el número de versión en el mensaje de commit ([95999f9](https://github.com/ynfantes/v2.web.ve/commit/95999f9))
+* chore(release): version bump ([00b935b](https://github.com/ynfantes/v2.web.ve/commit/00b935b))
+
+
+
 ## <small>1.3.2 (2025-04-16)</small>
 
 * feat: Actualizar script de versión para agregar commit automático tras la generación de versión ([482cbcf](https://github.com/ynfantes/v2.web.ve/commit/482cbcf))
