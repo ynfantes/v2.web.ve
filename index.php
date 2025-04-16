@@ -32,10 +32,10 @@ if (!$mantenimiento) {
     $avance = $min * 100 / 60;
 }
 
-$packageJson = file_get_contents('package.json');
-$packageData = json_decode($packageJson, true);
-// Obtener la versión
-$version = $packageData['version'] ?? '';
+// Leer la versión desde version.js
+$versionJs = file_get_contents('assets/js/version.js');
+preg_match("/const APP_VERSION = '(.*?)';/", $versionJs, $matches);
+$version = $matches[1] ?? '';
 
 echo $twig->render('index.html.twig',array(
         'url'           => $url,

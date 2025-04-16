@@ -4,6 +4,7 @@
   },
   "version": "1.2.2",
   "scripts": {
-    "version": "conventional-changelog -i CHANGELOG.md -s && git add CHANGELOG.md"
+    "generate-version": "node scripts/generate-version.js",
+    "version": "conventional-changelog -i CHANGELOG.md -s && git add CHANGELOG.md && npm run generate-version"
   }
 }

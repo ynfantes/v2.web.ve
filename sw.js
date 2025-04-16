@@ -1,9 +1,10 @@
 // imports
 importScripts('assets/js/sw-utils.js');
+importScripts('assets/js/version.js'); 
 
-const STATIC_CACHE      = 'static-v1.0.10';
-const DYNAMIC_CACHE     = 'dynamic-v1.0.10';
-const INMUTABLE_CACHE   = 'inmutable-v1.0.7';
+const STATIC_CACHE      = `static-v${APP_VERSION}`;
+const DYNAMIC_CACHE     = `dynamic-v${APP_VERSION}`;
+const INMUTABLE_CACHE   = `inmutable-v${APP_VERSION}`;
 const API_CACHE         = 'cache-data';
 
 /* corazon de la aplicacion
@@ -32,12 +33,12 @@ const APP_SHELL = [
 ];
 
 const APP_SHELL_INMUTABLE = [
-    'assets/plugins/bootstrap/js/bootstrap.min.js',
+    `assets/plugins/bootstrap/js/bootstrap.min.js?v=${APP_VERSION}`,
     'assets/plugins/jquery/jquery-3.3.1.min.js',
     'assets/plugins/form.validate/jquery.form.min.js',
     'assets/plugins/form.validate/jquery.validation.min.js',
     'assets/js/fileinput.min.js',
-    'assets/fonts/fontawesome-webfont.woff2?v=4.7.0',
+    `assets/fonts/fontawesome-webfont.woff2?v=${APP_VERSION}`,
     'assets/fonts/glyphicons-halflings-regular.woff2',
     'https://fonts.gstatic.com/s/kaushanscript/v9/vm8vdRfvXFLG3OLnsO15WYS5DG74wNJVMJ8b.woff2',
     'https://fonts.gstatic.com/s/kaushanscript/v9/vm8vdRfvXFLG3OLnsO15WYS5DG72wNJVMJ8br5Y.woff2',
@@ -55,7 +56,7 @@ const APP_SHELL_INMUTABLE = [
 
 
 self.addEventListener('install', e => {
-    
+    console.log("intalando new sw");
     self.skipWaiting();
     
     const cacheStatic = caches.open(STATIC_CACHE)
@@ -71,25 +72,19 @@ self.addEventListener('install', e => {
 
 
 self.addEventListener('activate', e => {
-
     const respuesta = caches.keys().then(keys => {
-
-        keys.forEach(key => {
-
-            if (key !== STATIC_CACHE && key.includes('static')) {
-
-                return caches.delete(key);
-
-            }
-            if (key !== DYNAMIC_CACHE && key.includes('dynamic')) {
-
-                return caches.delete(key);
-
-            }
-        });
+        return Promise.all(
+            keys.map(key => {
+                if (key !== STATIC_CACHE && key !== DYNAMIC_CACHE && key !== INMUTABLE_CACHE) {
+                    console.log('eliminando cache viejo', key);
+                    return caches.delete(key);
+                }
+            })
+        );
     });
 
     e.waitUntil(respuesta);
+    self.clients.claim(); // Toma control inmediato de las pestañas abiertas
 });
 
 
@@ -128,4 +123,10 @@ self.addEventListener('fetch', e => {
             console.log('Sin conexión: ',err);
         });
     e.respondWith(respuesta);
+});
+
+self.addEventListener('message', (event) => {
+    if (event.data === 'skipWaiting') {
+        self.skipWaiting();
+    }
 });

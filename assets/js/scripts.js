@@ -91,9 +91,23 @@ function loginUsuario(persona) {
 }
 const config = JSON.parse(localStorage.getItem('session'));
 if(config){
-const url = 'enlinea/propietario/sesion/' + config.session_id;
-fetch(url)
-.then( resp => resp.json())
-.then( response => loginUsuario(response))
-.catch( error => console.error('Error: ', error));
+    const url = 'enlinea/propietario/sesion/' + config.session_id;
+    fetch(url)
+    .then( resp => resp.json())
+    .then( response => loginUsuario(response))
+    .catch( error => console.error('Error: ', error));
+}
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Nuevo Service Worker activado.');
+        // Aquí puedes recargar la página si es necesario
+        window.location.reload();
+    });
+
+    navigator.serviceWorker.ready.then(registration => {
+        if (registration.waiting) {
+            // Si hay un SW en estado "waiting", envía el mensaje para activarlo
+            registration.waiting.postMessage('skipWaiting');
+        }
+    });
 }
