@@ -1,3 +1,13 @@
+## <small>1.3.1 (2025-04-16)</small>
+
+* feat: Actualizar script de versión para incluir el archivo de versión en el commit ([5e4c672](https://github.com/ynfantes/v2.web.ve/commit/5e4c672))
+* feat: Actualizar versión a 1.3.0 y ajustar scripts de generación de versión ([bdf96be](https://github.com/ynfantes/v2.web.ve/commit/bdf96be))
+* feat: Actualizar versión de la aplicación a 1.3.0 en changelog y archivo de versión ([085e3ab](https://github.com/ynfantes/v2.web.ve/commit/085e3ab))
+* feat: Implementar registro y manejo del Service Worker, generar archivo de versión y actualizar cach ([d504487](https://github.com/ynfantes/v2.web.ve/commit/d504487))
+* perf: Update service worker ([7af2dc9](https://github.com/ynfantes/v2.web.ve/commit/7af2dc9))
+
+
+
 ## 1.3.0 (2025-04-16)
 
 * feat: Actualizar versión a 1.3.0 y ajustar scripts de generación de versión ([bdf96be](https://github.com/ynfantes/v2.web.ve/commit/bdf96be))
