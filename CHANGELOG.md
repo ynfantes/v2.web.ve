@@ -1,3 +1,15 @@
+## <small>1.3.5 (2025-04-16)</small>
+
+* fix: eliminar el comando de commit automático del script de versión ([8d97e8b](https://github.com/ynfantes/v2.web.ve/commit/8d97e8b))
+* chore(release): version bump ([00b935b](https://github.com/ynfantes/v2.web.ve/commit/00b935b))
+* chore(release): version bump v$(node -p "require('./package.json').version") ([972f470](https://github.com/ynfantes/v2.web.ve/commit/972f470))
+* chore(release): version bump v$npm_package_version ([0a2b690](https://github.com/ynfantes/v2.web.ve/commit/0a2b690))
+* feat: Actualizar script de versión para agregar commit automático tras la generación de versión ([482cbcf](https://github.com/ynfantes/v2.web.ve/commit/482cbcf))
+* feat: Actualizar script de versión para incluir el número de versión en el mensaje de commit ([95999f9](https://github.com/ynfantes/v2.web.ve/commit/95999f9))
+* feat: Actualizar script de versión para usar el número de versión actual en el mensaje de commit ([61b9c57](https://github.com/ynfantes/v2.web.ve/commit/61b9c57))
+
+
+
 ## <small>1.3.4 (2025-04-16)</small>
 
 * feat: Actualizar script de versión para agregar commit automático tras la generación de versión ([482cbcf](https://github.com/ynfantes/v2.web.ve/commit/482cbcf))
