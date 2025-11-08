@@ -1,9 +1,9 @@
 // imports
 importScripts('assets/js/sw-utils.js');
 
-const STATIC_CACHE      = 'static-v1.0.7';
-const DYNAMIC_CACHE     = 'dynamic-v1.0.7';
-const INMUTABLE_CACHE   = 'inmutable-v1.0.5';
+const STATIC_CACHE      = 'static-v1.0.8';
+const DYNAMIC_CACHE     = 'dynamic-v1.0.8';
+const INMUTABLE_CACHE   = 'inmutable-v1.0.8';
 const API_CACHE         = 'cache-data';
 
 /* corazon de la aplicacion

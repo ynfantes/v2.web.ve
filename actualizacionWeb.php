@@ -59,7 +59,7 @@ if (isset($_GET['cod_admin'])) {
     die('Ups! v2.web.ve: Faltan parámetros en el llamado de actualización');
 }
 
-$tablas = array("factura_detalle", "facturas", "propiedades",
+$tablas = array("factura_detalle", "facturas", "propietarios","propiedades",
     "junta_condominio", "inmueble", "inmueble_deuda_confidencial", "movimiento_caja",
     "fondos", "fondos_movimiento", "historico_avisos_cobro","cancelacion_gastos");
 
