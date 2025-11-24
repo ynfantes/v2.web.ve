@@ -99,7 +99,7 @@
                                         {%if cuenta.recibos_act%}
                                             {%for recibo in cuenta.recibos_act%}
                                                 {% if recibo.aviso %}
-                                                    <li><i class="fa fa-check-circle text-success"></i><a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
+                                                    <li><i class="fa fa-check-circle text-success"></i> <a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
                                                 {%else%}
                                                     <li><i class="fa fa-times-circle text-danger"></i> {{'Mes: ' ~ recibo.periodo|date('m-Y')}}</li>
                                                 {%endif%}
@@ -136,7 +136,7 @@
 	
 	var pagefunction = function() {
             $("a[name|='exportarPDF']").click(function() {
-                window.open('{{constant('ROOT')}}php/generarEstadoDeCuentaPDF.php?inmueble='+$(this).attr('id'));
+                window.open('{{constant("ROOT")}}php/generarEstadoDeCuentaPDF.php?inmueble='+$(this).attr('id'));
                 return false;
             });
 	};

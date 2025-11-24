@@ -76,9 +76,6 @@ class pago extends db implements crud {
         //and p.id not in (select id_pago from pago_en_linea) 
         return $this->query($consulta);
         
-//          return $this->select("distinct p.*, ifnull(u.id_usuario,0) usuario_intranet", 
-//          "pagos p join pago_detalle d on p.id = d.id_pago left join pago_usuario u on p.id = u.id_pago", 
-//          Array("estatus"=>"'p'"),null,Array("d.id_inmueble"=>"ASC"));
     }
     
     public function detallePagoPendiente($id_pago) {
@@ -876,17 +873,35 @@ class pago extends db implements crud {
     }
 
     public function cancelacionExisteEnBaseDeDatos($cancelacion) {
-        $cancelacion = str_replace(".pdf","",$cancelacion);
-        $query = "select numero_factura from cancelacion_gastos 
-            where concat(numero_factura,cod_admin)='".$cancelacion."'";
-        $r=0;
-        $result = $this->dame_query($query);
-        if ($result['suceed']==true) {
-            if (count($result['data'])>0) {
-                $r=1;
-            }
+        // Normalizar nombre de archivo y validar formato esperado
+        $cancelacion = trim($cancelacion);
+        $cancelacion = str_ireplace('.pdf', '', $cancelacion);
+
+        // Si la cadena es muy corta no tiene formato esperado
+        if (strlen($cancelacion) <= 10) {
+            return 0;
         }
-        return $r;       
+
+        // Extraer los últimos 3 caracteres como cod_admin y el resto como numero_factura
+        $cod_admin = substr($cancelacion, -3);
+        $numero_factura = substr($cancelacion, 0, -3);
+
+        // Sanea para evitar inyección y errores en la consulta
+        $cod_admin_esc = $this->mysqli->real_escape_string($cod_admin);
+        $numero_factura_esc = $this->mysqli->real_escape_string($numero_factura);
+
+        // Consulta: buscar coincidencia exacta en las columnas (mejor que CONCAT en WHERE)
+        $query = "SELECT 1 AS existe FROM cancelacion_gastos "
+               . "WHERE numero_factura = '" . $numero_factura_esc . "' "
+               . "AND cod_admin = '" . $cod_admin_esc . "' "
+               . "UNION "
+               . "SELECT 1 AS existe FROM movimiento_caja "
+               . "WHERE numero_recibo = '" . $numero_factura_esc . "' "
+                . "AND cod_admin = '" . $cod_admin_esc . "' LIMIT 1";
+        
+        $result = $this->dame_query($query);
+
+        return $result['suceed'] && isset($result['data']) && count($result['data']) > 0;
     }
 
     public function listarPagosEmailRegisroNoEnviado() {
@@ -895,5 +910,22 @@ class pago extends db implements crud {
                 'enviado'=> 0
             ];
         return $this->select("*", self::tabla, $opciones);
+    }
+
+    public function listarRecibosRegistrados() {
+        $recibos = array();
+        $facturas = array();
+
+        $result = $this->select("numero_recibo", "movimiento_caja");
+        
+        if ($result['suceed'] && count($result['data'])>0) {
+            $recibos = array_column($result['data'], 'numero_recibo');
+        }
+        
+        $result = $this->select("*", "cancelacion_gastos");
+        if ($result['suceed'] && count($result['data'])>0) {
+            $facturas = array_column($result['data'], 'numero_factura');
+        }
+        return array_merge($recibos, $facturas);
     }
 }

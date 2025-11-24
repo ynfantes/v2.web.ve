@@ -44,12 +44,33 @@ switch ($accion) {
         break; 
     
     case "cancelacion":
-        $titulo = $_GET['id'] . ".pdf";
-        $content = 'Content-type: application/pdf';
-        $url = ROOT . "cancelacion.gastos/" . $_GET['id'] . ".pdf";
+        // Asegurarse de que la sesión esté iniciada para obtener cod_admin
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $cod_admin = isset($_SESSION['usuario']['cod_admin']) ? $_SESSION['usuario']['cod_admin'] : '';
+
+        // Usar ruta de fichero local en lugar de URL para conservar la sesión del cliente
+        $filename = __DIR__ . '/../../cancelacion.gastos/' . $_GET['id'] . $cod_admin . '.pdf';
+
+        if (!is_file($filename)) {
+            header("HTTP/1.1 404 Not Found");
+            echo "Archivo no encontrado";
+            break;
+        }
+
+        $titulo = basename($filename);
+        header('Content-Type: application/pdf');
         header('Content-Disposition: inline; filename="' . $titulo . '"');
-        header($content);
-        readfile($url,false);
+        header('Content-Length: ' . filesize($filename));
+
+        // Liberar lock de sesión antes de enviar el fichero
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        readfile($filename);
+        exit;
         break;
     
     case "ver":
@@ -802,7 +823,7 @@ switch ($accion) {
 
                 if ($p['suceed'] == true) {
                     for ($index = 0; $index < count($p['data']); $index++) {
-                        $filename = "../../cancelacion.gastos/" . $p['data'][$index]['numero_recibo'] . ".pdf";
+                        $filename = "../../cancelacion.gastos/" . $p['data'][$index]['numero_recibo'].$session['usuario']['cod_admin']. ".pdf";
                         $p['data'][$index]['recibo'] = file_exists($filename);
                     }
                     $historico[] = Array(

@@ -1,80 +1,95 @@
 <?php
-// Aumenta los límites de tiempo y memoria, aunque el procesamiento incremental ayuda mucho
-ini_set('max_execution_time', 120); // Tiempo suficiente para un lote
+// Aumenta límites
+ini_set('max_execution_time', 120);
 ini_set('memory_limit', '512M');
 
 header('Content-type: text/html; charset=utf-8');
-include_once '../../includes/configuracion.php';
+include_once '../../includes/constants.php';
 
-// Variables de sesión para mantener el estado entre ejecuciones
 session_start();
 
-$path = getcwd();
-$dir = opendir($path);
-$pago = new pago();
-$limite_lote = 50; // Cantidad de archivos a procesar por ejecución
+// Inicializar variables de sesión si es la primera ejecución
+if (!isset($_SESSION['batch_initialized'])) {
 
-// Inicializa contadores y posición del cursor en la sesión
-if (!isset($_SESSION['n']) || !isset($_SESSION['e'])) {
-    $_SESSION['n'] = 0;
-    $_SESSION['e'] = 0;
-    $_SESSION['posicion_archivo'] = 0;
+    $_SESSION['batch_initialized'] = true;
+    $_SESSION['found']     = 0;
+    $_SESSION['notFound']  = 0;
+    $_SESSION['pointer']   = 0;   // puntero del lote actual
+    $_SESSION['done']      = false;
+
+    $path = getcwd();
+    $exclude = ['.', '..','index.php','mantenimiento.php'];
+
+    // 1. Obtener todos los archivos del directorio
+    $files = scandir($path);
+
+    // 2. Filtrar archivos válidos
+    $files = array_values(array_filter($files, function($f) use ($exclude) {
+        return !in_array($f, $exclude, true);
+    }));
+
+    // Guardamos lista completa en sesión
+    $_SESSION['all_files'] = $files;
+    $_SESSION['total']     = count($files);
 }
 
-$archivos_procesados_en_lote = 0;
-$i = 0;
+$limite_lote = 50;      // cantidad de archivos por lote
+$facturas = new factura();
 
-// Posicionar el cursor en la última posición guardada
-while ($i < $_SESSION['posicion_archivo'] && false !== readdir($dir)) {
-    $i++;
+
+// Si ya se terminó todo, mostrar resumen y finalizar
+if ($_SESSION['done'] === true) {
+    echo "Proceso finalizado.<br>";
+    echo $_SESSION['notFound'] . " archivos NO estaban en la base de datos y fueron eliminados.<br>";
+    echo $_SESSION['found'] . " archivos SI estaban en la base de datos.<br>";
+    session_destroy();
+    exit;
 }
 
-// Procesa el lote de archivos
-while ($elemento = readdir($dir)) {
-    // Omite los directorios . y .. y archivos específicos
-    if ($elemento === '.' || $elemento === '..' || $elemento === 'mantenimiento.php' || $elemento === 'index.php') {
-        continue;
-    }
 
-    $filePath = $path . '/' . $elemento;
+// Lista completa ya está cargada en sesión
+$files      = $_SESSION['all_files'];
+$total       = $_SESSION['total'];
+$pointer     = $_SESSION['pointer'];
 
-    if (!is_dir($filePath)) {
-        $r = $pago->avisoExisteEnBaseDeDatos($elemento);
+// Calcular límite de lote
+$lote = array_slice($files, $pointer, $limite_lote);
 
-        if ($r == 0) {
-            // El archivo no existe en la base de datos
-            if (unlink($filePath)) {
-                $_SESSION['n']++;
-            } else {
-                echo "No se pudo eliminar el archivo: $filePath<br>";
-            }
-        } else {
-            // El archivo sí existe en la base de datos
-            $_SESSION['e']++;
-        }
-
-        $archivos_procesados_en_lote++;
-    }
-
-    // Si se alcanza el límite del lote, se detiene y se guarda el estado
-    if ($archivos_procesados_en_lote >= $limite_lote) {
-        $_SESSION['posicion_archivo'] = $i + 1;
-        closedir($dir);
-        // Redirecciona al mismo script para continuar
-        echo "<script>setTimeout(function() { window.location.href = window.location.href; }, 1000);</script>";
-        echo "Procesando... archivos eliminados: " . $_SESSION['n'] . " | archivos existentes: " . $_SESSION['e'] . "<br>";
-        exit;
-    }
-    $i++;
+// Si el lote está vacío, significa que ya terminamos TODOS
+if (empty($lote)) {
+    $_SESSION['done'] = true;
+    echo "<script> setTimeout(function(){ window.location.reload(); }, 1000); </script>";
+    exit;
 }
 
-closedir($dir);
 
-// Si se sale del bucle, significa que todos los archivos han sido procesados
-echo "Proceso finalizado.<br>";
-echo $_SESSION['n'] . " archivos NO estaban en la base de datos y fueron eliminados.<br>";
-echo $_SESSION['e'] . " archivos SI estaban en la base de datos.<br>";
+// Procesar lote actual
+foreach ($lote as $file) {
 
-// Limpia las variables de sesión para el próximo uso
-session_destroy();
+    // Verificar en BD
+    $existe = $facturas->avisoExisteEnBaseDeDatos($file);
+
+    if ($existe) {
+        $_SESSION['found']++;
+    } else {
+        unlink($file);
+        $_SESSION['notFound']++;
+    }
+}
+
+// Avanzar puntero al siguiente lote
+$_SESSION['pointer'] += $limite_lote;
+
+
+// Mostrar avance
+$procesado = min($_SESSION['pointer'], $total);
+$porcentaje = round(($procesado / $total) * 100, 2);
+
+echo "Procesando... $procesado de $total archivos ($porcentaje%)<br>";
+
+
+// Forzar actualización de pantalla con tu lógica Javascript
+echo "<script> setTimeout(function(){ window.location.reload(); }, 500); </script>";
+exit;
+
 ?>
