@@ -1,9 +1,9 @@
 // imports
 importScripts('assets/js/sw-utils.js');
 
-const STATIC_CACHE      = 'static-v1.0.8';
-const DYNAMIC_CACHE     = 'dynamic-v1.0.8';
-const INMUTABLE_CACHE   = 'inmutable-v1.0.8';
+const STATIC_CACHE      = 'static-v1.0.9';
+const DYNAMIC_CACHE     = 'dynamic-v1.0.9';
+const INMUTABLE_CACHE   = 'inmutable-v1.0.9';
 const API_CACHE         = 'cache-data';
 
 /* corazon de la aplicacion
@@ -56,8 +56,6 @@ const APP_SHELL_INMUTABLE = [
 
 self.addEventListener('install', e => {
     
-    self.skipWaiting();
-    
     const cacheStatic = caches.open(STATIC_CACHE)
         .then(cache => cache.addAll(APP_SHELL));
 
@@ -88,44 +86,39 @@ self.addEventListener('activate', e => {
             }
         });
     });
-
     e.waitUntil(respuesta);
 });
 
 
 self.addEventListener('fetch', e => {
-    let cacheName;
-    if (e.request.url.includes('chrome-extension') 
-        || e.request.url.includes('/enlinea')
-        || e.request.method == 'POST') {
-        return e;
+    if (
+        e.request.url.includes('chrome-extension') ||
+        e.request.method === 'POST'
+    ) {
+        return;
     }
-    const respuesta = caches.match(e.request)
-        .then(resp => {
 
+    if (e.request.mode === 'navigate') {
+        // HTML → siempre network-first
+        e.respondWith(
+            fetch(e.request).catch(() => caches.match('/index.php'))
+        );
+        return;
+    }
+
+    e.respondWith(
+        caches.match(e.request).then(resp => {
             if (resp) {
-
-                if (!APP_SHELL_INMUTABLE.includes(e.request.url)) {
-
-                    if (e.request.url.includes('/enlinea')) {
-                        return e;    
-                    }
-                    return actualizaCache(STATIC_CACHE, e.request, resp);
-                }
-
-                return resp;
-
-            } else {
-                return fetch(e.request).then(newResp => {
-                    
-                    cacheName = e.request.url.includes('/enlinea') ? API_CACHE : DYNAMIC_CACHE;
-                    return actualizaCache(cacheName, e.request, newResp);
-
-                });
+                return resp; // no actualizar estáticos
             }
 
-        }).catch(err => {
-            console.log('Sin conexión: ',err);
-        });
-    e.respondWith(respuesta);
+            return fetch(e.request).then(newResp => {
+                const cacheName = e.request.url.includes('/enlinea')
+                    ? API_CACHE
+                    : DYNAMIC_CACHE;
+
+                return actualizaCache(cacheName, e.request, newResp);
+            });
+        })
+    );
 });
