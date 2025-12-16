@@ -96,17 +96,19 @@
 		                <div class="panel-body no-padding text-align-center">
                                     <div class="price-features">
                                     <ul class="list-unstyled text-left">
-                                        {%if cuenta.recibos_act%}
+                                        {% if cuenta.recibos_act %}
                                             {%for recibo in cuenta.recibos_act%}
                                                 {% if recibo.aviso %}
-                                                    <li><i class="fa fa-check-circle text-success"></i> <a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank">Mes: {{recibo.periodo|date('m-Y')}}</a></li>
-                                                {%else%}
+                                                    <li><i class="fa fa-check-circle text-success"></i>
+                                                        <a href="{{constant('URL_SISTEMA')}}/avisos/ver/{{recibo.numero_factura}}" target="_blank"> {{' Mes: ' ~ recibo.periodo|date('m-Y')}}</a>
+                                                    </li>
+                                                {% else %}
                                                     <li><i class="fa fa-times-circle text-danger"></i> {{'Mes: ' ~ recibo.periodo|date('m-Y')}}</li>
-                                                {%endif%}
+                                                {% endif %}
                                             {%endfor%}
-                                        {%else%}
+                                        {% else %}
                                             <li><i class="fa fa-times text-danger"></i> No hay avisos de cobro publicados</li>
-                                        {%endif%}
+                                        {% endif %}
                                     </ul>
                                     </div>
 		                </div>
