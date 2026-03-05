@@ -57,7 +57,7 @@ const APP_SHELL_INMUTABLE = [
 
 self.addEventListener('install', e => {
     console.log("intalando new sw");
-    self.skipWaiting();
+    //self.skipWaiting();
     
     const cacheStatic = caches.open(STATIC_CACHE)
         .then(cache => cache.addAll(APP_SHELL));
@@ -90,10 +90,12 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
     let cacheName;
+    const rutasExcluidas = ['/enlinea', '/bcv'];
     if (e.request.url.includes('chrome-extension') 
         || e.request.url.includes('/enlinea')
+        || e.request.url.includes('/bcv')
         || e.request.method == 'POST') {
-        return e;
+        return; // No manejar estas solicitudes
     }
     const respuesta = caches.match(e.request)
         .then(resp => {
@@ -102,8 +104,8 @@ self.addEventListener('fetch', e => {
 
                 if (!APP_SHELL_INMUTABLE.includes(e.request.url)) {
 
-                    if (e.request.url.includes('/enlinea')) {
-                        return e;    
+                    if (rutasExcluidas.some(ruta => e.request.url.includes(ruta))) {
+                        return; 
                     }
                     return actualizaCache(STATIC_CACHE, e.request, resp);
                 }
