@@ -634,8 +634,80 @@ switch ($accion) {
         } else {
             echo var_dump($pagos_maestro);
         }
-        break; 
+        break;
+
+    case "listarPagosPendientesJSON":
+        $pagos = new pago();
+        $cod_admin = $_GET['id'];
+        $pagos_maestro = $pagos->listarPagosPendientes_new($cod_admin);
+        $data = []; // Aquí guardaremos todos los objetos
+
+        if ($pagos_maestro['suceed'] && count($pagos_maestro['data']) > 0) {
             
+            foreach ($pagos_maestro['data'] as $pago) {
+
+                $pago_detalle = $pagos->detallePagoPendiente($pago['id']);
+                
+                if ($pago_detalle['suceed'] && count($pago_detalle['data']) > 0) {
+                    
+                    // Creamos un objeto para cada pago maestro
+                    $pago_obj = [
+                                'id'               => $pago['id'],
+                                'fecha'            => Misc::date_format($pago['fecha']),
+                                'tipo_pago'        => strtoupper($pago['tipo_pago']),
+                                'numero_documento' => $pago["numero_documento"],
+                                'fecha_documento'  => Misc::date_format($pago["fecha_documento"]),
+                                'monto'            => $pago["monto"],
+                                'banco_origen'     => $pago["banco_origen"],
+                                'banco_destino'    => $pago["banco_destino"],
+                                'numero_cuenta'    => $pago["numero_cuenta"],
+                                'estatus'          => strtoupper($pago["estatus"]),
+                                'email'            => $pago["email"],
+                                'enviado'          => $pago["enviado"] != 0,
+                                'telefono'         => $pago["telefono"],
+                                'usuario_intranet' => $pago["usuario_intranet"],
+                                'detalle'          => []
+                            ];
+
+                    // Agregamos el detalle del pago
+                    foreach ($pago_detalle['data'] as $value) {
+                        // llenamos el arreglo de detalle para cada pago maestro   
+                        $pago_obj['detalle'][] = [
+                            'id_inmueble' => $value['id_inmueble'],
+                            'id_apto'     => $value['id_apto'],
+                            'monto'       => $value['monto'],
+                            'id_factura'  => $value['id_factura'],
+                            'periodo'     => $value['periodo']
+                        ];
+                    }
+
+                    $data[] = $pago_obj;
+                }
+            }
+            // Configuramos la cabecera para que el navegador/cliente sepa que es JSON
+            header('Content-Type: application/json');
+            
+            $response = [
+                'suceed' => true,
+                'Records' => $data,
+                'RecordsCount' => count($data)
+            ];
+            
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+
+        } else {
+            // Si no hay datos, devolvemos un JSON vacío o un mensaje de error
+            header('Content-Type: application/json');
+            $response = [
+                'suceed'  => false,
+                'Records' => [],
+                'RecordsCount' => 0
+            ];
+            echo json_encode([]);
+        }
+
+        break;
+
     case "confirmar":
 
         $pago = new pago();
