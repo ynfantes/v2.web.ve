@@ -44,12 +44,33 @@ switch ($accion) {
         break; 
     
     case "cancelacion":
-        $titulo = $_GET['id'] . ".pdf";
-        $content = 'Content-type: application/pdf';
-        $url = ROOT . "cancelacion.gastos/" . $_GET['id'] . ".pdf";
+        // Asegurarse de que la sesión esté iniciada para obtener cod_admin
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $cod_admin = isset($_SESSION['usuario']['cod_admin']) ? $_SESSION['usuario']['cod_admin'] : '';
+
+        // Usar ruta de fichero local en lugar de URL para conservar la sesión del cliente
+        $filename = __DIR__ . '/../../cancelacion.gastos/' . $_GET['id'] . $cod_admin . '.pdf';
+
+        if (!is_file($filename)) {
+            header("HTTP/1.1 404 Not Found");
+            echo "Archivo no encontrado";
+            break;
+        }
+
+        $titulo = basename($filename);
+        header('Content-Type: application/pdf');
         header('Content-Disposition: inline; filename="' . $titulo . '"');
-        header($content);
-        readfile($url,false);
+        header('Content-Length: ' . filesize($filename));
+
+        // Liberar lock de sesión antes de enviar el fichero
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        readfile($filename);
+        exit;
         break;
     
     case "ver":
@@ -251,7 +272,12 @@ switch ($accion) {
         $propiedad = new propiedades();
         $facturas = new factura();
         $inmuebles = new inmueble();
-        $resultado = Array();
+        $bcvRates = new historicoTasaBDV();
+
+        $resultado = [];
+        $cuenta = [];
+        $bancos = [];
+
         if ($accion == 'guardar') {
             $resultado = $exito;
         }
@@ -260,8 +286,7 @@ switch ($accion) {
                 $session['usuario']['cedula'],
                 $session['usuario']['cod_admin']);
 
-        $cuenta = Array();
-        $bancos = Array();
+        
         $result = $inmuebles->listarBancosActivos();
         
         if ($result['suceed']) {
@@ -278,15 +303,25 @@ switch ($accion) {
 
             foreach ($propiedades['data'] as $propiedad) {
 
-            $inmueble = $inmuebles->verDatosInmueble(
-                    $propiedad['id_inmueble'],
-                    $session['usuario']['cod_admin']);
-            
-            $factura = $facturas->estadoDeCuenta(
-                    $session['usuario']['cod_admin'],
-                    $propiedad['id_inmueble'],
-                    $propiedad['apto']);
-            
+                $inmueble = $inmuebles->verDatosInmueble(
+                        $propiedad['id_inmueble'],
+                        $session['usuario']['cod_admin']);
+                
+                if ($session['usuario']['cod_admin'] == '0012') {
+                    $factura = $facturas->estadoDeCuentaPagos(
+                        $session['usuario']['cod_admin'],
+                        $propiedad['id_inmueble'],
+                        $propiedad['apto']);
+
+                } else {
+
+                    $factura = $facturas->estadoDeCuenta(
+                            $session['usuario']['cod_admin'],
+                            $propiedad['id_inmueble'],
+                            $propiedad['apto']);
+                            
+                }
+                
                 if ($factura['suceed'] == true) {
                     
                     if ($propiedad['meses_pendiente'] < MESES_COBRANZA) {
@@ -294,8 +329,11 @@ switch ($accion) {
                         for ($index = 0; $index < count($factura['data']); $index++) {
                             $filename = "../avisos/" . $factura['data'][$index]['numero_factura'].
                                     $session['usuario']['cod_admin'].".pdf";
+                            
                             $factura['data'][$index]['aviso'] = file_exists($filename);
+                            
                             $r = pago::facturaPendientePorProcesar($factura['data'][$index]['periodo'], $factura['data'][$index]['id_inmueble'], $factura['data'][$index]['apto']);
+                            
                             if ($r['suceed'] && count($r['data'])>0) {
                                 $factura['data'][$index]['pagado'] = 1;
                                 $factura['data'][$index]['pagado_detalle']= "<i class='fa fa-calendar-o'></i> ".
@@ -325,22 +363,43 @@ switch ($accion) {
                 
             }
         }
-        //var_dump($propiedades['data']);
-        $tasa   = [];
-        $url    = 'https://www.bcv.org.ve';
         
-        if(($html   = file_get_contents_curl($url)) == false) {
-            $error = error_get_last();
-            //die("HTTP request failed. Error was: " . $error['message']);
-        }
+        $tasa   = [
+            'dolar' => '0,00',
+            'usd'   => '-,--',
+        ];
+        $exchangeRate = $bcvRates->getPriceDollar();
+       
+        if ($exchangeRate!= null) {
+            
+            $update = $exchangeRate['updated']; 
 
-        $doc = new DOMDocument();
-        @$doc->loadHTML($html, LIBXML_NOERROR);
-        $nodes = $doc->getElementById('dolar');
-        $lectura = rtrim(ltrim($nodes->nodeValue));
-        $lectura = explode(" ", limpiarString($lectura));
-        $tasa['dolar'] = $lectura[0];
-        $tasa['usd'] = number_format( str_replace(",",".",$lectura[0]), 2, ',', '.' );
+            // Obtener la fecha y hora actual del servidor
+            $dtServidor = new DateTime(); 
+            $fechaServidor = $dtServidor->format("Y-m-d");
+            $horaServidor = $dtServidor->format("H:i:s");
+            
+            // Verificar si es sábado o domingo
+            $diaSemana = $dtServidor->format("N"); // 1 (Lunes) - 7 (Domingo)
+            
+            // Crear objeto DateTime para la fecha de actualización
+            $dtUpdate = new DateTime($update);
+            $fechaUpdate = $dtUpdate->format("Y-m-d");
+            $horaUpdate = $dtUpdate->format("H:i:s");
+
+            // Definir la hora de referencia (3:00 PM)
+            $horaReferencia = "15:00:00";
+            // Comprobación
+            
+            if ($diaSemana == 6 || $diaSemana == 7) {
+                $tasa['usd'] = $exchangeRate['prev'];
+            }
+            elseif ($fechaServidor === $fechaUpdate && $horaUpdate > $horaReferencia) {
+                $tasa['usd'] = $exchangeRate['prev'];
+            } else {
+                $tasa['usd'] = $exchangeRate['price'];
+            }
+        }
 
         $params = [
             'accion'      => $accion,
@@ -351,7 +410,13 @@ switch ($accion) {
             'tasa'        => $tasa,
             'usuario'     => $session['usuario'],
         ];
-        echo $twig->render('enlinea/pago/formulario.html.twig', $params);
+        if ($session['administra']['codigo']=='0012') {
+            $url = 'enlinea/pago/formulario.html.0012.twig';
+        } else {
+
+            $url = 'enlinea/pago/formulario.html.twig';
+        }
+        echo $twig->render($url, $params);
         break; 
         
     case "pago-tdc":
@@ -448,7 +513,7 @@ switch ($accion) {
 
     case "listaPagosMaestros":
         $pagos = new pago();
-        $pagos_maestro = $pagos->listarPagosPendientes($_GET['id']);
+        $pagos_maestro = $pagos->listarPagosPendientes_new($_GET['id']);
 
         if ($pagos_maestro['suceed'] && count($pagos_maestro['data']) > 0) {
             echo "id,fecha,tipo_pago,numero_documento,fecha_documento,monto,banco_origen,";
@@ -549,6 +614,7 @@ switch ($accion) {
                         echo $pago["email"] . "|";
                         echo $enviado . "|";
                         echo $pago["telefono"] . "|";
+                        echo $pago["usuario_intranet"] . "|";
                         // --
                         foreach ($pago_detalle['data'] as $value) {
                             echo $value['id_inmueble'] . "|";
@@ -568,8 +634,80 @@ switch ($accion) {
         } else {
             echo var_dump($pagos_maestro);
         }
-        break; 
+        break;
+
+    case "listarPagosPendientesJSON":
+        $pagos = new pago();
+        $cod_admin = $_GET['id'];
+        $pagos_maestro = $pagos->listarPagosPendientes_new($cod_admin);
+        $data = []; // Aquí guardaremos todos los objetos
+
+        if ($pagos_maestro['suceed'] && count($pagos_maestro['data']) > 0) {
             
+            foreach ($pagos_maestro['data'] as $pago) {
+
+                $pago_detalle = $pagos->detallePagoPendiente($pago['id']);
+                
+                if ($pago_detalle['suceed'] && count($pago_detalle['data']) > 0) {
+                    
+                    // Creamos un objeto para cada pago maestro
+                    $pago_obj = [
+                                'id'               => $pago['id'],
+                                'fecha'            => Misc::date_format($pago['fecha']),
+                                'tipo_pago'        => strtoupper($pago['tipo_pago']),
+                                'numero_documento' => $pago["numero_documento"],
+                                'fecha_documento'  => Misc::date_format($pago["fecha_documento"]),
+                                'monto'            => floatval($pago["monto"]),
+                                'banco_origen'     => $pago["banco_origen"],
+                                'banco_destino'    => $pago["banco_destino"],
+                                'numero_cuenta'    => $pago["numero_cuenta"],
+                                'estatus'          => strtoupper($pago["estatus"]),
+                                'email'            => $pago["email"],
+                                'enviado'          => $pago["enviado"] != 0,
+                                'telefono'         => $pago["telefono"],
+                                'usuario_intranet' => $pago["usuario_intranet"],
+                                'detalle'          => []
+                            ];
+
+                    // Agregamos el detalle del pago
+                    foreach ($pago_detalle['data'] as $value) {
+                        // llenamos el arreglo de detalle para cada pago maestro   
+                        $pago_obj['detalle'][] = [
+                            'id_inmueble' => $value['id_inmueble'],
+                            'id_apto'     => $value['id_apto'],
+                            'monto'       => floatval($value['monto']),
+                            'id_factura'  => $value['id_factura'],
+                            'periodo'     => $value['periodo']
+                        ];
+                    }
+
+                    $data[] = $pago_obj;
+                }
+            }
+            // Configuramos la cabecera para que el navegador/cliente sepa que es JSON
+            header('Content-Type: application/json');
+            
+            $response = [
+                'suceed' => true,
+                'Records' => $data,
+                'RecordsCount' => count($data)
+            ];
+            
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+
+        } else {
+            // Si no hay datos, devolvemos un JSON vacío o un mensaje de error
+            header('Content-Type: application/json');
+            $response = [
+                'suceed'  => false,
+                'Records' => [],
+                'RecordsCount' => 0
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
+        break;
+
     case "confirmar":
 
         $pago = new pago();
@@ -696,32 +834,32 @@ switch ($accion) {
             <?php
 
             
-            $content = ob_get_clean();
-            // convert to PDF
-            require_once('../../includes/html2pdf/html2pdf.class.php');
+            // $content = ob_get_clean();
+            // // convert to PDF
+            // require_once('../../includes/html2pdf/html2pdf.class.php');
 
 
-            try             {
-                $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
-                $html2pdf->setDefaultFont("Helvetica");
-                // recibo
-                $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-                //$archivo = $html2pdf->Output('','S');
-                $html2pdf->Output('ticket.pdf');
+            // try             {
+            //     $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
+            //     $html2pdf->setDefaultFont("Helvetica");
+            //     // recibo
+            //     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+            //     //$archivo = $html2pdf->Output('','S');
+            //     $html2pdf->Output('ticket.pdf');
 
-                //$mail = new mailto(SMTP);
-                //$voucher = Array("Recibo de pago"=>$archivo);
-                //$r = $mail->enviar_email("Pago electrónico web", "Adjunto", '', $_POST['email'], "",null,null,$voucher);
-                                //$archivo='';
-                //if ($r=='') {
-                //    echo 'Email enviado con éxito';
-                //} else {
-                //    echo 'envio fallido';
-                //}
-            }             catch (HTML2PDF_exception $e) {
-                echo $e;
-                exit;
-            }
+            //     //$mail = new mailto(SMTP);
+            //     //$voucher = Array("Recibo de pago"=>$archivo);
+            //     //$r = $mail->enviar_email("Pago electrónico web", "Adjunto", '', $_POST['email'], "",null,null,$voucher);
+            //                     //$archivo='';
+            //     //if ($r=='') {
+            //     //    echo 'Email enviado con éxito';
+            //     //} else {
+            //     //    echo 'envio fallido';
+            //     //}
+            // }             catch (HTML2PDF_exception $e) {
+            //     echo $e;
+            //     exit;
+            // }
         }
         break; 
             
@@ -757,7 +895,7 @@ switch ($accion) {
 
                 if ($p['suceed'] == true) {
                     for ($index = 0; $index < count($p['data']); $index++) {
-                        $filename = "../../cancelacion.gastos/" . $p['data'][$index]['numero_recibo'] . ".pdf";
+                        $filename = "../../cancelacion.gastos/" . $p['data'][$index]['numero_recibo'].$session['usuario']['cod_admin']. ".pdf";
                         $p['data'][$index]['recibo'] = file_exists($filename);
                     }
                     $historico[] = Array(
@@ -846,4 +984,18 @@ switch ($accion) {
             echo "0";
         }
         break; 
+
+    case "reenviarNotificacionRegistroPago":
+        $pago = new pago();
+        $lista = $pago->listarPagosEmailRegisroNoEnviado();
+
+        if ($lista['suceed'] && count($lista['data']) > 0) {
+            foreach ($lista['data'] as $registro) {
+                $pago->reenviarEmailPagoRegistrado($registro['id']);
+                echo '<br />';
+            }
+        } else {
+            echo 'No hay notificaciones pendientes por reenviar';
+        }
+        break;
 }

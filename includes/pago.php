@@ -70,23 +70,20 @@ class pago extends db implements crud {
                 . "pagos p join pago_detalle d on p.id = d.id_pago left "
                 . "join pago_usuario u on p.id = u.id_pago "
                 . "where p.estatus='p' and p.cod_admin='$cod_admin' "
-                . "order by d.id_inmueble ASC";
+                . "order by d.id_inmueble ASC, p.id ASC;";
         //colocar esta línea en el criterio de seleccion si se activa
         //el pago por tarjeta de credito
         //and p.id not in (select id_pago from pago_en_linea) 
         return $this->query($consulta);
         
-//          return $this->select("distinct p.*, ifnull(u.id_usuario,0) usuario_intranet", 
-//          "pagos p join pago_detalle d on p.id = d.id_pago left join pago_usuario u on p.id = u.id_pago", 
-//          Array("estatus"=>"'p'"),null,Array("d.id_inmueble"=>"ASC"));
     }
     
     public function detallePagoPendiente($id_pago) {
-        return $this ->select("*", "pago_detalle", Array("id_pago"=>$id_pago));
+        return $this ->select("*", "pago_detalle",   ["id_pago"=>$id_pago], null, ["periodo"=>"ASC"]);
     }
     
     public function detallePagoEnLinea($id) {
-        return $this ->select("*", "pago_en_linea", Array("id_pago"=>$id));
+        return $this ->select("*", "pago_en_linea", ["id_pago"=>$id]);
     }
     
     public function detalleTodosPagosPendientes() {
@@ -330,57 +327,10 @@ class pago extends db implements crud {
         $r = $this->actualizar($id, array("estatus"=>$estatus));
         if ($r['suceed']) {
             return "Ok";
-        }
-        // verificamos si es un pago en linea para no enviar el email de confirmacion
-//        $r = $this->detallePagoEnLinea($id);
-//        if ($r['suceed'] == true && count($r['data'])>0) {
-//            return "Ok";
-//        } else {
-        //$r = $this->ver($id);
-        // <editor-fold defaultstate="collapsed" desc="enviar correo de confirmarion">
-//        if ($r['suceed'] == true) {
-//
-//            if (count($r['data']) > 0) {
-//
-//                // <editor-fold defaultstate="collapsed" desc="tipo de pago">
-//                switch (strtoupper($r['data'][0]['tipo_pago'])) {
-//                    case 'D':
-//                        $tipo_pago = 'DEPOSITO';
-//                        break;
-//                    case 'TDD':
-//                        $tipo_pago = 'T.DEBITO';
-//                        break;
-//                    case 'TDC':
-//                        $tipo_pago = 'T.CREDITO';
-//                        break;
-//
-//                    default:
-//                        $tipo_pago = 'TRANSFERENCIA';
-//                        break;
-//                }
-//                // </editor-fold>
-//
-//                $data = Array(
-//                    "administradora" => TITULO,
-//                    "forma_pago" => $tipo_pago,
-//                    "numero_documento" => $r['data'][0]['numero_documento'],
-//                    "banco" => $r['data'][0]['banco_destino'],
-//                    "cuenta" => $r['data'][0]['numero_cuenta'],
-//                    "monto" => $r['data'][0]['monto'],
-//                    "fecha" => $r['data'][0]['fecha'],
-//                    "email" => $r['data'][0]['email'],
-//                    "recibo" => $recibo
-//                );
-//                return $this->enviarEmailPagoProcesado($id, $estatus, $data);
-//            }
-//
-//        }
-        //</editor-fold>
+        }        
         return "Falló";
-//        }
     }
     
-    // <editor-fold defaultstate="collapsed" desc="enviar email pago registrado">
     public function enviarEmailPagoRegistrado($data, $pago_detalle, $id_pago) {
         $ini = parse_ini_file('emails.ini');
         $inmueble       = new inmueble();
@@ -388,7 +338,7 @@ class pago extends db implements crud {
         $descripcion    = $data['cod_admin']=='004'? 'Cuota Mensual':'Pago de Condominio';
         if (isset($_SESSION['usuario']['directorio'])) {
             $prop = new propietario();
-            $datos_propietario = $prop->ver($session['usuario']['id']);
+            $datos_propietario = $prop->ver($_SESSION['usuario']['id']);
             $propietario = $datos_propietario[0]['nombre'];
         } else {
             $propietario = $_SESSION['usuario']['nombre'];
@@ -439,7 +389,8 @@ class pago extends db implements crud {
                 date("d/m/Y")
         );
         $mensaje .= $ini['PIE_MENSAJE_PAGO'];
-        /* ob_start();
+        /*
+        ob_start();
         ?>
                 <page format="135x215" orientation="L">
                 <div style="rotate: 90; position: absolute; width: 100mm; height: 4mm; left: 212mm; top: 0; font-style: italic; font-weight: normal; text-align: center; font-size: 2.5mm;">
@@ -450,7 +401,7 @@ class pago extends db implements crud {
                 <tr>
                     <td style="width: 100%;">
                         <div class="zone" style="height: 26mm;position: relative;font-size: 5mm;">
-                            <img src="../../assets/images/_smarty/logo_app.png" alt="logo" style="">
+                            <img src="../../assets/images/_smarty/logo_app.png" alt="logo">
                             <div style="position: absolute; top: 16mm; right:3mm; text-align: right; font-size: 2.5mm;">
                                 Fecha de Impresión: <?php echo date('d/m/Y H:i:s'); ?><br>
                                 <span style="font-size: 4mm;margin-top: 8px"><b>Comprobante Nº <span style="color: RGB(255, 0, 0)"><?php echo sprintf('%08d', $id_pago); ?></span></b></span>
@@ -504,44 +455,35 @@ class pago extends db implements crud {
                 </div>
                 </page>
         <?php
-        $content = ob_get_clean();*/
+        $content = ob_get_clean();
+        */
         // convert to PDF
         // require_once('../../includes/html2pdf/html2pdf.class.php');
-        try         
-        {
-            // $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
-            // $html2pdf->setDefaultFont("Helvetica");
-            // // recibo
-            // $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-            // $archivo = $html2pdf->Output('', 'S');
-            // // $html2pdf->Output('recibo.pdf');
-
-            $mail = new mailto(SMTP);
-            // $voucher = Array("Recibo_electronico.pdf" => $archivo);
+        // try         
+        // {
+            /*
+            $html2pdf = new HTML2PDF('P', 'Letter', 'fr', true, 'UTF-8', array(0, 10, 0, 0));
+            $html2pdf->setDefaultFont("Helvetica");
+            // recibo
+            $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+            $archivo = $html2pdf->Output('', 'S');
+            $voucher = Array("Recibo_electronico.pdf" => $archivo);
+            */
             $voucher = null;
-            $r = $mail->enviar_email("Pago de Condominio", 
-                                    $mensaje, 
-                                    '', 
-                                    $data['email'], 
-                                    '', 
-                                    null, 
-                                    null, 
-                                    $voucher);
-            $archivo = '';
-        }         
-        catch (Exception $e) 
-        {   
-            echo "Error envío email:".$e;
-            return;
-        }
+            $mail = new mailto(SMTP);
+            $mail->enviar_email("Pago de Condominio", $mensaje, '', $data['email'], "", null, null, $voucher);
+            //$archivo = '';
+        // } 
+        // catch (HTML2PDF_exception $e) {
+        //     echo "Error PDF :" . $e;
+        //     exit;
+        // }
     }
-// </editor-fold>
 
-    
     public function reenviarEmailPagoRegistrado($id) {
         $data = $this->ver($id);
         
-        if ($data['suceed'] == TRUE && count($data['data'])>0) {
+        if ($data['suceed'] && count($data['data'])>0) {
             
             $descripcion = $data['data'][0]['cod_admin']=='004'? 'Cuota Mensual':'Pago de Condominio';
             $ini = parse_ini_file('emails.ini');
@@ -594,66 +536,6 @@ class pago extends db implements crud {
                     $forma_pago = 'TRANSFERENCIA';
                     break;
             }
-            /* ob_start();
-            ?>
-            <page format="135x215" orientation="L">
-            <div style="rotate: 90; position: absolute; width: 100mm; height: 4mm; left: 212mm; top: 0; font-style: italic; font-weight: normal; text-align: center; font-size: 2.5mm;">
-            Recibo electrónico del servicio pago web de v2.web.ve
-            </div>
-            <div style="width: 90%; margin-left:50px">
-            <table style="width: 99%;" cellspacing="1mm" cellpadding="0"  >
-            <tr>
-                <td style="width: 100%;">
-                    <div class="zone" style="height: 26mm;position: relative;font-size: 5mm;">
-                    <img src="../../assets/images/_smarty/logo_app.png" alt="logo" style="">
-                    <div style="position: absolute; top: 16mm; right:3mm; text-align: right; font-size: 2.5mm;">
-                        Fecha de Impresión: <?php echo date('d/m/Y H:i:s'); ?><br>
-                        <span style="font-size: 4mm;margin-top: 8px"><b>Comprobante Nº <span style="color: RGB(255, 0, 0)"><?php echo sprintf('%08d', $id); ?></span></b></span>
-                    </div>
-                </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="zone" style="height: 60mm;text-align: justify; font-size: 3.5mm; padding: 14px;">
-                        <p style="line-height: 6mm">
-                        Hemos recibido de <b><?php echo $propietario ?></b>, propietario del inmueble
-                        <b><?php echo $codigo_apto ?></b> en <b><?php echo $nombre_inmueble . ", RIF.: " . $rif ?></b>, la cantidad de 
-                        <b><?php echo $moneda.Misc::number_format($monto) ?></b>,
-                        correspondientes al siguiente detalle:<br><br>
-                        </p>
-                        <?php if ($pago_detalle['suceed'] && count($pago_detalle['data'])>0) { ?>
-                        <table style="width: 500px">
-                            <?php foreach ($pago_detalle['data'] as $detalle) { 
-                                $total += $detalle['monto'];?>
-                            <tr>
-                                <td style="width: 75%">
-                                    <?php echo $descripcion.' ('.Misc::date_periodo_format($detalle['periodo']).')' ?>
-                                </td>
-                                <td style="width:25%; text-align: right"><?php echo $moneda.Misc::number_format($detalle['monto']) ?></td>
-                            </tr>
-                            <?php } ?>
-                            <tr>
-                                <td style="text-align: right"><b>Total:</b></td>
-                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo $moneda.Misc::number_format($total) ?></b></td>
-                            </tr>
-                        </table>
-                        <?php } ?>
-                    </div>
-                </td>
-            </tr>
-            </table>
-            </div>
-            <div style="position: absolute;top: 378; font-weight: normal; font-size: 3mm; left:70px">
-            <b>Forma de Pago:</b><br><br>
-            <?php echo $forma_pago." Referencia: ".$data['data'][0]['numero_documento']
-                    ."  Fecha: ".Misc::date_format($data['data'][0]['fecha_documento'])." "
-                    .$data['data'][0]['banco_destino']
-                    ." Monto: ".$moneda.Misc::number_format($data['data'][0]['monto']); ?>
-            </div>
-            </page>
-            <?php
-            $content = ob_get_clean();*/
             
             $mensaje = sprintf($ini['CUERPO_MENSAJE_PAGO_RECEPCION_CONFIRMACION'], 
                     $propietario,
@@ -670,42 +552,18 @@ class pago extends db implements crud {
                     Misc::date_format($data['data'][0]['fecha']));
                     $mensaje.=$ini['PIE_MENSAJE_PAGO'];
                    
-            // convert to PDF
-            // require_once('../../includes/html2pdf/html2pdf.class.php');
-            try
-            {
-//                 $html2pdf = new HTML2PDF('P', 'Letter', 'fr',true,'UTF-8',array(0, 10, 0, 0));
-//                 $html2pdf->setDefaultFont("Helvetica");
-//                 // recibo
-//                 $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-//                 $archivo = $html2pdf->Output('','S');
-// //                $html2pdf->Output('recibo.pdf');
-
-                $mail = new mailto(SMTP);
-                // $voucher = Array("Recibo de pago"=>$archivo);
+            
                 $voucher = null;
-                //
-                $r = $mail->enviar_email("Pago de Condominio", 
-                                         $mensaje, 
-                                         '', 
-                                         $data['data'][0]['email'], 
-                                         '',
-                                         null,
-                                         null,
-                                         $voucher);
+                $mail = new mailto(SMTP);
+                $r = $mail->enviar_email("Pago de Condominio", $mensaje, '', $data['data'][0]['email'], "",null,null,$voucher);
 
-                $archivo='';
                 if ($r=="") {
                     $this->actualizar($id, Array("enviado"=>1));
                     echo "Email enviado a ".$data['data'][0]['email']." Ok!";
                 } else {
                     echo($r);
                 }
-            }
-            catch(Exception $e) {
-                echo "Error PDF :".$e;
-                exit;
-            }
+            
         } else {
             echo 'No se consigue la informaci&oacute;n del pago ID: '.$id;
         }
@@ -736,7 +594,7 @@ class pago extends db implements crud {
                     $inmueble = new inmueble();
                     $codigo_apto = $pago_detalle['data'][0]['id_apto'];
                     $codigo_inmueble = $pago_detalle['data'][0]['id_inmueble'];
-                    $datos_inmueble = $inmueble->verDatosInmueble($codigo_inmueble, $cod_admin);
+                    $datos_inmueble = $inmueble->verDatosInmueble($codigo_inmueble, $data['data'][0]['cod_admin']);
                     $nombre_inmueble = "";
                     if ($propietario=='') {
                         $prop = new propietario();
@@ -763,79 +621,7 @@ class pago extends db implements crud {
             } else {
                 die('No se pudo generar el comprobante. No se encuenta la inforamci&oacute;n del pago');
             }
-            
-            /*ob_start();
-            ?>
-            <page>
-            <div style="rotate: 90; position: absolute; width: 100mm; height: 4mm; left: 212mm; top: 0; font-style: italic; font-weight: normal; text-align: center; font-size: 2.5mm;">
-            Recibo electrónico del servicio de pago en línea de v2.web.ve
-            </div>
-            <div style="width: 90%; margin-left:50px">
-            <table style="width: 99%;" cellspacing="1mm" cellpadding="0"  >
-            <tr>
-                <td style="width: 100%;">
-                    <div class="zone" style="height: 26mm;position: relative;font-size: 5mm;">
-                        <img src="../../assets/images/_smarty/logo_app.png" alt="logo" style="">
-                        <div style="position: absolute; top: 15mm; left: 3mm; text-align: left; font-size: 2mm; color: #333">RIF.: J-30557001-9</div>
-                        <div style="position: absolute; right: 3mm; bottom: 3mm; text-align: right; font-size: 3mm; ">
-                            Fecha: <?php echo date('d/m/Y H:i:s'); ?><br><br>
-                            <span style="font-size: 4mm;"><b>Comprobante de pago en línea Nº <?php echo $id ?></b></span>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="zone" style="height: 60mm;text-align: justify; font-size: 3.5mm; padding: 14px;">
-                        <p style="line-height: 6mm">
-                        Hemos recibido de <b><?php echo $propietario ?></b>, propietario del inmueble
-                        <b><?php echo $codigo_apto ?></b> del condominio <b><?php echo $nombre_inmueble.", RIF.: ".$rif ?></b>, la cantidad de 
-                        <b><?php echo number_format($monto,2,",",".") ?> Bolívares</b>, 
-                        correspondientes al pago y/o abono de:<br><br>
-                        </p>
-                        <?php if ($pago_detalle['suceed'] && count($pago_detalle['data'])>0) { ?>
-                        <table style="width: 500px">
-                            <?php foreach ($pago_detalle['data'] as $detalle) { 
-                                $total += $detalle['monto'];?>
-                            <tr>
-                                <td style="width: 75%">Pago de Condominio (<?php echo Misc::date_periodo_format($detalle['periodo']) ?>)</td>
-                                <td style="width:25%; text-align: right"><?php echo number_format($detalle['monto'],2,",",".") ?></td>
-                            </tr>
-                            <?php } ?>
-                            <tr>
-                                <td style="text-align: right"><b>Subtotal:</b></td>
-                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo number_format($total,2,",",".") ?></b></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: right"><b>Servicio electónico web:</b></td>
-                                <td style="text-align: right"><b><?php echo number_format($servicio,2,",",".") ?></b></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: right"><b>Total:</b></td>
-                                <td style="text-align: right; border-top: 1px solid #000"><b><?php echo number_format($total + $servicio,2,",",".") ?></b></td>
-                            </tr>
-                        </table>
-                        <?php } ?>
-                        <br>
-                        <div style="width: 80%; margin-left: 80px; font-size: 3mm">
-                            Usted efectuó este pago desde la <b>IP. <?php echo $ip ?></b><br>
-                            Esta es una operación monitoreada y controlada por v2.web.ve con TECNOLOGIA DE PRONET21
-                        </div>
-                        <br>
-                    </div>
-                </td>
-            </tr>
-            </table>
-            <div style="width: 255px; border: 1px solid #222">
-            <?php 
-            $html = str_replace("border: 1px solid #222;", "", $html);
-            echo $html; 
-            ?>
-            </div>
-            </div>
-            </page>
-            <?php
-            $content = ob_get_clean();*/
+           
             
             switch (strtoupper($data['data'][0]['tipo_pago'])) {
                 case 'D':
@@ -867,22 +653,9 @@ class pago extends db implements crud {
             
                     $mensaje.=$ini['PIE_MENSAJE_PAGO'];
                    
-            // convert to PDF
-            // require_once('../../includes/html2pdf/html2pdf.class.php');
-            try
-            {
-                // $html2pdf = new HTML2PDF('P', 'Letter', 'fr',true,'UTF-8',array(0, 10, 0, 0));
-                // $html2pdf->setDefaultFont("Helvetica");
-                // // recibo
-                // $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-                // $archivo = $html2pdf->Output('','S');
-                // $html2pdf->Output('recibo.pdf');
-                // //$mail = new mailto(SMTP,'pagoenlinea@v2.web.ve','Pag.gv.098!');
-                // $mail = new mailto(SMTP);
-                // //$mail->user='pagoenlinea@v2.web.ve';
-                // //$mail->pass='Pag.gv.098!';
-                // $voucher = Array("Recibo de pago"=>$archivo);
-                $voucher = null;
+            
+                $mail = new mailto(SMTP);
+                
                 $r = $mail->enviar_email(
                         "Pago electrónico web", 
                         $mensaje, '', 
@@ -890,20 +663,14 @@ class pago extends db implements crud {
                         "",
                         null,
                         null,
-                        $voucher);
+                        null);
 
-                // $archivo='';
                 if ($r=="") {
                     $this->actualizar($id, Array("enviado"=>1));
-                    //echo "Email enviado a ".$data['data'][0]['email']." Ok!";
                 } else {
                     echo($r);
                 }
-            }
-            catch(Exception $e) {
-                echo "Error envío email:".$e;
-                exit;
-            }
+            
         } else {
             echo 'No se consigue la informaci&oacute;n del pago ID: '.$id;
         }
@@ -928,10 +695,8 @@ class pago extends db implements crud {
                 $ini['CUENTA_PAGOS']
                 );
         
-        //$adjunto="";
         $can = array();
         
-        // <editor-fold defaultstate="collapsed" desc="si el pago es aplicado">
         if ($estatus == 'A') {
 
             if (RECIBO_GENERAL==1) {
@@ -945,7 +710,6 @@ class pago extends db implements crud {
                     $n = 0;
                     foreach ($r['data'] as $factura) {
                         
-                        //$con = $adjunto == "" ? "" : ",";
                         $factura = '../../cancelacion.gastos/' . $factura["id_factura"] . '.pdf';
                         
                         $factura = realpath($factura);
@@ -954,7 +718,7 @@ class pago extends db implements crud {
                             $n = $n + 1;
                             $can[] = $factura;
                         }
-                        //$adjunto.= $con . $factura;
+                        
                     }
                     $mensaje.= "Hemos adjuntado " . $n . " factura(s).";
                     if ($n < count($r['data'])) {
@@ -963,7 +727,6 @@ class pago extends db implements crud {
                 }
             }
         }
-        // </editor-fold>
         
         $mensaje.= $ini['PIE_MENSAJE_PAGO'];
         
@@ -1019,21 +782,11 @@ class pago extends db implements crud {
     }
     
     public static function facturaPendientePorProcesar($periodo,$inmueble,$apto) {
-        $sql = "SELECT * FROM pagos p join pago_detalle pd on p.id = pd.id_pago where p.estatus='p' and pd.periodo='".$periodo."' and id_inmueble='".$inmueble."' and id_apto='".$apto."'";
+        $sql = "SELECT p.* FROM pagos p join pago_detalle pd on p.id = pd.id_pago where p.estatus='p' and pd.periodo='".$periodo."' and id_inmueble='".$inmueble."' and id_apto='".$apto."'";
         
         $r = db::query($sql);
         
-        return $r;
-//        if ($r['suceed']) {
-//            if (count($r['data'])>0) {
-//                return 1;
-//            } else {
-//                return 0;
-//            }
-//        } else {
-//            return 0;
-//        }
-        
+        return $r;        
     }
     
     public function detallePagoReciboGeneral($id_pago) {
@@ -1120,17 +873,59 @@ class pago extends db implements crud {
     }
 
     public function cancelacionExisteEnBaseDeDatos($cancelacion) {
-        $cancelacion = str_replace(".pdf","",$cancelacion);
-        $query = "select numero_factura from cancelacion_gastos 
-            where concat(numero_factura,cod_admin)='".$cancelacion."'";
-        $r=0;
-        $result = $this->dame_query($query);
-        if ($result['suceed']==true) {
-            if (count($result['data'])>0) {
-                $r=1;
-            }
+        // Normalizar nombre de archivo y validar formato esperado
+        $cancelacion = trim($cancelacion);
+        $cancelacion = str_ireplace('.pdf', '', $cancelacion);
+
+        // Si la cadena es muy corta no tiene formato esperado
+        if (strlen($cancelacion) <= 10) {
+            return 0;
         }
-        return $r;       
+
+        // Extraer los últimos 3 caracteres como cod_admin y el resto como numero_factura
+        $cod_admin = substr($cancelacion, -3);
+        $numero_factura = substr($cancelacion, 0, -3);
+
+        // Sanea para evitar inyección y errores en la consulta
+        $cod_admin_esc = $this->mysqli->real_escape_string($cod_admin);
+        $numero_factura_esc = $this->mysqli->real_escape_string($numero_factura);
+
+        // Consulta: buscar coincidencia exacta en las columnas (mejor que CONCAT en WHERE)
+        $query = "SELECT 1 AS existe FROM cancelacion_gastos "
+               . "WHERE numero_factura = '" . $numero_factura_esc . "' "
+               . "AND cod_admin = '" . $cod_admin_esc . "' "
+               . "UNION "
+               . "SELECT 1 AS existe FROM movimiento_caja "
+               . "WHERE numero_recibo = '" . $numero_factura_esc . "' "
+                . "AND cod_admin = '" . $cod_admin_esc . "' LIMIT 1";
+        
+        $result = $this->dame_query($query);
+
+        return $result['suceed'] && isset($result['data']) && count($result['data']) > 0;
     }
 
+    public function listarPagosEmailRegisroNoEnviado() {
+        $opciones = [
+                'estatus'=>'p',
+                'enviado'=> 0
+            ];
+        return $this->select("*", self::tabla, $opciones);
+    }
+
+    public function listarRecibosRegistrados() {
+        $recibos = array();
+        $facturas = array();
+
+        $result = $this->select("numero_recibo", "movimiento_caja");
+        
+        if ($result['suceed'] && count($result['data'])>0) {
+            $recibos = array_column($result['data'], 'numero_recibo');
+        }
+        
+        $result = $this->select("*", "cancelacion_gastos");
+        if ($result['suceed'] && count($result['data'])>0) {
+            $facturas = array_column($result['data'], 'numero_factura');
+        }
+        return array_merge($recibos, $facturas);
+    }
 }
