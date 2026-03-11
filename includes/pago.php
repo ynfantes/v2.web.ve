@@ -70,7 +70,7 @@ class pago extends db implements crud {
                 . "pagos p join pago_detalle d on p.id = d.id_pago left "
                 . "join pago_usuario u on p.id = u.id_pago "
                 . "where p.estatus='p' and p.cod_admin='$cod_admin' "
-                . "order by d.id_inmueble ASC";
+                . "order by d.id_inmueble ASC, p.id ASC;";
         //colocar esta línea en el criterio de seleccion si se activa
         //el pago por tarjeta de credito
         //and p.id not in (select id_pago from pago_en_linea) 
@@ -79,11 +79,11 @@ class pago extends db implements crud {
     }
     
     public function detallePagoPendiente($id_pago) {
-        return $this ->select("*", "pago_detalle", Array("id_pago"=>$id_pago));
+        return $this ->select("*", "pago_detalle",   ["id_pago"=>$id_pago], null, ["periodo"=>"ASC"]);
     }
     
     public function detallePagoEnLinea($id) {
-        return $this ->select("*", "pago_en_linea", Array("id_pago"=>$id));
+        return $this ->select("*", "pago_en_linea", ["id_pago"=>$id]);
     }
     
     public function detalleTodosPagosPendientes() {

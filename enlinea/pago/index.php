@@ -513,7 +513,7 @@ switch ($accion) {
 
     case "listaPagosMaestros":
         $pagos = new pago();
-        $pagos_maestro = $pagos->listarPagosPendientes($_GET['id']);
+        $pagos_maestro = $pagos->listarPagosPendientes_new($_GET['id']);
 
         if ($pagos_maestro['suceed'] && count($pagos_maestro['data']) > 0) {
             echo "id,fecha,tipo_pago,numero_documento,fecha_documento,monto,banco_origen,";
@@ -657,7 +657,7 @@ switch ($accion) {
                                 'tipo_pago'        => strtoupper($pago['tipo_pago']),
                                 'numero_documento' => $pago["numero_documento"],
                                 'fecha_documento'  => Misc::date_format($pago["fecha_documento"]),
-                                'monto'            => $pago["monto"],
+                                'monto'            => floatval($pago["monto"]),
                                 'banco_origen'     => $pago["banco_origen"],
                                 'banco_destino'    => $pago["banco_destino"],
                                 'numero_cuenta'    => $pago["numero_cuenta"],
@@ -675,7 +675,7 @@ switch ($accion) {
                         $pago_obj['detalle'][] = [
                             'id_inmueble' => $value['id_inmueble'],
                             'id_apto'     => $value['id_apto'],
-                            'monto'       => $value['monto'],
+                            'monto'       => floatval($value['monto']),
                             'id_factura'  => $value['id_factura'],
                             'periodo'     => $value['periodo']
                         ];
@@ -703,7 +703,7 @@ switch ($accion) {
                 'Records' => [],
                 'RecordsCount' => 0
             ];
-            echo json_encode([]);
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
         }
 
         break;
