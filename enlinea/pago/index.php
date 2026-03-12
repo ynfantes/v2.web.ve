@@ -269,10 +269,12 @@ switch ($accion) {
     case "registrar":
     case "listar":
     default :
+        
         $propiedad = new propiedades();
         $facturas = new factura();
         $inmuebles = new inmueble();
-        $bcvRates = new historicoTasaBDV();
+        // $bcvRates = new historicoTasaBDV();
+        
 
         $resultado = [];
         $cuenta = [];
@@ -299,7 +301,7 @@ switch ($accion) {
             "descripcion"=>'Inicio del proceso',
         ));
         
-        if ($propiedades['suceed'] == true) {
+        if ($propiedades['suceed']) {
 
             foreach ($propiedades['data'] as $propiedad) {
 
@@ -368,8 +370,8 @@ switch ($accion) {
             'dolar' => '0,00',
             'usd'   => '-,--',
         ];
-        $exchangeRate = $bcvRates->getPriceDollar();
-       
+        //$exchangeRate = $bcvRates->getPriceDollar();
+        $exchangeRate = null;
         if ($exchangeRate!= null) {
             
             $update = $exchangeRate['updated']; 
@@ -416,6 +418,7 @@ switch ($accion) {
 
             $url = 'enlinea/pago/formulario.html.twig';
         }
+        
         echo $twig->render($url, $params);
         break; 
         
