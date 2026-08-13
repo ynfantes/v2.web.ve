@@ -16,36 +16,37 @@ function checkPropertiesAdministrator($cod_admin, $maxInmueble, &$mensaje) {
     // aquí comprobamos la cantidad de edificios que tiene registrado
     $inmueble = new inmueble();
     $inmuebles = $inmueble->getPropertyByAdmin($cod_admin);
+    $heading = '';
     if ($inmuebles['suceed']) {
         
-        $countInm = count($inmuebles['data']);
-        $countInm++;
-        if($countInm > $maxInmueble) {
-            $mensaje.= "**********<br>";
-            $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
-            $mensaje.= "Usted ha excedido el máximo permitido.<br>";
-            $mensaje.= "**********<br>";
+        $countInm = is_array($inmuebles['data']) ? count($inmuebles['data']) : 0;
+        if ($countInm > $maxInmueble) {
+            $heading.= "**********<br>";
+            $heading.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
+            $heading.= "Usted ha excedido el máximo permitido.<br>";
+            $heading.= "**********<br>";
 
             if($cod_admin == "056") {
-                $mensaje.= "El servicio estará disponible hasta el 21/02/2025";
+                $heading.= "El servicio estará disponible hasta el 21/02/2025";
 
             } else {
-                die($mensaje);
+                die($heading);
 
             }
         }
         elseif ($countInm == $maxInmueble){
-            $mensaje.= "**********<br>";
-            $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
-            $mensaje.= "Usted está en el límite permitido.<br>";
-            $mensaje.= "**********<br>";
+            $heading.= "**********<br>";
+            $heading.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
+            $heading.= "Usted está en el límite permitido.<br>";
+            $heading.= "**********<br>";
         } else {
-            $mensaje.= "**********<br>";
-            $mensaje.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
-            $mensaje.= "Actualmente tiene registrado $countInm.<br>";
-            $mensaje.= "**********<br>";
+            $heading.= "**********<br>";
+            $heading.= "Este es un servicio compartido con otros administradores. Y le permite registrar un máximo de $maxInmueble condominios.<br>";
+            $heading.= "Actualmente tiene registrado $countInm.<br>";
+            $heading.= "**********<br>";
         }
     }
+    $mensaje= $heading.$mensaje;
 }
 
 if (isset($_GET['cod_admin'])) {
@@ -129,14 +130,13 @@ if (isset($_GET['codinm'])) {
     }
     echo "<br>";
 }
-checkPropertiesAdministrator($cod_admin,$maxInmueble,$mensaje);
 
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_INMUEBLE;
 $contenidoFichero = JFile::read($archivo);
 
 $lineas = explode("\r\n", $contenidoFichero);
 $inmueble = new inmueble();
-$mensaje .= "procesar archivo inmueble (" . count($lineas) . ")<br />";
+$mensaje .= "procesar archivo inmueble (" . count($lineas) - 1 . ")<br />";
 echo $mensaje;
 
 foreach ($lineas as $linea) {
@@ -178,13 +178,15 @@ foreach ($lineas as $linea) {
     }
 }
 
+checkPropertiesAdministrator($cod_admin, $maxInmueble, $mensaje);
+
 $archivo = ACTUALIZ . $cod_admin . '_' . ARCHIVO_CUENTAS;
 $contenidoFichero = JFile::read($archivo);
 $lineas = explode("\r\n", $contenidoFichero);
 $inmueble = new inmueble();
 
-$mensaje .= "actualizando cuentas inmuebles (" . count($lineas) . ")<br />";
-echo "actualizando cuentas inmuebles (" . count($lineas) . ")<br />";
+$mensaje .= "actualizando cuentas inmuebles (" . count($lineas) - 1 . ")<br />";
+echo "actualizando cuentas inmuebles (" . count($lineas) - 1 . ")<br />";
 
 foreach ($lineas as $linea) {
     $id = '';
@@ -208,8 +210,8 @@ $archivo = ACTUALIZ . $cod_admin . '_CUENTAS_INMUEBLE.txt';
 if (file_exists($archivo)) {
     $contenidoFichero = JFile::read($archivo);
     $lineas = explode("\r\n", $contenidoFichero);
-    $mensaje .= "Procesar Cuentas Inmuebles (" . count($lineas) . ")<br />";
-    echo "Procesar archivo Cuentas Inmuebles (" . count($lineas) . ")<br />";
+    $mensaje .= "procesar Cuentas Inmuebles (" . count($lineas) - 1 . ")<br />";
+    echo "procesar archivo Cuentas Inmuebles (" . count($lineas) - 1 . ")<br />";
     foreach ($lineas as $linea) {
         $registro = explode("\t", $linea);
 

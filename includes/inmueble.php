@@ -158,6 +158,7 @@ class inmueble extends db implements crud {
     }
 
     public function getPropertyByAdmin($cod_admin) {
-        return db::select("*",self::tabla,["cod_admin"=>"$cod_admin"]);
+        $cod_admin = (string) $cod_admin;
+        return $this->select("*", self::tabla, ["cod_admin" => "'" . $this->mysqli->real_escape_string($cod_admin) . "'"]);
     }
 }
